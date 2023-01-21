@@ -2,7 +2,7 @@ library(shiny)
 
 ui <- navbarPage(
   
-  "Hydra",
+  "Kraken",
   
   tabPanel("Input Files",
            fluidPage(
@@ -84,6 +84,8 @@ server <- function(input, output) {
       }
       
       f <- read.csv(d$datapath, header = TRUE, sep = ",")
+      
+      write.csv(f, getwd(), row.names = TRUE)
       
       output$preview <- renderTable(f)
       
