@@ -26,7 +26,7 @@ ui <- navbarPage(
              width = 3
              ),
              mainPanel(
-               
+               tableOutput("preview")
              )
            )
   ),
@@ -68,11 +68,28 @@ ui <- navbarPage(
 
 server <- function(input, output) {
     
+    f <- NA
+  
     output$text <- renderText({input$search})
     
     output$graph <- renderPlot({
       hist(c(3, 4, 5, 7))
     })
+    
+    observeEvent(input$file, {
+      d <- input$file
+      
+      if(is.null(d)) {
+        return(NULL)
+      }
+      
+      f <- read.csv(d$datapath, header = TRUE, sep = ",")
+      
+      output$preview <- renderTable(f)
+      
+      })
+    
+    
 }
 
 shinyApp(ui, server)
