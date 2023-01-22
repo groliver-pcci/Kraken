@@ -1,4 +1,11 @@
 library(shiny)
+library(DT)
+library(tidyverse)
+library(scales)
+library(formattable)
+
+
+dtSettings = list(scrollX = TRUE, scrollY = TRUE)
 
 ui <- navbarPage(
   
@@ -25,8 +32,11 @@ ui <- navbarPage(
              ),
              width = 3
              ),
-             mainPanel(
-               tableOutput("preview")
+             column(
+             
+               DTOutput("preview"),
+           
+             width = 9
              )
            )
   ),
@@ -38,7 +48,6 @@ ui <- navbarPage(
                  textInput("search",
                            "Search:",
                            placeholder = "enter team number"),
-                 verbatimTextOutput("text"),
                  
                  
                  width = 12
@@ -49,7 +58,7 @@ ui <- navbarPage(
                width = 12
              )),
              width = 3),
-             column(mainPanel(plotOutput("graph")),
+             column(mainPanel(DTOutput("searchDT")),
                     width = 9),
            )), 
   
@@ -69,12 +78,6 @@ ui <- navbarPage(
 server <- function(input, output) {
     
     f <- NA
-  
-    output$text <- renderText({input$search})
-    
-    output$graph <- renderPlot({
-      hist(c(3, 4, 5, 7))
-    })
     
     observeEvent(input$file, {
       d <- input$file
@@ -85,11 +88,35 @@ server <- function(input, output) {
       
       f <- read.csv(d$datapath, header = TRUE, sep = ",")
       
-      write.csv(f, getwd(), row.names = TRUE)
+      vals$mainframe <- rbind(vals$mainframe, f)
       
-      output$preview <- renderTable(f)
+      output$preview <- renderDT(datatable(f, options = dtSettings))
       
       })
+    
+    observeEvent(input$search, {
+      s <- input$search
+      
+      if(is.null(s) || is.null(vals$mainframe)) {
+        return(NULL)
+      }
+      
+      for(newrow in vals$mainframe$teamNum) {
+        if(vals$mainframe$teamNum[row] == s) {
+          rbind(vals$searchframe, split(vals$mainframe, vals$mainframe[newrow, ]))
+        }
+      }
+      
+      output$searchDT <- renderDT(datatable(vals$searchframe, options = dtSettings))
+      
+    }
+      
+    )
+    
+    vals <- reactiveValues(
+      mainframe = data.frame(),
+      searchframe = data.frame()
+    )
     
     
 }
