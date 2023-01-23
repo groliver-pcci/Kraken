@@ -5,7 +5,9 @@ library(scales)
 library(formattable)
 
 
-dtSettings = list(scrollX = TRUE, scrollY = TRUE)
+numCols <- 28
+
+dtSettings <- list(scrollX = TRUE, scrollY = TRUE)
 
 ui <- navbarPage(
   
@@ -90,6 +92,8 @@ server <- function(input, output) {
       
       vals$mainframe <- rbind(vals$mainframe, f)
       
+      colnames(vals$searchframe) = colnames(vals$mainframe)
+      
       output$preview <- renderDT(datatable(f, options = dtSettings))
       
       })
@@ -101,9 +105,12 @@ server <- function(input, output) {
         return(NULL)
       }
       
-      for(newrow in vals$mainframe$teamNum) {
-        if(vals$mainframe$teamNum[row] == s) {
-          rbind(vals$searchframe, split(vals$mainframe, vals$mainframe[newrow, ]))
+      for(newrow in length(vals$mainframe$teamNum)) {
+        if(toString(vals$mainframe$teamNum[newrow]) == s) {
+          rbind(vals$searchframe, vals$mainframe[newrow, ])
+          print(vals$searchframe)
+        } else {
+          return(NULL)
         }
       }
       
@@ -115,7 +122,7 @@ server <- function(input, output) {
     
     vals <- reactiveValues(
       mainframe = data.frame(),
-      searchframe = data.frame()
+      searchframe = data.frame(matrix(nrow = 0, ncol = numCols))
     )
     
     
