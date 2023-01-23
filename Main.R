@@ -13,7 +13,11 @@ ui <- navbarPage(
   
   "Kraken",
   
-  tabPanel("Input Files",
+  tags$head(tags$style(
+    HTML('')
+  )),
+  
+  tabPanel("Data",
            fluidPage(
              column(fluidRow(
              sidebarPanel(
@@ -22,16 +26,36 @@ ui <- navbarPage(
                   "Upload CSV",
                    multiple = FALSE
                 ),
+                fluidRow(
+                h4("Apply Data?"),
+                actionButton("yesData", "Yes", width = '60px'),
+                actionButton("noData", "No", width = '60px')),
                 width = 12
              )),
+             
              fluidRow(
                sidebarPanel(
-                 titlePanel("Apply Data?"),
-                 actionButton("yesData", "Yes", width = '60px'),
-                 actionButton("noData", "No", width = '60px'),
+                 fileInput(
+                   "dataImport",
+                   "Import Data",
+                   multiple = FALSE
+                 ),
+                 downloadButton(
+                   "dataExport",
+                   "Export Current Data"
+                 ),
                  width = 12
                )
              ),
+             fluidRow(
+               h3("Clear Data"),
+               sidebarPanel(
+                 h5("WARNING: this button will delete all current data. Consider exporting the data first."),
+                 actionButton("deleteFiles", "Delete Files"),
+                 width = 12
+               )
+             ),
+             
              width = 3
              ),
              column(
@@ -56,7 +80,6 @@ ui <- navbarPage(
                )
              ),
              fluidRow(sidebarPanel(
-               titlePanel("hello"),
                width = 12
              )),
              width = 3),
@@ -66,20 +89,25 @@ ui <- navbarPage(
   
   tabPanel("Matches"),
   
+  tabPanel("Qualitative"),
+  
   tabPanel("Graph"),
   
   tabPanel("Match Planner"),
   
-  tabPanel("Import Data"),
+  tabPanel("TBA"),
   
-  tabPanel("Export Data"),
-  
-  selected = "Teams"
+  selected = "Data"
 )
 
 server <- function(input, output) {
     
     f <- NA
+    
+    output$dataExport <- downloadHandler("scoutingdata.csv", 
+                                         content = function(file) {
+                                           write.csv(vals$mainframe, file)
+                                         })
     
     observeEvent(input$file, {
       d <- input$file
@@ -97,6 +125,33 @@ server <- function(input, output) {
       output$preview <- renderDT(datatable(f, options = dtSettings))
       
       })
+    
+    observeEvent(input$dataImport, {
+      importedFile <- input$dataImport
+      
+      if(is.null(importedData)) {
+        return(NULL)
+      }
+      
+      importedData <- read.csv(importedFile$datapath, header = TRUE, sep = ",")
+      
+      vals$mainframe <- importedData
+      
+    }
+                 
+    )
+    
+    observeEvent(input$deleteFiles, {
+      
+      showModal(modalDialog(
+        tagList(actionButton("confirmDelete", "Yes")),
+        title = "Are you sure you want to delete all data?"
+        
+      )
+        
+      )
+      
+    })
     
     observeEvent(input$search, {
       s <- input$search
