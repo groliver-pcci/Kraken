@@ -60,7 +60,7 @@ ui <- navbarPage(
                width = 12
              )),
              width = 3),
-             column(mainPanel(DTOutput("searchDT")),
+             column(DTOutput("searchDT"),
                     width = 9),
            )), 
   
@@ -107,8 +107,7 @@ server <- function(input, output) {
       
       for(newrow in length(vals$mainframe$teamNum)) {
         if(toString(vals$mainframe$teamNum[newrow]) == s) {
-          rbind(vals$searchframe, vals$mainframe[newrow, ])
-          print(vals$searchframe)
+          vals$searchframe <- rbind(vals$searchframe, vals$mainframe[newrow, ])
         } else {
           return(NULL)
         }
