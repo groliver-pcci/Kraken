@@ -11,11 +11,7 @@ dtSettings <- list(scrollX = TRUE, scrollY = TRUE)
 
 ui <- navbarPage(
   
-  "Kraken",
-  
-  tags$head(tags$style(
-    HTML('')
-  )),
+  title = div(icon("gitkraken", lib = "font-awesome"), "  Kraken"),
   
   tabPanel("Data",
            fluidPage(
@@ -87,7 +83,8 @@ ui <- navbarPage(
                     width = 9),
            )), 
   
-  tabPanel("Matches"),
+  tabPanel("Matches",
+           DTOutput("mainframeTestDT")),
   
   tabPanel("Qualitative"),
   
@@ -97,7 +94,20 @@ ui <- navbarPage(
   
   tabPanel("TBA"),
   
-  selected = "Data"
+  selected = "Data",
+  
+  tags$script(src="https://kit.fontawesome.com/7f698a1940.js"),
+  
+  tags$head(tags$style(
+    HTML('
+         
+         #confirmDelete, #deleteFiles {
+            background-color: #d41704;
+            color: white;
+         }
+         
+         ')
+  ))
 )
 
 server <- function(input, output) {
@@ -109,6 +119,24 @@ server <- function(input, output) {
                                            write.csv(vals$mainframe, file)
                                          })
     
+    output$mainframeTestDT <- renderDT(datatable(vals$mainframe, options = dtSettings))
+    
+    deleteModal <- function() {
+      modalDialog(
+        tagList(actionButton("confirmDelete", "Yes")),
+        title = "Are you sure you want to delete all data?"
+        
+      )
+    }
+    
+    repeatModal <- function() {
+      modalDialog(
+        tagList(actionButton("confirmApplyRepeat", "Yes"),
+                h4("This looks like repeat data. Are you sure you want to add another entry to the system?")),
+        title = "Repeat Data?"
+      )
+    }
+    
     observeEvent(input$file, {
       d <- input$file
       
@@ -118,13 +146,50 @@ server <- function(input, output) {
       
       f <- read.csv(d$datapath, header = TRUE, sep = ",")
       
-      vals$mainframe <- rbind(vals$mainframe, f)
+      vals$previewframe <- f
       
-      colnames(vals$searchframe) = colnames(vals$mainframe)
+      colnames(vals$searchframe) = colnames(vals$previewframe)
       
       output$preview <- renderDT(datatable(f, options = dtSettings))
       
+      
+      
       })
+    
+    observeEvent(input$yesData, {
+      if(nrow(vals$previewframe) == 1) {
+        
+        if(nrow(vals$mainframe) == 0) {
+          vals$mainframe <- rbind(vals$mainframe, vals$previewframe[1, ])
+          vals$previewframe <- data.frame()
+          return(NULL)
+        } else {
+        
+        repeatFound <- FALSE
+          
+        for(row in 1:length(vals$mainframe$teamNum)) {
+          if(vals$mainframe[row, 1] == vals$previewframe[1, 1] & vals$mainframe[row, 2] == vals$previewframe[1, 2]) {
+            repeatFound <- TRUE
+            showModal(repeatModal())
+          }
+        }
+        
+        print(repeatFound)
+        
+        if(repeatFound == FALSE) {
+          vals$mainframe <- rbind(vals$mainframe, vals$previewframe[1, ])
+          vals$previewframe <- data.frame()
+        }
+          
+        }
+        
+      } else if(nrow(vals$previewframe) > 1) {
+        print("error")
+        return(NULL)
+      } else {
+        return(NULL)
+      }
+    })
     
     observeEvent(input$dataImport, {
       importedFile <- input$dataImport
@@ -143,14 +208,12 @@ server <- function(input, output) {
     
     observeEvent(input$deleteFiles, {
       
-      showModal(modalDialog(
-        tagList(actionButton("confirmDelete", "Yes")),
-        title = "Are you sure you want to delete all data?"
-        
-      )
-        
-      )
-      
+      showModal(deleteModal())
+      })
+    
+    observeEvent(input$confirmDelete, {
+      vals$mainframe <- data.frame()
+      removeModal()
     })
     
     observeEvent(input$search, {
@@ -160,7 +223,7 @@ server <- function(input, output) {
         return(NULL)
       }
       
-      for(newrow in length(vals$mainframe$teamNum)) {
+      for(newrow in 1:length(vals$mainframe$teamNum)) {
         if(toString(vals$mainframe$teamNum[newrow]) == s) {
           vals$searchframe <- rbind(vals$searchframe, vals$mainframe[newrow, ])
         } else {
@@ -176,7 +239,8 @@ server <- function(input, output) {
     
     vals <- reactiveValues(
       mainframe = data.frame(),
-      searchframe = data.frame(matrix(nrow = 0, ncol = numCols))
+      searchframe = data.frame(matrix(nrow = 0, ncol = numCols)),
+      previewframe = data.frame()
     )
     
     
