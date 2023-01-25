@@ -7,7 +7,7 @@ library(formattable)
 
 numCols <- 28
 
-dtSettings <- list(scrollX = TRUE, scrollY = TRUE)
+dtSettings <- list(scrollX = TRUE, scrollY = TRUE, fixedColumns = list(leftColumns = c(2, 3)))
 
 ui <- navbarPage(
   
@@ -83,8 +83,10 @@ ui <- navbarPage(
                     width = 9),
            )), 
   
-  tabPanel("Matches",
-           DTOutput("mainframeTestDT")),
+  tabPanel("Matches"),
+  
+  tabPanel("Competition",
+           DTOutput("mainframeOutput")),
   
   tabPanel("Qualitative"),
   
@@ -119,8 +121,6 @@ server <- function(input, output) {
                                            write.csv(vals$mainframe, file)
                                          })
     
-    output$mainframeTestDT <- renderDT(datatable(vals$mainframe, options = dtSettings))
-    
     deleteModal <- function() {
       modalDialog(
         tagList(actionButton("confirmDelete", "Yes")),
@@ -131,11 +131,15 @@ server <- function(input, output) {
     
     repeatModal <- function() {
       modalDialog(
-        tagList(actionButton("confirmApplyRepeat", "Yes"),
-                h4("This looks like repeat data. Are you sure you want to add another entry to the system?")),
+        tagList(
+                h4("This looks like repeat data. Are you sure you want to add another entry to the system?"),
+                actionButton("confirmApplyRepeat", "Yes")
+                ),
         title = "Repeat Data?"
       )
     }
+    
+    output$mainframeOutput <- renderDT(datatable(vals$mainframe, extensions = "FixedColumns", options = dtSettings))
     
     observeEvent(input$file, {
       d <- input$file
@@ -150,7 +154,7 @@ server <- function(input, output) {
       
       colnames(vals$searchframe) = colnames(vals$previewframe)
       
-      output$preview <- renderDT(datatable(f, options = dtSettings))
+      output$preview <- renderDT(datatable(f, extensions = "FixedColumns", options = dtSettings))
       
       
       
@@ -231,7 +235,7 @@ server <- function(input, output) {
         }
       }
       
-      output$searchDT <- renderDT(datatable(vals$searchframe, options = dtSettings))
+      output$searchDT <- renderDT(datatable(vals$searchframe, extensions = "FixedColumns", options = dtSettings))
       
     }
       
