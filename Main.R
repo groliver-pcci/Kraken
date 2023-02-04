@@ -23,6 +23,8 @@ dtSettings <- list(scrollX = TRUE, scrollY = TRUE, fixedColumns = list(leftColum
 
 
 
+setwd(path)
+
 # The object that stores all of the values for the app
 vals <- reactiveValues(
   mainframe = data.frame(),
@@ -103,15 +105,82 @@ canPingSite <- function(test.site) {
 
 findTeamIndex <- function(teamNum) {
   for(row in 1:length(vals$infoframe$teamNum)) {
-    print("here")
     if(toString(teamNum) == vals$infoframe$teamNum[row]) {
       return(row)
     }
   }
 }
 
-onAppStart <- function() {
+pullData <- function() {
+  vals$scheduleframe = data.frame(round = c(),
+                                  match_number = c(),  
+                                  red1 = c(),
+                                  red2 = c(),
+                                  red3 = c(),
+                                  blue1 = c(),
+                                  blue2 = c(),
+                                  blue3 = c()
+  )
   
+  tbaMatchListTemp <- event_matches("2022txirv")
+  
+  tbaMatchListTemp <- tbaMatchListTemp[order(tbaMatchListTemp$match_number), ]
+  
+  for(match in 1:nrow(tbaMatchListTemp)) {
+    if(tbaMatchListTemp$comp_level[match] == "qm") {
+      currentMatchTeams <- data.frame(round = tbaMatchListTemp$comp_level[match],
+                                      match_number = tbaMatchListTemp$match_number[match],
+                                      red1 = substr(tbaMatchListTemp$red1[match], 4, 7),
+                                      red2 = substr(tbaMatchListTemp$red2[match], 4, 7),
+                                      red3 = substr(tbaMatchListTemp$red3[match], 4, 7),
+                                      blue1 = substr(tbaMatchListTemp$blue1[match], 4, 7),
+                                      blue2 = substr(tbaMatchListTemp$blue2[match], 4, 7),
+                                      blue3 = substr(tbaMatchListTemp$blue3[match], 4, 7)
+      )
+      
+      vals$scheduleframe <- rbind(vals$scheduleframe, currentMatchTeams)
+    }
+  }
+  
+  updateOurMatches()
+  
+  teamsInfo <- event_teams(tbaKey)
+  
+  teamNums <- c()
+  
+  for(team in 1:length(teamsInfo$key)) {
+    teamNums <- append(teamNums, substr(teamsInfo$key[team], 4, 7))
+  }
+  
+  for(team in  1:length(teamsInfo$key)) {
+    t <- list(teamNum = NA,
+              epa = NA,
+              matchesPlayed = NA)
+    
+    teamNumber <- teamNums[team]
+    
+    teamInfo <- getStatboticsTeam(teamNumber)
+    
+    t$teamNum <- teamNumber
+    
+    if(!(is.null(teamInfo$epa_end))) {
+      t$epa <- teamInfo$epa_end
+    } else {
+      t$epa <- "NA"
+    }
+    
+    if(!(is.null(teamInfo$count))) {
+      t$matchesPlayed <- teamInfo$count
+    } else {
+      if(week == 1) {
+        t$matchesPlayed <- 0
+      } else {
+        t$matchesPlayed <- 5
+      }
+    }
+    
+    vals$infoframe <- rbind(vals$infoframe, t)
+  }
 }
 
 calculateWinChance <- function(matchNum, fromAlliance = "default") {
@@ -166,9 +235,11 @@ getStatboticsTeam <- function(teamNum) {
 
 # Dictates the layout of the UI
 
+
+
 ui <- navbarPage(
   
-  title = div(icon("gitkraken", lib = "font-awesome", id="krakenicon"), "  Kraken"),
+  title = div(icon("gitkraken", lib = "font-awesome", style = "color: #bb520a;"), "  Kraken"),
   
   tabPanel("Data",
            fluidPage(
@@ -208,7 +279,7 @@ ui <- navbarPage(
              fluidRow(
                sidebarPanel(
                  h5("WARNING: this button will delete all current data. Consider exporting the data first."),
-                 actionButton("deleteFiles", "Delete Files"),
+                 actionButton("deleteFiles", "Delete Files", style = "background-color: #d41704;"),
                  width = 12
                )
              ),
@@ -299,37 +370,19 @@ ui <- navbarPage(
            )),
   
   tabPanel("TBA",
-           actionButton("getSchedule", "Get Match Schedule"),
-           actionButton("getWinChances", "Get Win Percents (load statbotics first)")),
+           actionButton("getWinChances", "Get Win Percents")),
   
   tabPanel("Statbotics",
-           actionButton("getStatbotics", "Get Statbotics Info"),
            DTOutput("statboticsData")),
   
   tabPanel("Schedule",
            DTOutput("matchScheduleDT")),
   
-  selected = "Data",
-  
-  tags$script(src="https://kit.fontawesome.com/7f698a1940.js"),
-  
-  tags$head(tags$style(
-    HTML('
-         
-         #confirmDelete, #deleteFiles {
-            background-color: #d41704;
-         }
-         
-         #krakenicon {
-            color: #bb520a;
-         }
-         
-         ')
-  ))
+  selected = "Data"
 )
 
 
-
+tags$script(src="https://kit.fontawesome.com/7f698a1940.js")
 
 
 # Outlines the server function which dictates the logic of the app
@@ -338,8 +391,13 @@ server <- function(input, output, session) {
   
   observe({  
     if(!vals$startupDone) {
-      
+      pullData()
     
+      write.csv(vals$scheduleframe, paste(path, "schdeule.csv"))
+      write.csv(vals$infoframe, paste(path, "statbotics.csv"))
+      
+      
+      
       vals$startupDone <- TRUE
     }
   })
@@ -388,13 +446,11 @@ server <- function(input, output, session) {
         repeatFound <- FALSE
         
         for(row in 1:length(vals$mainframe$teamNum)) {
-          print("passed 3")
           if(vals$mainframe[row, 1] == vals$previewframe[1, 1] & vals$mainframe[row, 2] == vals$previewframe[1, 2]) {
             repeatFound <- TRUE
             showModal(repeatModal())
           }
         }
-        print("passed 4")
         if(repeatFound == FALSE) {
           vals$mainframe <- rbind(vals$mainframe, vals$previewframe[1, ])
           
@@ -406,7 +462,6 @@ server <- function(input, output, session) {
         }
         
       }
-      print("passed 5")
     } else if(nrow(vals$previewframe) > 1) {
       print("error")
       return(NULL)
@@ -445,7 +500,7 @@ server <- function(input, output, session) {
   
   deleteModal <- function() {
     modalDialog(
-      tagList(actionButton("confirmDelete", "Yes")),
+      tagList(actionButton("confirmDelete", "Yes", style = "background-color: #d41704;")),
       title = "Are you sure you want to delete all data?"
       
     )
@@ -461,8 +516,10 @@ server <- function(input, output, session) {
     )
   }
   
-  output$preview <- renderDT(datatable(vals$previewframe, extensions = "FixedColumns", options = dtSettings))
-  output$ssPreview <- renderDT(datatable(vals$sspreviewframe, extensions = "FixedColumns", options = dtSettings))
+  output$preview <- renderDT(datatable(vals$previewframe, extensions = "FixedColumns", 
+                                       options = dtSettings, selection = "single"))
+  output$ssPreview <- renderDT(datatable(vals$sspreviewframe, extensions = "FixedColumns", 
+                                         options = dtSettings, selection = "single"))
   
   
   
@@ -493,6 +550,7 @@ server <- function(input, output, session) {
     
   })
   
+  
   output$autonScoring <- renderTable(vals$autonScoring)
   output$teleopScoring <- renderTable(vals$teleopScoring)
   
@@ -512,7 +570,8 @@ server <- function(input, output, session) {
   
   # Competition Page
   
-  output$mainframeOutput <- renderDT(datatable(vals$mainframe, extensions = "FixedColumns", options = dtSettings))
+  output$mainframeOutput <- renderDT(datatable(vals$mainframe, extensions = "FixedColumns", options = dtSettings,
+                                               selection = "single"))
   
   
   
@@ -538,42 +597,6 @@ server <- function(input, output, session) {
   
   
   # TBA Page
-  
-  observeEvent(input$getSchedule, {
-    
-    vals$scheduleframe = data.frame(round = c(),
-                                    match_number = c(),  
-                                    red1 = c(),
-                                    red2 = c(),
-                                    red3 = c(),
-                                    blue1 = c(),
-                                    blue2 = c(),
-                                    blue3 = c()
-    )
-    
-    tbaMatchListTemp <- event_matches("2022txirv")
-    
-    tbaMatchListTemp <- tbaMatchListTemp[order(tbaMatchListTemp$match_number), ]
-    
-    for(match in 1:nrow(tbaMatchListTemp)) {
-      if(tbaMatchListTemp$comp_level[match] == "qm") {
-        currentMatchTeams <- data.frame(round = tbaMatchListTemp$comp_level[match],
-                                        match_number = tbaMatchListTemp$match_number[match],
-                                        red1 = substr(tbaMatchListTemp$red1[match], 4, 7),
-                                        red2 = substr(tbaMatchListTemp$red2[match], 4, 7),
-                                        red3 = substr(tbaMatchListTemp$red3[match], 4, 7),
-                                        blue1 = substr(tbaMatchListTemp$blue1[match], 4, 7),
-                                        blue2 = substr(tbaMatchListTemp$blue2[match], 4, 7),
-                                        blue3 = substr(tbaMatchListTemp$blue3[match], 4, 7)
-        )
-        
-        vals$scheduleframe <- rbind(vals$scheduleframe, currentMatchTeams)
-      }
-    }
-    
-    updateOurMatches()
-    
-  })
   
   observeEvent(input$getWinChances, {
     
@@ -604,66 +627,31 @@ server <- function(input, output, session) {
     vals$scheduleframe["winChances"] <- winChances
     vals$scheduleframe["predictedWinners"] <- predictedWinners
     
-    datatable(vals$scheduleframe) %>% formatStyle(
-      9, 10,
-      background_color = styleEqual(c("r", "b", "even"), c("red", "blue", "gray"))
-    )
-    
   })
+  
+  
   
   
   
   # Statbotics Page
-  
-  observeEvent(input$getStatbotics, {
-    
-    teamsInfo <- event_teams(tbaKey)
-    
-    teamNums <- c()
-    
-    for(team in 1:length(teamsInfo$key)) {
-      teamNums <- append(teamNums, substr(teamsInfo$key[team], 4, 7))
-    }
-    
-    for(team in  1:length(teamsInfo$key)) {
-      t <- list(teamNum = NA,
-                epa = NA,
-                matchesPlayed = NA)
-      
-      teamNumber <- teamNums[team]
-      
-      teamInfo <- getStatboticsTeam(teamNumber)
-      
-      t$teamNum <- teamNumber
-      
-      if(!(is.null(teamInfo$epa_end))) {
-        t$epa <- teamInfo$epa_end
-      } else {
-        t$epa <- "NA"
-      }
-      
-      if(!(is.null(teamInfo$count))) {
-        t$matchesPlayed <- teamInfo$count
-      } else {
-        if(week == 1) {
-          t$matchesPlayed <- 0
-        } else {
-          t$matchesPlayed <- 5
-        }
-      }
-      
-      vals$infoframe <- rbind(vals$infoframe, t)
-    }
-    
-  })
+
   
   output$statboticsData <- renderDT(vals$infoframe)
   
   
   
   # Schedule Page
+  observe({
+    output$matchScheduleDT <- renderDT({
+      datatable(
+        vals$scheduleframe
+      ) %>% formatStyle(
+        9, 10,
+        color = styleEqual(c("r", "b", "even"), c("red", "blue", "gray"))
+      )
+    })
+  })
   
-  output$matchScheduleDT <- renderDT(vals$scheduleframe)
   
 
     
