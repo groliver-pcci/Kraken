@@ -13,6 +13,8 @@ tbaKey <- "2022txirv"
 
 week <- 1
 
+path <- "C:\\Users\\wcbri\\Documents\\krakendata\\"
+
 year <- "2022"
 
 numCols <- 28
@@ -20,6 +22,67 @@ numCols <- 28
 dtSettings <- list(scrollX = TRUE, scrollY = TRUE, fixedColumns = list(leftColumns = c(2, 3)))
 
 
+
+# The object that stores all of the values for the app
+vals <- reactiveValues(
+  mainframe = data.frame(),
+  searchframe = data.frame(matrix(nrow = 0, ncol = numCols)),
+  previewframe = data.frame(),
+  sspreviewframe = data.frame(),
+  
+  calcframe = data.frame(epa = c()
+  ),
+  
+  scheduleframe = data.frame(round = c(),
+                             match_number = c(),  
+                             red1 = c(),
+                             red2 = c(),
+                             red3 = c(),
+                             blue1 = c(),
+                             blue2 = c(),
+                             blue3 = c(),
+                             winChances = c(),
+                             predictedWinners = c()
+  ),
+  
+  infoframe = data.frame(teamNum = c(),
+                         epa = c(),
+                         matchesPlayed = c()
+  ),
+  
+  constantframe = data.frame(teamNum = c(),
+                             k = c(),
+                             m = c()
+  ),
+  
+  matches6672 = c(),
+  
+  autonScoring = data.frame(r1 = c("X", "X", "X"),
+                            r2 = c("X", "X", "X"),
+                            r3 = c("X", "X", "X"),
+                            r4 = c("X", "X", "X"),
+                            r5 = c("X", "X", "X"),
+                            r6 = c("X", "X", "X"),
+                            r7 = c("X", "X", "X"),
+                            r8 = c("X", "X", "X"),
+                            r9 = c("X", "X", "X")
+  ),
+  
+  teleopScoring = data.frame(r1 = c("X", "X", "X"),
+                             r2 = c("X", "X", "X"),
+                             r3 = c("X", "X", "X"),
+                             r4 = c("X", "X", "X"),
+                             r5 = c("X", "X", "X"),
+                             r6 = c("X", "X", "X"),
+                             r7 = c("X", "X", "X"),
+                             r8 = c("X", "X", "X"),
+                             r9 = c("X", "X", "X")
+  ),
+  
+  winnersCalculated = FALSE,
+  
+  startupDone = FALSE
+)
 
 
 
@@ -33,12 +96,22 @@ updateTeamValues <- function() {
   }
 }
 
+
+canPingSite <- function(test.site) {
+  !as.logical(system(paste("ping", test.site)))
+}
+
 findTeamIndex <- function(teamNum) {
   for(row in 1:length(vals$infoframe$teamNum)) {
+    print("here")
     if(toString(teamNum) == vals$infoframe$teamNum[row]) {
       return(row)
     }
   }
+}
+
+onAppStart <- function() {
+  
 }
 
 calculateWinChance <- function(matchNum, fromAlliance = "default") {
@@ -90,9 +163,6 @@ getStatboticsTeam <- function(teamNum) {
   
   team <- content(GET(link))
 }
-
-
-
 
 # Dictates the layout of the UI
 
@@ -265,71 +335,14 @@ ui <- navbarPage(
 # Outlines the server function which dictates the logic of the app
 
 server <- function(input, output, session) {
-    
-  # The object that stores all of the values for the app
-  vals <- reactiveValues(
-    mainframe = data.frame(),
-    searchframe = data.frame(matrix(nrow = 0, ncol = numCols)),
-    previewframe = data.frame(),
-    sspreviewframe = data.frame(),
-    
-    calcframe = data.frame(epa = c()
-    ),
-    
-    scheduleframe = data.frame(round = c(),
-                               match_number = c(),  
-                               red1 = c(),
-                               red2 = c(),
-                               red3 = c(),
-                               blue1 = c(),
-                               blue2 = c(),
-                               blue3 = c(),
-                               winChances = c(),
-                               predictedWinners = c()
-    ),
-    
-    infoframe = data.frame(teamNum = c(),
-                           epa = c(),
-                           matchesPlayed = c()
-    ),
-    
-    constantframe = data.frame(teamNum = c(),
-                               k = c(),
-                               m = c()
-    ),
-    
-    matches6672 = c(),
-    
-    autonScoring = data.frame(r1 = c("X", "X", "X"),
-                              r2 = c("X", "X", "X"),
-                              r3 = c("X", "X", "X"),
-                              r4 = c("X", "X", "X"),
-                              r5 = c("X", "X", "X"),
-                              r6 = c("X", "X", "X"),
-                              r7 = c("X", "X", "X"),
-                              r8 = c("X", "X", "X"),
-                              r9 = c("X", "X", "X")
-    ),
-    
-    teleopScoring = data.frame(r1 = c("X", "X", "X"),
-                               r2 = c("X", "X", "X"),
-                               r3 = c("X", "X", "X"),
-                               r4 = c("X", "X", "X"),
-                               r5 = c("X", "X", "X"),
-                               r6 = c("X", "X", "X"),
-                               r7 = c("X", "X", "X"),
-                               r8 = c("X", "X", "X"),
-                               r9 = c("X", "X", "X")
-    ),
-    
-    winnersCalculated = FALSE,
-  )
   
-  
-  
-  
-  
-  
+  observe({  
+    if(!vals$startupDone) {
+      
+    
+      vals$startupDone <- TRUE
+    }
+  })
   
   
   # Data Page
@@ -361,7 +374,6 @@ server <- function(input, output, session) {
   
   observeEvent(input$yesData, {
     if(nrow(vals$previewframe) == 1) {
-      
       if(nrow(vals$mainframe) == 0) {
         vals$mainframe <- rbind(vals$mainframe, vals$previewframe[1, ])
         
@@ -376,12 +388,13 @@ server <- function(input, output, session) {
         repeatFound <- FALSE
         
         for(row in 1:length(vals$mainframe$teamNum)) {
+          print("passed 3")
           if(vals$mainframe[row, 1] == vals$previewframe[1, 1] & vals$mainframe[row, 2] == vals$previewframe[1, 2]) {
             repeatFound <- TRUE
             showModal(repeatModal())
           }
         }
-        
+        print("passed 4")
         if(repeatFound == FALSE) {
           vals$mainframe <- rbind(vals$mainframe, vals$previewframe[1, ])
           
@@ -393,7 +406,7 @@ server <- function(input, output, session) {
         }
         
       }
-      
+      print("passed 5")
     } else if(nrow(vals$previewframe) > 1) {
       print("error")
       return(NULL)
