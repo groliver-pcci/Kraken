@@ -28,7 +28,37 @@ setwd(path)
 # The object that stores all of the values for the app
 vals <- reactiveValues(
   mainframe = data.frame(),
-  searchframe = data.frame(matrix(nrow = 0, ncol = numCols)),
+  searchframe = data.frame(teamNum = c(),
+                           matchNum = c(),
+                           alliance = c(),
+                           startLocation = c(),
+                           preload = c(),
+                           mobility = c(),
+                           autoPickups = c(),
+                           autoCones = c(),
+                           autoCubes = c(),
+                           autoBalance = c(),
+                           communityPickups = c(),
+                           neutralPickups = c(),
+                           singlePickups = c(),
+                           doublePickups = c(),
+                           teleopCones = c(),
+                           teleopCubes = c(),
+                           shuttle = c(),
+                           teleopBalance = c(),
+                           buddyClimb = c(),
+                           balanceTime = c(),
+                           everybot = c(),
+                           drivetrainType = c(),
+                           drivetrain = c(),
+                           intake = c(),
+                           speed = c(),
+                           driver = c(),
+                           scoutName = c(),
+                           comments = c()
+                           ),
+  
+  
   previewframe = data.frame(),
   sspreviewframe = data.frame(),
   
@@ -107,6 +137,45 @@ findTeamIndex <- function(teamNum) {
   for(row in 1:length(vals$infoframe$teamNum)) {
     if(toString(teamNum) == vals$infoframe$teamNum[row]) {
       return(row)
+    }
+  }
+}
+
+getCoords <- function(index) {
+  coords <- c()
+  
+  if(index <= 9) {
+    coords <- append(coords, 1)
+    coords <- append(coords, index)
+  } else if(9 < index & index <= 18) {
+    coords <- append(coords, 2)
+    coords <- append(coords, (index - 9))
+  } else if(18 < index & index <= 27) {
+    coords <- append(coords, 3)
+    coords <- append(coords, (index - 18))
+  }
+  
+  return(coords)
+}
+
+addScores <- function(data, time, type) {
+  for(num in 1:length(data)) {
+    loc <- strtoi(data[num])
+    row <- getCoords(loc)[1]
+    col <- getCoords(loc)[2]
+    
+    if(time == "a") {
+      if(type == "cone") {
+        vals$autonScoring[row, col] <- "🔺"
+      } else if(type == "cube") {
+        vals$autonScoring[row, col] <- "🟦"
+      }
+    } else if(time == "t") {
+      if(type == "cone") {
+        vals$teleopScoring[row, col] <- "🔺"
+      } else if(type == "cube") {
+        vals$teleopScoring[row, col] <- "🟦"
+      }
     }
   }
 }
@@ -307,7 +376,7 @@ ui <- navbarPage(
                    textInput("search",
                              "Search:",
                              placeholder = "enter team number"),
-                   
+                   actionButton("enterSearch", "Search"),
                    
                    width = 12
                  )
@@ -391,11 +460,16 @@ server <- function(input, output, session) {
   
   observe({  
     if(!vals$startupDone) {
-      pullData()
-    
-      write.csv(vals$scheduleframe, paste(path, "schdeule.csv"))
-      write.csv(vals$infoframe, paste(path, "statbotics.csv"))
-      
+      if(!(file.exists(paste(path, "schedule.csv")))) {
+        pullData()
+        
+        write.csv(vals$scheduleframe, paste(path, "schedule.csv"), row.names = FALSE)
+        write.csv(vals$infoframe, paste(path, "statbotics.csv"), row.names = FALSE)
+        
+      } else {
+        vals$scheduleframe <- read.csv(paste(path, "schedule.csv"))
+        vals$infoframe <- read.csv(paste(path, "statbotics.csv"))
+      }
       
       
       vals$startupDone <- TRUE
@@ -419,8 +493,6 @@ server <- function(input, output, session) {
     if(input$inputType == "regScout") {
       
       vals$previewframe <- f
-      
-      colnames(vals$searchframe) = colnames(vals$previewframe)
       
     } else if (input$inputType == "supScout") {
       
@@ -531,14 +603,44 @@ server <- function(input, output, session) {
   
   # Teams Page
   
-  observeEvent(input$search, {
+  observeEvent(input$enterSearch, {
+    vals$searchframe <- data.frame(teamNum = c(),
+                                   matchNum = c(),
+                                   alliance = c(),
+                                   startLocation = c(),
+                                   preload = c(),
+                                   mobility = c(),
+                                   autoPickups = c(),
+                                   autoCones = c(),
+                                   autoCubes = c(),
+                                   autoBalance = c(),
+                                   communityPickups = c(),
+                                   neutralPickups = c(),
+                                   singlePickups = c(),
+                                   doublePickups = c(),
+                                   teleopCones = c(),
+                                   teleopCubes = c(),
+                                   shuttle = c(),
+                                   teleopBalance = c(),
+                                   buddyClimb = c(),
+                                   balanceTime = c(),
+                                   everybot = c(),
+                                   drivetrainType = c(),
+                                   drivetrain = c(),
+                                   intake = c(),
+                                   speed = c(),
+                                   driver = c(),
+                                   scoutName = c(),
+                                   comments = c()
+                                   )
+    
     s <- input$search
     
     if(is.null(s) || is.null(vals$mainframe)) {
       return(NULL)
     }
     
-    for(newrow in 1:length(vals$mainframe$teamNum)) {
+    for(newrow in 1:nrow(vals$mainframe)) {
       if(toString(vals$mainframe$teamNum[newrow]) == s) {
         vals$searchframe <- rbind(vals$searchframe, vals$mainframe[newrow, ])
       } else {
@@ -546,8 +648,29 @@ server <- function(input, output, session) {
       }
     }
     
-    output$searchDT <- renderDT(datatable(vals$searchframe, extensions = "FixedColumns", options = dtSettings))
+  })
+  
+  observe({
+    searchDT <- datatable(vals$searchframe, extensions = "FixedColumns", options = dtSettings,
+                          selection = "single")
     
+    output$searchDT <- renderDT(searchDT)
+    
+    observeEvent(input$searchDT_rows_selected, {
+      row <- vals$searchframe[input$searchDT_rows_selected, ]
+      
+      aCones <- unlist(strsplit(toString(row$autoCones), ","))
+      aCubes <- unlist(strsplit(toString(row$autoCubes), ","))
+      
+      tCones <- unlist(strsplit(toString(row$teleopCones), ","))
+      tCubes <- unlist(strsplit(toString(row$teleopCubes), ","))
+      
+      addScores(aCones, "a", "cone")
+      addScores(aCubes, "a", "cube")
+      addScores(tCones, "t", "cone")
+      addScores(tCubes, "t", "cube")
+      
+    })
   })
   
   
@@ -644,7 +767,10 @@ server <- function(input, output, session) {
   observe({
     output$matchScheduleDT <- renderDT({
       datatable(
-        vals$scheduleframe
+        vals$scheduleframe,
+        extensions = "FixedColumns",
+        options = dtSettings,
+        selection = "single"
       ) %>% formatStyle(
         9, 10,
         color = styleEqual(c("r", "b", "even"), c("red", "blue", "gray"))
