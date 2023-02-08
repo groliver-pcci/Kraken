@@ -39,7 +39,7 @@ vals <- reactiveValues(
                            autoCubes = c(),
                            autoBalance = c(),
                            communityPickups = c(),
-                           neutralPickups = c(),
+                           neutralPickups = c(), 
                            singlePickups = c(),
                            doublePickups = c(),
                            teleopCones = c(),
@@ -87,28 +87,31 @@ vals <- reactiveValues(
                              m = c()
   ),
   
-  matches6672 = c(),
+  matches6672 = data.frame(matches = c(),
+                           allliance = c(),
+                           station = c()
+                           ),
   
-  autonScoring = data.frame(r1 = c("X", "X", "X"),
+  autonScoring = data.frame(r1 = c("O", "O", "X"),
                             r2 = c("X", "X", "X"),
-                            r3 = c("X", "X", "X"),
-                            r4 = c("X", "X", "X"),
+                            r3 = c("O", "O", "X"),
+                            r4 = c("O", "O", "X"),
                             r5 = c("X", "X", "X"),
-                            r6 = c("X", "X", "X"),
-                            r7 = c("X", "X", "X"),
+                            r6 = c("O", "O", "X"),
+                            r7 = c("O", "O", "X"),
                             r8 = c("X", "X", "X"),
-                            r9 = c("X", "X", "X")
+                            r9 = c("O", "O", "X")
   ),
   
-  teleopScoring = data.frame(r1 = c("X", "X", "X"),
+  teleopScoring = data.frame(r1 = c("O", "O", "X"),
                              r2 = c("X", "X", "X"),
-                             r3 = c("X", "X", "X"),
-                             r4 = c("X", "X", "X"),
+                             r3 = c("O", "O", "X"),
+                             r4 = c("O", "O", "X"),
                              r5 = c("X", "X", "X"),
-                             r6 = c("X", "X", "X"),
-                             r7 = c("X", "X", "X"),
+                             r6 = c("O", "O", "X"),
+                             r7 = c("O", "O", "X"),
                              r8 = c("X", "X", "X"),
-                             r9 = c("X", "X", "X")
+                             r9 = c("O", "O", "X")
   ),
   
   winnersCalculated = FALSE,
@@ -128,6 +131,13 @@ updateTeamValues <- function() {
   }
 }
 
+findOurMatchIndex <- function(match) {
+  for(row in 1:nrow(vals$matches6672)) {
+    if(vals$matches6672$matchnum[row] == match) {
+      return(row)
+    }
+  }
+}
 
 canPingSite <- function(test.site) {
   !as.logical(system(paste("ping", test.site)))
@@ -139,6 +149,104 @@ findTeamIndex <- function(teamNum) {
       return(row)
     }
   }
+}
+
+parseData <- function(string) {
+  info <- unlist(strsplit(unlist(strsplit(string, ";")), "="))
+  
+  names <- info[seq(1, length(info), 2)]
+  values <- info[seq(2, length(info), 2)]
+  
+  names(values) <- names
+  
+  parsedData <- data.frame(as.list(values))
+  
+  parsedData$teamNum[1] <- as.integer(parsedData$teamNum[1])
+  parsedData$matchNum[1] <- as.integer(parsedData$matchNum[1])
+  parsedData$startLocation[1] <- as.integer(parsedData$startLocation[1])
+  parsedData$communityPickups[1] <- as.integer(parsedData$communityPickups[1])
+  parsedData$neutralPickups[1] <- as.integer(parsedData$neutralPickups[1])
+  parsedData$singlePickups[1] <- as.integer(parsedData$singlePickups[1])
+  parsedData$doublePickups[1] <- as.integer(parsedData$doublePickups[1])
+  parsedData$balanceTime[1] <- as.double(parsedData$balanceTime[1])
+  parsedData$drivetrain[1] <- as.integer(parsedData$drivetrain[1])
+  parsedData$intake[1] <- as.integer(parsedData$intake[1])
+  parsedData$speed[1] <- as.integer(parsedData$speed[1])
+  parsedData$driver[1] <- as.integer(parsedData$driver[1])
+  
+  
+  parsedData$alliance[1] <- tolower(parsedData$alliance[1])
+  parsedData$autoBalance[1] <- tolower(parsedData$autoBalance[1])
+  parsedData$teleopBalance[1] <- tolower(parsedData$teleopBalance[1])
+  parsedData$drivetrainType[1] <- tolower(parsedData$drivetrainType[1])
+  
+  
+  parsedData$mobility[1] <- as.logical(parsedData$mobility[1])
+  parsedData$shuttle[1] <- as.logical(parsedData$shuttle[1])
+  parsedData$buddyClimb[1] <- as.logical(parsedData$buddyClimb[1])
+  parsedData$everybot[1] <- as.logical(parsedData$everybot[1])
+  
+  
+  if(parsedData$autoPickups[1] == "[]") {
+    parsedData$autoPickups[1] <- "NA"
+  } else {
+    parsedData$autoPickups[1] <- str_replace_all(parsedData$autoPickups[1], "\\[|\\]", "")
+    parsedData$autoPickups[1] <- str_replace_all(parsedData$autoPickups[1], " ", "")
+  }
+  
+  if(parsedData$autoCones[1] == "[]") {
+    parsedData$autoCones[1] <- "NA"
+  } else {
+    parsedData$autoCones[1] <- str_replace_all(parsedData$autoCones[1], "\\[|\\]", "")
+    parsedData$autoCones[1] <- str_replace_all(parsedData$autoCones[1], " ", "")
+  }
+  
+  if(parsedData$autoCubes[1] == "[]") {
+    parsedData$autoCubes[1] <- "NA"
+  } else {
+    parsedData$autoCubes[1] <- str_replace_all(parsedData$autoCubes[1], "\\[|\\]", "")
+    parsedData$autoCubes[1] <- str_replace_all(parsedData$autoCubes[1], " ", "")
+  }
+  
+  if(parsedData$teleopCones[1] == "[]") {
+    parsedData$teleopCones[1] <- "NA"
+  } else {
+    parsedData$teleopCones[1] <- str_replace_all(parsedData$teleopCones[1], "\\[|\\]", "")
+    parsedData$teleopCones[1] <- str_replace_all(parsedData$teleopCones[1], " ", "")
+  }
+  
+  if(parsedData$teleopCubes[1] == "[]") {
+    parsedData$teleopCubes[1] <- "NA"
+  } else {
+    parsedData$teleopCubes[1] <- str_replace_all(parsedData$teleopCubes[1], "\\[|\\]", "")
+    parsedData$teleopCubes[1] <- str_replace_all(parsedData$teleopCubes[1], " ", "")
+  }
+  
+  return(parsedData)
+}
+
+clearTFrame <- function() {
+  vals$teleopScoring <- data.frame(r1 = c("O", "O", "X"),
+                                   r2 = c("X", "X", "X"),
+                                   r3 = c("O", "O", "X"),
+                                   r4 = c("O", "O", "X"),
+                                   r5 = c("X", "X", "X"),
+                                   r6 = c("O", "O", "X"),
+                                   r7 = c("O", "O", "X"),
+                                   r8 = c("X", "X", "X"),
+                                   r9 = c("O", "O", "X"))
+}
+
+clearAFrame <- function() {
+  vals$autonScoring <- data.frame(r1 = c("O", "O", "X"),
+                                  r2 = c("X", "X", "X"),
+                                  r3 = c("O", "O", "X"),
+                                  r4 = c("O", "O", "X"),
+                                  r5 = c("X", "X", "X"),
+                                  r6 = c("O", "O", "X"),
+                                  r7 = c("O", "O", "X"),
+                                  r8 = c("X", "X", "X"),
+                                  r9 = c("O", "O", "X"))
 }
 
 getCoords <- function(index) {
@@ -159,8 +267,9 @@ getCoords <- function(index) {
 }
 
 addScores <- function(data, time, type) {
+  
   for(num in 1:length(data)) {
-    loc <- strtoi(data[num])
+    loc <- as.integer(data[num])
     row <- getCoords(loc)[1]
     col <- getCoords(loc)[2]
     
@@ -210,8 +319,6 @@ pullData <- function() {
       vals$scheduleframe <- rbind(vals$scheduleframe, currentMatchTeams)
     }
   }
-  
-  updateOurMatches()
   
   teamsInfo <- event_teams(tbaKey)
   
@@ -283,15 +390,22 @@ calculateWinChance <- function(matchNum, fromAlliance = "default") {
 
 updateOurMatches <- function() {
   for(match in 1:nrow(vals$scheduleframe)) {
-    if(vals$scheduleframe$red1[match] == "6672" ||
-       vals$scheduleframe$red2[match] == "6672" ||
-       vals$scheduleframe$red3[match] == "6672" ||
-       vals$scheduleframe$blue1[match] == "6672" ||
-       vals$scheduleframe$blue2[match] == "6672" ||
-       vals$scheduleframe$blue3[match] == "6672"
-       ) {
-      vals$matches6672 <- append(vals$matches6672, vals$scheduleframe$match_number[match])
+    d <- NA
+    if(vals$scheduleframe$red1[match] == "6672") {
+      d <- list(match, "r", 1)
+    } else if(vals$scheduleframe$red2[match] == "6672") {
+      d <- list(match, "r", 2)
+    } else if(vals$scheduleframe$red3[match] == "6672") {
+      d <- list(match, "r", 3)
+    } else if(vals$scheduleframe$blue1[match] == "6672") {
+      d <- list(match, "b", 1)
+    } else if(vals$scheduleframe$blue2[match] == "6672") {
+      d <- list(match, "b", 2)
+    } else if(vals$scheduleframe$blue3[match] == "6672") {
+      d <- list(match, "b", 3)
     }
+    
+    vals$matches6672 <- rbind(vals$matches6672, d)
   }
 }
 
@@ -312,60 +426,53 @@ ui <- navbarPage(
   
   tabPanel("Data",
            fluidPage(
-             column(fluidRow(
-             sidebarPanel(
-                radioButtons(
-                  "inputType", "What type of data?",
-                  c("Regular Scout" = "regScout",
-                              "Superscout" = "supScout")
-                ),
-                fileInput(
-                  "file",
-                  "Upload CSV",
-                   multiple = FALSE
-                ),
-                fluidRow(
-                h4("Apply Data?"),
-                actionButton("yesData", "Yes", width = '60px'),
-                actionButton("noData", "No", width = '60px')),
-                width = 12
-             )),
-             
-             fluidRow(
-               sidebarPanel(
-                 fileInput(
-                   "dataImport",
-                   "Import Data",
-                   multiple = FALSE
+               column(fluidRow(
+                 sidebarPanel(
+                   radioButtons(
+                     "inputType", "What type of data?",
+                     c("Regular Scout" = "regScout",
+                       "Superscout" = "supScout")
+                   ),
+                   textAreaInput("dataInput", "Input Scout Data", width = "300px", height = "100px"),
+                   actionButton("enterData", "Enter"),
+                   fluidRow(
+                     h4("Apply Data?"),
+                     actionButton("yesData", "Yes", width = '60px'),
+                     actionButton("noData", "No", width = '60px')),
+                   width = 12
+                 )),
+                 fluidRow(
+                   sidebarPanel(
+                     fileInput(
+                       "dataImport",
+                       "Import Data",
+                       multiple = FALSE
+                     ),
+                     h5("WARNING: this button will delete all current data. Consider exporting the data first."),
+                     actionButton("deleteFiles", "Delete Files", style = "background-color: #d41704;"),
+                     width = 12
+                   )
                  ),
-                 downloadButton(
-                   "dataExport",
-                   "Export Current Data"
+                 
+                 width = 3
+               ),
+               column(
+                 conditionalPanel(
+                   condition = "input.inputType == 'regScout'",
+                   DTOutput("preview")
                  ),
-                 width = 12
+                 conditionalPanel(
+                   condition = "input.inputType == 'supScout'",
+                   DTOutput("ssPreview")
+                 ),
+                 width = 9
                )
-             ),
-             fluidRow(
-               sidebarPanel(
-                 h5("WARNING: this button will delete all current data. Consider exporting the data first."),
-                 actionButton("deleteFiles", "Delete Files", style = "background-color: #d41704;"),
-                 width = 12
-               )
-             ),
              
-             width = 3
-             ),
-             column(
-               conditionalPanel(
-                 condition = "input.inputType == 'regScout'",
-                 DTOutput("preview")
-               ),
-               conditionalPanel(
-                 condition = "input.inputType == 'supScout'",
-                 DTOutput("ssPreview")
-               ),
-               width = 9
-             )
+             
+             
+             
+             
+             
            )
   ),
   
@@ -430,7 +537,7 @@ ui <- navbarPage(
                ),
                fluidRow(
                  sidebarPanel(
-                  textOutput("winChance"),
+                  textOutput("winChance6672"),
                   width = 12 
                  )
                ),
@@ -502,6 +609,14 @@ server <- function(input, output, session) {
     
   })
   
+  observeEvent(input$enterData, {
+    f <- input$dataInput
+    
+    parsed <- parseData(f)
+    
+    vals$previewframe <- parsed
+  })
+  
   observeEvent(input$yesData, {
     if(nrow(vals$previewframe) == 1) {
       if(nrow(vals$mainframe) == 0) {
@@ -512,6 +627,7 @@ server <- function(input, output, session) {
         vals$infoframe$matchesPlayed[teamIndex] <- vals$infoframe$matchesPlayed[teamIndex] + 1
         
         vals$previewframe <- data.frame()
+        updateTextAreaInput(session, "dataInput", value = "")
         return(NULL)
       } else {
         
@@ -531,6 +647,7 @@ server <- function(input, output, session) {
           vals$infoframe$matchesPlayed[teamIndex] <- vals$infoframe$matchesPlayed[teamIndex] + 1
           
           vals$previewframe <- data.frame()
+          updateTextAreaInput(session, "dataInput", value = "")
         }
         
       }
@@ -540,6 +657,11 @@ server <- function(input, output, session) {
     } else {
       return(NULL)
     }
+  })
+  
+  observeEvent(input$noData, {
+    vals$previewframe <- data.frame()
+    updateTextAreaInput(session, "dataInput", value = "")
   })
   
   observeEvent(input$dataImport, {
@@ -657,6 +779,7 @@ server <- function(input, output, session) {
     output$searchDT <- renderDT(searchDT)
     
     observeEvent(input$searchDT_rows_selected, {
+      
       row <- vals$searchframe[input$searchDT_rows_selected, ]
       
       aCones <- unlist(strsplit(toString(row$autoCones), ","))
@@ -665,11 +788,22 @@ server <- function(input, output, session) {
       tCones <- unlist(strsplit(toString(row$teleopCones), ","))
       tCubes <- unlist(strsplit(toString(row$teleopCubes), ","))
       
-      addScores(aCones, "a", "cone")
-      addScores(aCubes, "a", "cube")
-      addScores(tCones, "t", "cone")
-      addScores(tCubes, "t", "cube")
       
+      if(aCones[1] != "NA") {
+        addScores(aCones, "a", "cone")
+      }
+      
+      if(aCubes[1] != "NA") {
+        addScores(aCubes, "a", "cube")
+      }
+      
+      if(tCones[1] != "NA") {
+        addScores(tCones, "t", "cone")
+      }
+      
+      if(tCubes[1] != "NA") {
+        addScores(tCubes, "t", "cube")
+      }
     })
   })
   
@@ -693,8 +827,7 @@ server <- function(input, output, session) {
   
   # Competition Page
   
-  output$mainframeOutput <- renderDT(datatable(vals$mainframe, extensions = "FixedColumns", options = dtSettings,
-                                               selection = "single"))
+  output$mainframeOutput <- renderDT(datatable(vals$mainframe, options = dtSettings))
   
   
   
@@ -714,7 +847,18 @@ server <- function(input, output, session) {
   
   observe({
     updateSelectInput(session, "selectedMatch",
-                      choices = vals$matches6672)
+                      choices = vals$matches6672$matches)
+  })
+  
+  observeEvent(input$selectedMatch, {
+    winPC <- vals$scheduleframe$winChances[as.integer(input$selectedMatch)]
+    
+    index <- findOurMatchIndex(input$selectedMatch)
+    alliance <- vals$matches6672$alliance[index]
+    station <- vals$matches6672$station[index]
+    
+    
+    
   })
   
   
@@ -722,6 +866,7 @@ server <- function(input, output, session) {
   # TBA Page
   
   observeEvent(input$getWinChances, {
+    updateOurMatches()
     
     vals$winnersCalculated <- TRUE
     
