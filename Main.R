@@ -21,8 +21,6 @@ year <- "2022"
 
 numCols <- 28
 
-dtSettings <- list(scrollX = TRUE, scrollY = TRUE)
-
 
 
 setwd(path)
@@ -59,6 +57,36 @@ vals <- reactiveValues(
                            scoutName = c(),
                            comments = c()
                            ),
+  
+  matchsearchframe = data.frame(teamNum = c(),
+                           matchNum = c(),
+                           alliance = c(),
+                           startLocation = c(),
+                           preload = c(),
+                           mobility = c(),
+                           autoPickups = c(),
+                           autoCones = c(),
+                           autoCubes = c(),
+                           autoBalance = c(),
+                           communityPickups = c(),
+                           neutralPickups = c(), 
+                           singlePickups = c(),
+                           doublePickups = c(),
+                           teleopCones = c(),
+                           teleopCubes = c(),
+                           shuttle = c(),
+                           teleopBalance = c(),
+                           buddyClimb = c(),
+                           balanceTime = c(),
+                           everybot = c(),
+                           drivetrainType = c(),
+                           drivetrain = c(),
+                           intake = c(),
+                           speed = c(),
+                           driver = c(),
+                           scoutName = c(),
+                           comments = c()
+  ),
   
   
   previewframe = data.frame(),
@@ -114,6 +142,28 @@ vals <- reactiveValues(
   ),
   
   teleopScoring = data.frame(r1 = c("O", "O", "X"),
+                             r2 = c("X", "X", "X"),
+                             r3 = c("O", "O", "X"),
+                             r4 = c("O", "O", "X"),
+                             r5 = c("X", "X", "X"),
+                             r6 = c("O", "O", "X"),
+                             r7 = c("O", "O", "X"),
+                             r8 = c("X", "X", "X"),
+                             r9 = c("O", "O", "X")
+  ),
+  
+  matchautonScoring = data.frame(r1 = c("O", "O", "X"),
+                            r2 = c("X", "X", "X"),
+                            r3 = c("O", "O", "X"),
+                            r4 = c("O", "O", "X"),
+                            r5 = c("X", "X", "X"),
+                            r6 = c("O", "O", "X"),
+                            r7 = c("O", "O", "X"),
+                            r8 = c("X", "X", "X"),
+                            r9 = c("O", "O", "X")
+  ),
+  
+  matchteleopScoring = data.frame(r1 = c("O", "O", "X"),
                              r2 = c("X", "X", "X"),
                              r3 = c("O", "O", "X"),
                              r4 = c("O", "O", "X"),
@@ -429,28 +479,52 @@ parseData <- function(string) {
   return(parsedData)
 }
 
-clearTFrame <- function() {
-  vals$teleopScoring <- data.frame(r1 = c("O", "O", "X"),
-                                   r2 = c("X", "X", "X"),
-                                   r3 = c("O", "O", "X"),
-                                   r4 = c("O", "O", "X"),
-                                   r5 = c("X", "X", "X"),
-                                   r6 = c("O", "O", "X"),
-                                   r7 = c("O", "O", "X"),
-                                   r8 = c("X", "X", "X"),
-                                   r9 = c("O", "O", "X"))
+clearTFrame <- function(type) {
+  if(type == "team") {
+    vals$teleopScoring <- data.frame(r1 = c("O", "O", "X"),
+                                     r2 = c("X", "X", "X"),
+                                     r3 = c("O", "O", "X"),
+                                     r4 = c("O", "O", "X"),
+                                     r5 = c("X", "X", "X"),
+                                     r6 = c("O", "O", "X"),
+                                     r7 = c("O", "O", "X"),
+                                     r8 = c("X", "X", "X"),
+                                     r9 = c("O", "O", "X"))
+  } else if(type == "match") {
+    vals$matchteleopScoring <- data.frame(r1 = c("O", "O", "X"),
+                                     r2 = c("X", "X", "X"),
+                                     r3 = c("O", "O", "X"),
+                                     r4 = c("O", "O", "X"),
+                                     r5 = c("X", "X", "X"),
+                                     r6 = c("O", "O", "X"),
+                                     r7 = c("O", "O", "X"),
+                                     r8 = c("X", "X", "X"),
+                                     r9 = c("O", "O", "X"))
+  }
 }
 
-clearAFrame <- function() {
-  vals$autonScoring <- data.frame(r1 = c("O", "O", "X"),
-                                  r2 = c("X", "X", "X"),
-                                  r3 = c("O", "O", "X"),
-                                  r4 = c("O", "O", "X"),
-                                  r5 = c("X", "X", "X"),
-                                  r6 = c("O", "O", "X"),
-                                  r7 = c("O", "O", "X"),
-                                  r8 = c("X", "X", "X"),
-                                  r9 = c("O", "O", "X"))
+clearAFrame <- function(type) {
+  if(type == "team") {
+    vals$autonScoring <- data.frame(r1 = c("O", "O", "X"),
+                                    r2 = c("X", "X", "X"),
+                                    r3 = c("O", "O", "X"),
+                                    r4 = c("O", "O", "X"),
+                                    r5 = c("X", "X", "X"),
+                                    r6 = c("O", "O", "X"),
+                                    r7 = c("O", "O", "X"),
+                                    r8 = c("X", "X", "X"),
+                                    r9 = c("O", "O", "X"))
+  } else if(type == "match") {
+    vals$matchautonScoring <- data.frame(r1 = c("O", "O", "X"),
+                                    r2 = c("X", "X", "X"),
+                                    r3 = c("O", "O", "X"),
+                                    r4 = c("O", "O", "X"),
+                                    r5 = c("X", "X", "X"),
+                                    r6 = c("O", "O", "X"),
+                                    r7 = c("O", "O", "X"),
+                                    r8 = c("X", "X", "X"),
+                                    r9 = c("O", "O", "X"))
+  }
 }
 
 getCoords <- function(index) {
@@ -485,26 +559,43 @@ calculatePredScore <- function(match) {
   return(c(redScore, blueScore))
 }
 
-addScores <- function(data, time, type) {
+addScores <- function(data, time, type, datatype) {
   
   for(num in 1:length(data)) {
     loc <- as.integer(data[num])
     row <- getCoords(loc)[1]
     col <- getCoords(loc)[2]
     
-    if(time == "a") {
-      if(type == "cone") {
-        vals$autonScoring[row, col] <- "🔺"
-      } else if(type == "cube") {
-        vals$autonScoring[row, col] <- "🟦"
+    if(datatype == "team") {
+      if(time == "a") {
+        if(type == "cone") {
+          vals$autonScoring[row, col] <- "🔺"
+        } else if(type == "cube") {
+          vals$autonScoring[row, col] <- "🟦"
+        }
+      } else if(time == "t") {
+        if(type == "cone") {
+          vals$teleopScoring[row, col] <- "🔺"
+        } else if(type == "cube") {
+          vals$teleopScoring[row, col] <- "🟦"
+        }
       }
-    } else if(time == "t") {
-      if(type == "cone") {
-        vals$teleopScoring[row, col] <- "🔺"
-      } else if(type == "cube") {
-        vals$teleopScoring[row, col] <- "🟦"
+    } else if(datatype == "match") {
+      if(time == "a") {
+        if(type == "cone") {
+          vals$matchautonScoring[row, col] <- "🔺"
+        } else if(type == "cube") {
+          vals$matchautonScoring[row, col] <- "🟦"
+        }
+      } else if(time == "t") {
+        if(type == "cone") {
+          vals$matchteleopScoring[row, col] <- "🔺"
+        } else if(type == "cube") {
+          vals$matchteleopScoring[row, col] <- "🟦"
+        }
       }
     }
+    
   }
 }
 
@@ -720,7 +811,7 @@ ui <- navbarPage(
                    textInput("search",
                              "Search:",
                              placeholder = "enter team number"),
-                   actionButton("enterSearch", "Search"),
+                   actionButton("enterSearch", "Enter"),
                    
                    width = 12
                  )
@@ -743,6 +834,7 @@ ui <- navbarPage(
                       fluidRow(
                         column(
                           sidebarPanel(
+                            h5("Auton:"),
                             tableOutput("autonScoring"),
                             width = 12
                           ),
@@ -750,6 +842,7 @@ ui <- navbarPage(
                         ),
                         column(
                           sidebarPanel(
+                            h5("Teleop:"),
                             tableOutput("teleopScoring"),
                             width = 12
                           ),
@@ -760,13 +853,56 @@ ui <- navbarPage(
              
            )), 
   
-  tabPanel("Matches"),
+  tabPanel("Matches",
+           fluidPage(
+             column(
+               fluidRow(
+                 sidebarPanel(
+                   textInput("matchsearch",
+                             "Search:",
+                             placeholder = "enter match number"),
+                   actionButton("entermatchSearch", "Enter"),
+                   width = 12
+                 )
+               ),
+               fluidRow(
+                 sidebarPanel(
+                   width = 12
+                 )
+               ),
+               width = 3
+             ),
+             column(
+               fluidRow(
+                 DTOutput("matchsearchDT")
+               ),
+               fluidRow(
+                 actionButton("clearmatchscoringDTs", "Clear Score Viewers")
+               ),
+               fluidRow(
+                 column(
+                   sidebarPanel(
+                     h5("Auton:"),
+                     tableOutput("matchautonScoring"),
+                     width = 12
+                   ),
+                   width = 6
+                 ),
+                 column(
+                   sidebarPanel(
+                     h5("Teleop:"),
+                     tableOutput("matchteleopScoring"),
+                     width = 12
+                   ),
+                   width = 6
+                 )
+               ),
+               width = 9
+             )
+           )),
   
   tabPanel("Competition",
            DTOutput("mainframeOutput")),
-  
-  tabPanel("Qualitative",
-           DTOutput("testOutput")),
   
   tabPanel("Graph"),
   
@@ -799,14 +935,14 @@ ui <- navbarPage(
              )
            )),
   
-  tabPanel("TBA",
-           actionButton("getWinChances", "Get Win Percents")),
-  
-  tabPanel("Statbotics",
-           DTOutput("statboticsData")),
+  tabPanel("Stats",
+           DTOutput("statsData")),
   
   tabPanel("Schedule",
            DTOutput("matchScheduleDT")),
+  
+  tabPanel("Functions",
+           actionButton("getWinChances", "Get Win Percents")),
   
   selected = "Data"
 )
@@ -950,7 +1086,7 @@ server <- function(input, output, session) {
   
   output$dataExport <- downloadHandler(filename = "scoutingdata.zip", 
                                        content = function(file) {
-                                         dFiles <- c(paste0(path, "schedule.csv"), paste0(path, "statbotics.csv"))
+                                         dFiles <- c(paste0(path, "schedule.csv"), paste0(path, "teamframe.csv"))
                                          zip(file, files = dFiles)
                                        },
                                        contentType = "application.zip"
@@ -988,9 +1124,11 @@ server <- function(input, output, session) {
   }
   
   output$preview <- renderDT(datatable(vals$previewframe, extensions = "FixedColumns", 
-                                       options = dtSettings, selection = "single"))
+                                       options = list(scrollX = TRUE, paging = FALSE),
+                                       selection = "single"))
   output$ssPreview <- renderDT(datatable(vals$sspreviewframe, extensions = "FixedColumns", 
-                                         options = dtSettings, selection = "single"))
+                                         options = list(scrollX = TRUE, paging = FALSE),
+                                         selection = "single"))
   
   
   
@@ -1066,13 +1204,13 @@ server <- function(input, output, session) {
   })
   
   observe({
-    searchDT <- datatable(vals$searchframe, extensions = "FixedColumns", options = dtSettings)
+    searchDT <- datatable(vals$searchframe, options = list(scrollX = TRUE, scrollY = "260px", paging = FALSE))
     
-    output$searchDT <- renderDT(datatable(searchDT, options = list(scrollX = TRUE, scrollY = TRUE)))
+    output$searchDT <- renderDT(searchDT)
     
     observeEvent(input$clearscoringDTs, {
-      clearAFrame()
-      clearTFrame()
+      clearAFrame("team")
+      clearTFrame("team")
     })
     
     observeEvent(input$searchDT_rows_selected, {
@@ -1087,19 +1225,19 @@ server <- function(input, output, session) {
       
       
       if(aCones[1] != "NA") {
-        addScores(aCones, "a", "cone")
+        addScores(aCones, "a", "cone", "team")
       }
       
       if(aCubes[1] != "NA") {
-        addScores(aCubes, "a", "cube")
+        addScores(aCubes, "a", "cube", "team")
       }
       
       if(tCones[1] != "NA") {
-        addScores(tCones, "t", "cone")
+        addScores(tCones, "t", "cone", "team")
       }
       
       if(tCubes[1] != "NA") {
-        addScores(tCubes, "t", "cube")
+        addScores(tCubes, "t", "cube", "team")
       }
     })
   })
@@ -1116,6 +1254,100 @@ server <- function(input, output, session) {
   
   # Matches Page
   
+  observeEvent(input$entermatchSearch, {
+    vals$matchsearchframe <- data.frame(teamNum = c(),
+                                   matchNum = c(),
+                                   alliance = c(),
+                                   startLocation = c(),
+                                   preload = c(),
+                                   mobility = c(),
+                                   autoPickups = c(),
+                                   autoCones = c(),
+                                   autoCubes = c(),
+                                   autoBalance = c(),
+                                   communityPickups = c(),
+                                   neutralPickups = c(),
+                                   singlePickups = c(),
+                                   doublePickups = c(),
+                                   teleopCones = c(),
+                                   teleopCubes = c(),
+                                   shuttle = c(),
+                                   teleopBalance = c(),
+                                   buddyClimb = c(),
+                                   balanceTime = c(),
+                                   everybot = c(),
+                                   drivetrainType = c(),
+                                   drivetrain = c(),
+                                   intake = c(),
+                                   speed = c(),
+                                   driver = c(),
+                                   scoutName = c(),
+                                   comments = c()
+    )
+    
+    s <- input$matchsearch
+    
+    if(is.null(s) || is.null(vals$mainframe)) {
+      return(NULL)
+    }
+    
+    for(newrow in 1:nrow(vals$mainframe)) {
+      if(toString(vals$mainframe$matchNum[newrow]) == s) {
+        vals$matchsearchframe <- rbind(vals$matchsearchframe, vals$mainframe[newrow, ])
+      } else {
+        return(NULL)
+      }
+    }
+    
+    searchVal <- as.integer(input$search)
+    
+    mIndex <- which(vals$teamframe$matchNum == searchVal)
+    
+    
+  })
+  
+  observe({
+    matchsearchDT <- datatable(vals$matchsearchframe, options = list(scrollX = TRUE, scrollY = "260px", paging = FALSE))
+    
+    output$matchsearchDT <- renderDT(matchsearchDT)
+    
+    observeEvent(input$clearmatchscoringDTs, {
+      clearAFrame("match")
+      clearTFrame("match")
+    })
+    
+    observeEvent(input$matchsearchDT_rows_selected, {
+      
+      row <- vals$matchsearchframe[input$matchsearchDT_rows_selected, ]
+      
+      aCones <- unlist(strsplit(toString(row$autoCones), ","))
+      aCubes <- unlist(strsplit(toString(row$autoCubes), ","))
+      
+      tCones <- unlist(strsplit(toString(row$teleopCones), ","))
+      tCubes <- unlist(strsplit(toString(row$teleopCubes), ","))
+      
+      
+      if(aCones[1] != "NA") {
+        addScores(aCones, "a", "cone", "match")
+      }
+      
+      if(aCubes[1] != "NA") {
+        addScores(aCubes, "a", "cube", "match")
+      }
+      
+      if(tCones[1] != "NA") {
+        addScores(tCones, "t", "cone", "match")
+      }
+      
+      if(tCubes[1] != "NA") {
+        addScores(tCubes, "t", "cube", "match")
+      }
+    })
+  })
+  
+  
+  output$matchautonScoring <- renderTable(vals$matchautonScoring)
+  output$matchteleopScoring <- renderTable(vals$matchteleopScoring)
   
   
   
@@ -1125,13 +1357,13 @@ server <- function(input, output, session) {
   
   # Competition Page
   
-  output$mainframeOutput <- renderDT(datatable(vals$mainframe, options = dtSettings))
+  output$mainframeOutput <- renderDT(datatable(vals$mainframe, options = list(scrollX = TRUE, scrollY = "540px",
+                                                                              paging = FALSE)))
   
   
   
   # Qualitative Page
   
-  output$testOutput <- renderDT(datatable(vals$teamframe, options = dtSettings))
   
   
   
@@ -1172,7 +1404,7 @@ server <- function(input, output, session) {
       output$winChance6672 <- renderText(paste("Win Chance: ", winPC, "%", sep = ""))
       output$driverStation <- renderText(paste("Driver Station: ", station))
       output$predictedScore <- renderText(paste("Predicted Score: ", redScore, " - ", blueScore, sep = ""))
-      output$plannertable <- renderDT(vals$plannerframe)
+      output$plannertable <- renderDT(datatable(vals$plannerframe))
     }
     
   })
@@ -1216,10 +1448,11 @@ server <- function(input, output, session) {
   
   
   
-  # Statbotics Page
+  # Stats Page
 
   
-  output$statboticsData <- renderDT(vals$teamframe)
+  output$statsData <- renderDT(datatable(vals$teamframe, options = list(scrollX = TRUE, scrollY = "540px",
+                                                                             paging = FALSE)))
   
   
   
@@ -1229,7 +1462,7 @@ server <- function(input, output, session) {
       datatable(
         vals$scheduleframe,
         extensions = "FixedColumns",
-        options = dtSettings,
+        options = list(scrollX = TRUE, scrollY = "540px", paging = FALSE),
         selection = "single"
       ) %>% formatStyle(
         9, 10,
