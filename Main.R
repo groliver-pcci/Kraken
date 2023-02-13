@@ -3,7 +3,9 @@ library(DT)
 library(tidyverse)
 library(scales)
 library(formattable)
+library(utils)
 library(devtools)
+library(shinyFiles)
 load_all("C:\\Users\\wcbri\\Documents\\tbaR_1.0.1\\tbaR\\tbaR.Rproj")
 
 #link to pull from statbotics
@@ -19,7 +21,7 @@ year <- "2022"
 
 numCols <- 28
 
-dtSettings <- list(scrollX = TRUE, scrollY = TRUE, fixedColumns = list(leftColumns = c(2, 3)))
+dtSettings <- list(scrollX = TRUE, scrollY = TRUE)
 
 
 
@@ -62,8 +64,19 @@ vals <- reactiveValues(
   previewframe = data.frame(),
   sspreviewframe = data.frame(),
   
-  calcframe = data.frame(epa = c()
-  ),
+  teamframe = data.frame(teamNum = c(),
+                         matchesPlayed = c(),
+                         EPA = c(),
+                         ECT = c(),
+                         aPPG = c(),
+                         SEf = c(),
+                         sFlex = c(),
+                         aSt = c(),
+                         aSa = c(),
+                         aS = c(),
+                         ABT = c(),
+                         BC = c()
+                         ),
   
   scheduleframe = data.frame(round = c(),
                              match_number = c(),  
@@ -77,10 +90,7 @@ vals <- reactiveValues(
                              predictedWinners = c()
   ),
   
-  infoframe = data.frame(teamNum = c(),
-                         epa = c(),
-                         matchesPlayed = c()
-  ),
+  plannerframe = data.frame(),
   
   constantframe = data.frame(teamNum = c(),
                              k = c(),
@@ -123,17 +133,219 @@ vals <- reactiveValues(
 
 # Functions to update values
 
-updateTeamValues <- function() {
-  for(row in 1:length(vals$mainframe$teamNum)) {
-    teamNumber <- vals$mainframe[row, 1]
+updateCalcValues <- function() {
+  teamNum <- vals$previewframe$teamNum[1]
+  teamIdx <- which(vals$teamframe$teamNum == teamNum)
+  
+  
+  info <- data.frame(
+    teamNum = c(),
+    matchNum = c(),
+    alliance = c(),
+    startLocation = c(),
+    preload = c(),
+    mobility = c(),
+    autoPickups = c(),
+    autoCones = c(),
+    autoCubes = c(),
+    autoBalance = c(),
+    communityPickups = c(),
+    neutralPickups = c(), 
+    singlePickups = c(),
+    doublePickups = c(),
+    teleopCones = c(),
+    teleopCubes = c(),
+    shuttle = c(),
+    teleopBalance = c(),
+    buddyClimb = c(),
+    balanceTime = c(),
+    everybot = c(),
+    drivetrainType = c(),
+    drivetrain = c(),
+    intake = c(),
+    speed = c(),
+    driver = c(),
+    scoutName = c(),
+    comments = c(),
     
+    scoredT = c(),
+    scoredA = c(),
+    scoredCones = c(),
+    scoredCubes = c(),
+    scoredTCones = c(),
+    scoredTCubes =  c(),
+    scoredACones = c(),
+    scoredACubes = c(),
+    totalPickups = c(),
+    pointsT = c(),
+    pointsA = c(),
+    pointsTotal = c(),
     
+    scoredLowT = c(),
+    scoredMidT = c(),
+    scoredHighT = c(),
+    scoredLowA = c(),
+    scoredMidA = c(),
+    scoredHighA = c(),
+    
+    ct = c()
+  )
+  
+  indexes <- which(vals$mainframe$teamNum == teamNum)
+  
+  for(idx in 1:length(indexes)) {
+    info <- rbind(info, vals$mainframe[indexes[idx], ])
   }
+  
+  nrows <- nrow(info)
+  
+  
+  parsevals <- function(string) {
+    values <- as.integer(unlist(strsplit(string, ",")))
+    return(values)
+  }
+  
+  findLength <- function(string) {
+    return(length(parsevals(string)))
+  }
+  
+  findPointVal <- function(string, time) {
+    pScores <- as.integer(unlist(strsplit(string, ",")))
+    points <- c(0, 0, 0)
+    
+    if(time == "t") {
+      points[1] <- length(which(pScores <= 9))
+      points[2] <- length(which(pScores > 9 & pScores <= 18))
+      points[3] <- length(which(pScores > 18))
+    } else if(time == "a") {
+      points[1] <- length(which(pScores <= 9))
+      points[2] <- length(which(pScores > 9 & pScores <= 18))
+      points[3] <- length(which(pScores > 18))
+    }
+    
+    return(points)
+  }
+  
+  info$scoredT <- numeric(nrows)
+  info$scoredA <- numeric(nrows)
+  info$scoredCones <- numeric(nrows)
+  info$scoredCubes <- numeric(nrows)
+  info$totalPickups <-  numeric(nrows)
+  
+  info$scoredLowT <- numeric(nrows)
+  info$scoredMidT <- numeric(nrows)
+  info$scoredHightT <- numeric(nrows)
+  info$scoredLowA <- numeric(nrows)
+  info$scoredMidA <- numeric(nrows)
+  info$scoredHighA <- numeric(nrows)
+  
+  info$scoredTCones <- numeric(nrows)
+  info$scoredTCubes <- numeric(nrows)
+  info$scoredACones <- numeric(nrows)
+  info$scoredACubes <- numeric(nrows)
+  
+  # ERROR HERE
+  
+  # Interior vals
+  
+  info$scoredTCones <- lapply(info$teleopCones, findLength)
+  info$scoredTCubes <- lapply(info$teleopCubes, findLength)
+  info$scoredACones <- lapply(info$autoCones, findLength)
+  info$scoredACubes <- lapply(info$autoCubes, findLength)
+  
+  info$scoredT <- unlist(info$scoredTCones) + unlist(info$scoredTCubes)
+  info$scoredA <- unlist(info$scoredACones) + unlist(info$scoredACubes)
+  
+  info$scoredCones <- unlist(info$scoredTCones) + unlist(info$scoredACones)
+  info$scoredCubes <- unlist(info$scoredTCubes) + unlist(info$scoredACubes)
+  
+  info$totalPickups <- unlist(info$scoredCones) + unlist(info$scoredCubes)
+  
+  tConePoints <- findPointVal(info$teleopCones, "t")
+  tCubePoints <- findPointVal(info$teleopCubes, "t")
+  aConePoints <- findPointVal(info$autoCones, "a")
+  aCubePoints <- findPointVal(info$autoCubes, "a")
+  
+  info$scoredLowT <- tConePoints[1] + tCubePoints[1]
+  info$scoredMidT <- tConePoints[2] + tCubePoints[2]
+  info$scoredHighT <- tConePoints[3] + tCubePoints[3]
+  
+  info$scoredLowA <- aConePoints[1] + aCubePoints[1]
+  info$scoredMidA <- aConePoints[2] + aCubePoints[2]
+  info$scoredHighA <- aConePoints[3] + aCubePoints[3]
+  
+  info$pointsT <- info$scoredLowT * 2 + info$scoredMidT * 3 + info$scoredHighT * 5
+  info$pointsA <- info$scoredLowA * 3 + info$scoredMidA * 4 + info$scoredHighT * 6
+  info$pointsTotal <- info$pointsT + info$pointsA
+  
+  info$ct <- (135 - as.double(info$balanceTime)) / unlist(info$scoredT)
+  
+  # aSt
+  vals$teamframe$aSt[teamIdx] <- mean(info$scoredT)
+  
+  
+  
+  # aSa
+  vals$teamframe$aSa[teamIdx] <- mean(info$scoredA)
+  
+  # aS
+  vals$teamframe$aS[teamIdx] <- vals$teamframe$aSa[teamIdx] + vals$teamframe$aSt[teamIdx]
+  
+  # ECT
+  vals$teamframe$ECT[teamIdx] <- round(mean(as.double(info$ct)), digits = 1)
+  
+  # ABT
+  vals$teamframe$ABT[teamIdx] <- mean(as.double(info$balanceTime))
+  
+  # BC
+  # Can't be done until SS data is integrated
+  
+  # aPPG
+  vals$teamframe$aPPG[teamIdx] <- mean(info$pointsTotal)
+  
+  
+  
+  
+  
+}
+
+findTeamIndex <- function(teamNum) {
+  return(which(vals$teamframe$teamNum == teamNum))
+}
+
+updatePlannerTable <- function(idx) {
+  vals$plannerframe <- data.frame()
+  
+  matchrow <- vals$scheduleframe[idx, ]
+  
+  red1 <- matchrow$red1[1]
+  red2 <- matchrow$red2[1]
+  red3 <- matchrow$red3[1]
+  
+  blue1 <- matchrow$blue1[1]
+  blue2 <- matchrow$blue2[1]
+  blue3 <- matchrow$blue3[1]
+  
+  vals$plannerframe <- rbind(vals$plannerframe, vals$teamframe[findTeamIndex(red1), ])
+  vals$plannerframe <- rbind(vals$plannerframe, vals$teamframe[findTeamIndex(red2), ])
+  vals$plannerframe <- rbind(vals$plannerframe, vals$teamframe[findTeamIndex(red3), ])
+  
+  vals$plannerframe <- rbind(vals$plannerframe, vals$teamframe[findTeamIndex(blue1), ])
+  vals$plannerframe <- rbind(vals$plannerframe, vals$teamframe[findTeamIndex(blue2), ])
+  vals$plannerframe <- rbind(vals$plannerframe, vals$teamframe[findTeamIndex(blue3), ])
+}
+
+saveMainframe <- function() {
+  write.csv(vals$mainframe, paste0(path, "mainframe.csv"), row.names = FALSE)
+}
+
+saveTeamframe <- function() {
+  write.csv(vals$teamframe, paste0(path, "teamframe.csv"), row.names = FALSE)
 }
 
 findOurMatchIndex <- function(match) {
   for(row in 1:nrow(vals$matches6672)) {
-    if(vals$matches6672$matchnum[row] == match) {
+    if(vals$matches6672$matches[row] == as.integer(match)) {
       return(row)
     }
   }
@@ -141,14 +353,6 @@ findOurMatchIndex <- function(match) {
 
 canPingSite <- function(test.site) {
   !as.logical(system(paste("ping", test.site)))
-}
-
-findTeamIndex <- function(teamNum) {
-  for(row in 1:length(vals$infoframe$teamNum)) {
-    if(toString(teamNum) == vals$infoframe$teamNum[row]) {
-      return(row)
-    }
-  }
 }
 
 parseData <- function(string) {
@@ -266,6 +470,21 @@ getCoords <- function(index) {
   return(coords)
 }
 
+calculatePredScore <- function(match) {
+  r1EPA <- vals$teamframe$EPA[findTeamIndex(vals$scheduleframe$red1[as.integer(match)])]
+  r2EPA <- vals$teamframe$EPA[findTeamIndex(vals$scheduleframe$red2[as.integer(match)])]
+  r3EPA <- vals$teamframe$EPA[findTeamIndex(vals$scheduleframe$red3[as.integer(match)])]
+  
+  b1EPA <- vals$teamframe$EPA[findTeamIndex(vals$scheduleframe$blue1[as.integer(match)])]
+  b2EPA <- vals$teamframe$EPA[findTeamIndex(vals$scheduleframe$blue2[as.integer(match)])]
+  b3EPA <- vals$teamframe$EPA[findTeamIndex(vals$scheduleframe$blue3[as.integer(match)])]
+  
+  redScore <- r1EPA + r2EPA + r3EPA
+  blueScore <- b1EPA + b2EPA + b3EPA
+  
+  return(c(redScore, blueScore))
+}
+
 addScores <- function(data, time, type) {
   
   for(num in 1:length(data)) {
@@ -289,7 +508,7 @@ addScores <- function(data, time, type) {
   }
 }
 
-pullData <- function() {
+pullTBAData <- function() {
   vals$scheduleframe = data.frame(round = c(),
                                   match_number = c(),  
                                   red1 = c(),
@@ -319,7 +538,9 @@ pullData <- function() {
       vals$scheduleframe <- rbind(vals$scheduleframe, currentMatchTeams)
     }
   }
-  
+}
+
+pullStatboticsData <- function() {
   teamsInfo <- event_teams(tbaKey)
   
   teamNums <- c()
@@ -330,8 +551,8 @@ pullData <- function() {
   
   for(team in  1:length(teamsInfo$key)) {
     t <- list(teamNum = NA,
-              epa = NA,
-              matchesPlayed = NA)
+              matchesPlayed = NA,
+              EPA = NA)
     
     teamNumber <- teamNums[team]
     
@@ -340,9 +561,9 @@ pullData <- function() {
     t$teamNum <- teamNumber
     
     if(!(is.null(teamInfo$epa_end))) {
-      t$epa <- teamInfo$epa_end
+      t$EPA <- teamInfo$epa_end
     } else {
-      t$epa <- "NA"
+      t$EPA <- "NA"
     }
     
     if(!(is.null(teamInfo$count))) {
@@ -355,8 +576,19 @@ pullData <- function() {
       }
     }
     
-    vals$infoframe <- rbind(vals$infoframe, t)
+    vals$teamframe <- rbind(vals$teamframe, t)
   }
+  nrows <- nrow(vals$teamframe)
+  
+  vals$teamframe$ECT <- numeric(nrows)
+  vals$teamframe$aPPG <- numeric(nrows)
+  vals$teamframe$SEf <- numeric(nrows)
+  vals$teamframe$sFlex <- numeric(nrows)
+  vals$teamframe$aSt <- numeric(nrows)
+  vals$teamframe$aSa <- numeric(nrows)
+  vals$teamframe$aS <- numeric(nrows)
+  vals$teamframe$ABT <- numeric(nrows)
+  vals$teamframe$BC <- numeric(nrows)
 }
 
 calculateWinChance <- function(matchNum, fromAlliance = "default") {
@@ -369,13 +601,13 @@ calculateWinChance <- function(matchNum, fromAlliance = "default") {
   blue2 <- vals$scheduleframe$blue2[matchNum]
   blue3 <- vals$scheduleframe$blue3[matchNum]
   
-  red1EPA <- vals$infoframe$epa[findTeamIndex(red1)]
-  red2EPA <- vals$infoframe$epa[findTeamIndex(red2)]
-  red3EPA <- vals$infoframe$epa[findTeamIndex(red3)]
+  red1EPA <- vals$teamframe$EPA[findTeamIndex(red1)]
+  red2EPA <- vals$teamframe$EPA[findTeamIndex(red2)]
+  red3EPA <- vals$teamframe$EPA[findTeamIndex(red3)]
   
-  blue1EPA <- vals$infoframe$epa[findTeamIndex(blue1)]
-  blue2EPA <- vals$infoframe$epa[findTeamIndex(blue2)]
-  blue3EPA <- vals$infoframe$epa[findTeamIndex(blue3)]
+  blue1EPA <- vals$teamframe$EPA[findTeamIndex(blue1)]
+  blue2EPA <- vals$teamframe$EPA[findTeamIndex(blue2)]
+  blue3EPA <- vals$teamframe$EPA[findTeamIndex(blue3)]
   
   epaDiff <- (red1EPA + red2EPA + red3EPA) - (blue1EPA + blue2EPA + blue3EPA)
   
@@ -390,22 +622,26 @@ calculateWinChance <- function(matchNum, fromAlliance = "default") {
 
 updateOurMatches <- function() {
   for(match in 1:nrow(vals$scheduleframe)) {
+    
     d <- NA
-    if(vals$scheduleframe$red1[match] == "6672") {
+    if(vals$scheduleframe$red1[match] == 6672) {
       d <- list(match, "r", 1)
-    } else if(vals$scheduleframe$red2[match] == "6672") {
+    } else if(vals$scheduleframe$red2[match] == 6672) {
       d <- list(match, "r", 2)
-    } else if(vals$scheduleframe$red3[match] == "6672") {
+    } else if(vals$scheduleframe$red3[match] == 6672) {
       d <- list(match, "r", 3)
-    } else if(vals$scheduleframe$blue1[match] == "6672") {
+    } else if(vals$scheduleframe$blue1[match] == 6672) {
       d <- list(match, "b", 1)
-    } else if(vals$scheduleframe$blue2[match] == "6672") {
+    } else if(vals$scheduleframe$blue2[match] == 6672) {
       d <- list(match, "b", 2)
-    } else if(vals$scheduleframe$blue3[match] == "6672") {
+    } else if(vals$scheduleframe$blue3[match] == 6672) {
       d <- list(match, "b", 3)
     }
     
-    vals$matches6672 <- rbind(vals$matches6672, d)
+    if(!(is.na(d[1]))) {
+      names(d) <- list("matches", "alliance", "station")
+      vals$matches6672 <- rbind(vals$matches6672, d)
+    }
   }
 }
 
@@ -433,7 +669,7 @@ ui <- navbarPage(
                      c("Regular Scout" = "regScout",
                        "Superscout" = "supScout")
                    ),
-                   textAreaInput("dataInput", "Input Scout Data", width = "300px", height = "100px"),
+                   textAreaInput("dataInput", "Input Scout Data", width = "300px", height = "100px", resize = "none"),
                    actionButton("enterData", "Enter"),
                    fluidRow(
                      h4("Apply Data?"),
@@ -448,6 +684,7 @@ ui <- navbarPage(
                        "Import Data",
                        multiple = FALSE
                      ),
+                     downloadButton("dataExport"),
                      h5("WARNING: this button will delete all current data. Consider exporting the data first."),
                      actionButton("deleteFiles", "Delete Files", style = "background-color: #d41704;"),
                      width = 12
@@ -489,10 +726,20 @@ ui <- navbarPage(
                  )
                ),
                fluidRow(sidebarPanel(
+                 textOutput("EPA"),
+                 textOutput("ECT"),
+                 textOutput("aS"),
+                 textOutput("aPPG"),
+                 textOutput("sFlex"),
+                 textOutput("ABT"),
+                 textOutput("SEf"),
                  width = 12
                )),
                width = 3),
                column(fluidRow(DTOutput("searchDT")),
+                      fluidRow(
+                        actionButton("clearscoringDTs", "Clear Score Viewers")
+                      ),
                       fluidRow(
                         column(
                           sidebarPanel(
@@ -518,7 +765,8 @@ ui <- navbarPage(
   tabPanel("Competition",
            DTOutput("mainframeOutput")),
   
-  tabPanel("Qualitative"),
+  tabPanel("Qualitative",
+           DTOutput("testOutput")),
   
   tabPanel("Graph"),
   
@@ -538,10 +786,16 @@ ui <- navbarPage(
                fluidRow(
                  sidebarPanel(
                   textOutput("winChance6672"),
+                  textOutput("driverStation"),
+                  textOutput("predictedScore"),
                   width = 12 
                  )
                ),
                width = 3
+             ),
+             column(
+               DTOutput("plannertable"),
+               width = 9
              )
            )),
   
@@ -567,15 +821,23 @@ server <- function(input, output, session) {
   
   observe({  
     if(!vals$startupDone) {
-      if(!(file.exists(paste(path, "schedule.csv")))) {
-        pullData()
+      if(!(file.exists(paste0(path, "schedule.csv")))) {
+        pullTBAData()
         
-        write.csv(vals$scheduleframe, paste(path, "schedule.csv"), row.names = FALSE)
-        write.csv(vals$infoframe, paste(path, "statbotics.csv"), row.names = FALSE)
-        
+        write.csv(vals$scheduleframe, paste0(path, "schedule.csv"), row.names = FALSE)
       } else {
-        vals$scheduleframe <- read.csv(paste(path, "schedule.csv"))
-        vals$infoframe <- read.csv(paste(path, "statbotics.csv"))
+        vals$scheduleframe <- read.csv(paste0(path, "schedule.csv"))
+      }
+      
+      if(file.exists(paste0(path, "mainframe.csv"))) {
+        vals$mainframe <- read.csv(paste0(path, "mainframe.csv"))
+      }
+      if(file.exists(paste0(path, "teamframe.csv"))) {
+        vals$teamframe <- read.csv(paste0(path, "teamframe.csv"))
+      } else {
+        pullStatboticsData()
+        
+        write.csv(vals$teamframe, paste0(path, "teamframe.csv"), row.names = FALSE)
       }
       
       
@@ -618,14 +880,20 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$yesData, {
+    
+    
+    
     if(nrow(vals$previewframe) == 1) {
       if(nrow(vals$mainframe) == 0) {
         vals$mainframe <- rbind(vals$mainframe, vals$previewframe[1, ])
         
         teamIndex <- findTeamIndex(vals$previewframe$teamNum[1])
         
-        vals$infoframe$matchesPlayed[teamIndex] <- vals$infoframe$matchesPlayed[teamIndex] + 1
+        vals$teamframe$matchesPlayed[teamIndex] <- vals$teamframe$matchesPlayed[teamIndex] + 1
         
+        saveMainframe()
+        updateCalcValues()
+        saveTeamframe()
         vals$previewframe <- data.frame()
         updateTextAreaInput(session, "dataInput", value = "")
         return(NULL)
@@ -644,8 +912,11 @@ server <- function(input, output, session) {
           
           teamIndex <- findTeamIndex(vals$previewframe$teamNum[1])
           
-          vals$infoframe$matchesPlayed[teamIndex] <- vals$infoframe$matchesPlayed[teamIndex] + 1
+          vals$teamframe$matchesPlayed[teamIndex] <- vals$teamframe$matchesPlayed[teamIndex] + 1
           
+          saveMainframe()
+          updateCalcValues()
+          saveTeamframe()
           vals$previewframe <- data.frame()
           updateTextAreaInput(session, "dataInput", value = "")
         }
@@ -677,10 +948,13 @@ server <- function(input, output, session) {
     
   })
   
-  output$dataExport <- downloadHandler("scoutingdata.csv", 
+  output$dataExport <- downloadHandler(filename = "scoutingdata.zip", 
                                        content = function(file) {
-                                         write.csv(vals$mainframe, file)
-                                       })
+                                         dFiles <- c(paste0(path, "schedule.csv"), paste0(path, "statbotics.csv"))
+                                         zip(file, files = dFiles)
+                                       },
+                                       contentType = "application.zip"
+                                       )
   
   observeEvent(input$deleteFiles, {
     
@@ -689,6 +963,9 @@ server <- function(input, output, session) {
   
   observeEvent(input$confirmDelete, {
     vals$mainframe <- data.frame()
+    if(file.exists(paste0(path, "mainframe.csv"))) {
+      file.remove(paste0(path, "mainframe.csv"))
+    }
     removeModal()
   })
   
@@ -770,13 +1047,33 @@ server <- function(input, output, session) {
       }
     }
     
+    searchVal <- as.integer(input$search)
+    
+    tIndex <- which(vals$teamframe$teamNum == searchVal)
+    
+    teamEPA <- vals$teamframe$EPA[tIndex]
+    teamECT <- vals$teamframe$ECT[tIndex]
+    teamaS <- vals$teamframe$aS[tIndex]
+    teamaPPG <- vals$teamframe$aPPG[tIndex]
+    teamABT <- vals$teamframe$ABT[tIndex]
+      
+    output$EPA <- renderText(paste0("EPA: ", teamEPA))
+    output$ECT <- renderText(paste0("ECT: ", teamECT))
+    output$aS <- renderText(paste0("aS: ", teamaS))
+    output$aPPG <- renderText(paste0("aPPG: ", teamaPPG))
+    output$ABT <- renderText(paste0("ABT: ", teamABT))
+    
   })
   
   observe({
-    searchDT <- datatable(vals$searchframe, extensions = "FixedColumns", options = dtSettings,
-                          selection = "single")
+    searchDT <- datatable(vals$searchframe, extensions = "FixedColumns", options = dtSettings)
     
-    output$searchDT <- renderDT(searchDT)
+    output$searchDT <- renderDT(datatable(searchDT, options = list(scrollX = TRUE, scrollY = TRUE)))
+    
+    observeEvent(input$clearscoringDTs, {
+      clearAFrame()
+      clearTFrame()
+    })
     
     observeEvent(input$searchDT_rows_selected, {
       
@@ -825,6 +1122,7 @@ server <- function(input, output, session) {
   
   
   
+  
   # Competition Page
   
   output$mainframeOutput <- renderDT(datatable(vals$mainframe, options = dtSettings))
@@ -833,7 +1131,7 @@ server <- function(input, output, session) {
   
   # Qualitative Page
   
-  
+  output$testOutput <- renderDT(datatable(vals$teamframe, options = dtSettings))
   
   
   
@@ -851,13 +1149,31 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$selectedMatch, {
-    winPC <- vals$scheduleframe$winChances[as.integer(input$selectedMatch)]
-    
-    index <- findOurMatchIndex(input$selectedMatch)
-    alliance <- vals$matches6672$alliance[index]
-    station <- vals$matches6672$station[index]
-    
-    
+    if(vals$winnersCalculated) {
+      updatePlannerTable(input$selectedMatch)
+      
+      winPC <- vals$scheduleframe$winChances[as.integer(input$selectedMatch)]
+      winTeam <- vals$scheduleframe$predictedWinner[as.integer(input$selectedMatch)]
+      
+      index <- findOurMatchIndex(input$selectedMatch)
+      alliance <- vals$matches6672$alliance[index]
+      station <- vals$matches6672$station[index]
+      
+      scores <- calculatePredScore(input$selectedMatch)
+      
+      redScore <- as.integer(scores[1])
+      blueScore <- as.integer(scores[2])
+      
+      
+      if(alliance != winTeam) {
+        winPC <- 100 - winPC
+      }
+      
+      output$winChance6672 <- renderText(paste("Win Chance: ", winPC, "%", sep = ""))
+      output$driverStation <- renderText(paste("Driver Station: ", station))
+      output$predictedScore <- renderText(paste("Predicted Score: ", redScore, " - ", blueScore, sep = ""))
+      output$plannertable <- renderDT(vals$plannerframe)
+    }
     
   })
   
@@ -874,11 +1190,10 @@ server <- function(input, output, session) {
     predictedWinners <- c()
     
     for(matchNum in 1:nrow(vals$scheduleframe)) {
-      
       winChance <- as.numeric(calculateWinChance(matchNum))
-      
       predictedWinner <- NA
       
+      # ERROR HERE
       if(winChance > 50) {
         predictedWinner <- "r"
       } else if(winChance < 50) {
@@ -904,7 +1219,7 @@ server <- function(input, output, session) {
   # Statbotics Page
 
   
-  output$statboticsData <- renderDT(vals$infoframe)
+  output$statboticsData <- renderDT(vals$teamframe)
   
   
   
