@@ -6,6 +6,7 @@ library(formattable)
 library(utils)
 library(devtools)
 library(shinyFiles)
+library(zip)
 load_all("C:\\Users\\wcbri\\Documents\\tbaR_1.0.1\\tbaR\\tbaR.Rproj")
 
 #link to pull from statbotics
@@ -760,7 +761,7 @@ ui <- navbarPage(
                      c("Regular Scout" = "regScout",
                        "Superscout" = "supScout")
                    ),
-                   textAreaInput("dataInput", "Input Scout Data", width = "300px", height = "100px", resize = "none"),
+                   textAreaInput("dataInput", "Input Scout Data", width = "300px", height = "150px", resize = "none"),
                    actionButton("enterData", "Enter"),
                    fluidRow(
                      h4("Apply Data?"),
@@ -770,12 +771,6 @@ ui <- navbarPage(
                  )),
                  fluidRow(
                    sidebarPanel(
-                     fileInput(
-                       "dataImport",
-                       "Import Data",
-                       multiple = FALSE
-                     ),
-                     downloadButton("dataExport"),
                      h5("WARNING: this button will delete all current data. Consider exporting the data first."),
                      actionButton("deleteFiles", "Delete Files", style = "background-color: #d41704;"),
                      width = 12
@@ -904,7 +899,8 @@ ui <- navbarPage(
   tabPanel("Competition",
            DTOutput("mainframeOutput")),
   
-  tabPanel("Graph"),
+  tabPanel("Graph",
+           plotOutput("graphOut")),
   
   tabPanel("Match Planner",
            fluidPage(
@@ -922,8 +918,9 @@ ui <- navbarPage(
                fluidRow(
                  sidebarPanel(
                   textOutput("winChance6672"),
-                  textOutput("driverStation"),
                   textOutput("predictedScore"),
+                  textOutput("driverStation"),
+                  textOutput("alliance"),
                   width = 12 
                  )
                ),
@@ -943,6 +940,8 @@ ui <- navbarPage(
   
   tabPanel("Functions",
            actionButton("getWinChances", "Get Win Percents")),
+  
+  tabPanel("Settings"),
   
   selected = "Data"
 )
@@ -1071,27 +1070,6 @@ server <- function(input, output, session) {
     updateTextAreaInput(session, "dataInput", value = "")
   })
   
-  observeEvent(input$dataImport, {
-    importedFile <- input$dataImport
-    
-    if(is.null(importedData)) {
-      return(NULL)
-    }
-    
-    importedData <- read.csv(importedFile$datapath, header = TRUE, sep = ",")
-    
-    vals$mainframe <- importedData
-    
-  })
-  
-  output$dataExport <- downloadHandler(filename = "scoutingdata.zip", 
-                                       content = function(file) {
-                                         dFiles <- c(paste0(path, "schedule.csv"), paste0(path, "teamframe.csv"))
-                                         zip(file, files = dFiles)
-                                       },
-                                       contentType = "application.zip"
-                                       )
-  
   observeEvent(input$deleteFiles, {
     
     showModal(deleteModal())
@@ -1204,7 +1182,8 @@ server <- function(input, output, session) {
   })
   
   observe({
-    searchDT <- datatable(vals$searchframe, options = list(scrollX = TRUE, scrollY = "260px", paging = FALSE))
+    searchDT <- datatable(vals$searchframe, options = list(scrollX = TRUE, scrollY = "260px", paging = FALSE),
+                          selection = "single")
     
     output$searchDT <- renderDT(searchDT)
     
@@ -1214,6 +1193,9 @@ server <- function(input, output, session) {
     })
     
     observeEvent(input$searchDT_rows_selected, {
+      clearAFrame("team")
+      clearTFrame("team")
+      
       
       row <- vals$searchframe[input$searchDT_rows_selected, ]
       
@@ -1307,7 +1289,8 @@ server <- function(input, output, session) {
   })
   
   observe({
-    matchsearchDT <- datatable(vals$matchsearchframe, options = list(scrollX = TRUE, scrollY = "260px", paging = FALSE))
+    matchsearchDT <- datatable(vals$matchsearchframe, options = list(scrollX = TRUE, scrollY = "260px", paging = FALSE),
+                               selection = "single")
     
     output$matchsearchDT <- renderDT(matchsearchDT)
     
@@ -1317,6 +1300,9 @@ server <- function(input, output, session) {
     })
     
     observeEvent(input$matchsearchDT_rows_selected, {
+      clearAFrame("match")
+      clearTFrame("match")
+      
       
       row <- vals$matchsearchframe[input$matchsearchDT_rows_selected, ]
       
@@ -1368,6 +1354,14 @@ server <- function(input, output, session) {
   
   
   # Graphs Page
+  # Y = points in auton
+  # X = points in teleop
+  # color = ABT
+  
+  output$graphOut <- renderPlot({
+    ggplot(vals$teamframe, aes(x = aSt, y = aSa, label = teamNum, size = ABT)) + geom_text() + scale_size(trans = "reverse",
+                                                                                                          range = c(5, 10))
+  })
   
   
   
