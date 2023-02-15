@@ -22,13 +22,66 @@ year <- "2022"
 
 numCols <- 28
 
+defaultEPA <- 30
+
 
 
 setwd(path)
 
 # The object that stores all of the values for the app
 vals <- reactiveValues(
-  mainframe = data.frame(),
+  mainframe = data.frame(teamNum = c(),
+                         matchNum = c(),
+                         alliance = c(),
+                         startLocation = c(),
+                         preload = c(),
+                         mobility = c(),
+                         autoPickups = c(),
+                         autoCones = c(),
+                         autoCubes = c(),
+                         autoBalance = c(),
+                         communityPickups = c(),
+                         neutralPickups = c(), 
+                         singlePickups = c(),
+                         doublePickups = c(),
+                         teleopCones = c(),
+                         teleopCubes = c(),
+                         shuttle = c(),
+                         teleopBalance = c(),
+                         buddyClimb = c(),
+                         balanceTime = c(),
+                         everybot = c(),
+                         drivetrainType = c(),
+                         drivetrain = c(),
+                         intake = c(),
+                         speed = c(),
+                         driver = c(),
+                         scoutName = c(),
+                         comments = c(),
+                         
+                         scoredT = c(),
+                         scoredA = c(),
+                         scoredCones = c(),
+                         scoredCubes = c(),
+                         scoredTCones = c(),
+                         scoredTCubes =  c(),
+                         scoredACones = c(),
+                         scoredACubes = c(),
+                         totalPickups = c(),
+                         pointsT = c(),
+                         pointsA = c(),
+                         pointsTotal = c(),
+                         
+                         scoredLowT = c(),
+                         scoredMidT = c(),
+                         scoredHighT = c(),
+                         scoredLowA = c(),
+                         scoredMidA = c(),
+                         scoredHighA = c(),
+                         
+                         ct = c()
+                         ),
+  
   searchframe = data.frame(teamNum = c(),
                            matchNum = c(),
                            alliance = c(),
@@ -184,10 +237,7 @@ vals <- reactiveValues(
 
 # Functions to update values
 
-updateCalcValues <- function() {
-  teamNum <- vals$previewframe$teamNum[1]
-  teamIdx <- which(vals$teamframe$teamNum == teamNum)
-  
+calcValues <- function(df) {
   
   info <- data.frame(
     teamNum = c(),
@@ -242,13 +292,30 @@ updateCalcValues <- function() {
     ct = c()
   )
   
-  indexes <- which(vals$mainframe$teamNum == teamNum)
+  info <- rbind(info, df)
   
-  for(idx in 1:length(indexes)) {
-    info <- rbind(info, vals$mainframe[indexes[idx], ])
-  }
+  info$scoredT <- numeric(1)
+  info$scoredA <- numeric(1)
+  info$scoredCones <- numeric(1)
+  info$scoredCubes <- numeric(1)
+  info$totalPickups <-  numeric(1)
   
-  nrows <- nrow(info)
+  info$scoredLowT <- numeric(1)
+  info$scoredMidT <- numeric(1)
+  info$scoredHightT <- numeric(1)
+  info$scoredLowA <- numeric(1)
+  info$scoredMidA <- numeric(1)
+  info$scoredHighA <- numeric(1)
+  
+  info$scoredTCones <- numeric(1)
+  info$scoredTCubes <- numeric(1)
+  info$scoredACones <- numeric(1)
+  info$scoredACubes <- numeric(1)
+  
+  
+  
+  
+  
   
   
   parsevals <- function(string) {
@@ -277,88 +344,83 @@ updateCalcValues <- function() {
     return(points)
   }
   
-  info$scoredT <- numeric(nrows)
-  info$scoredA <- numeric(nrows)
-  info$scoredCones <- numeric(nrows)
-  info$scoredCubes <- numeric(nrows)
-  info$totalPickups <-  numeric(nrows)
-  
-  info$scoredLowT <- numeric(nrows)
-  info$scoredMidT <- numeric(nrows)
-  info$scoredHightT <- numeric(nrows)
-  info$scoredLowA <- numeric(nrows)
-  info$scoredMidA <- numeric(nrows)
-  info$scoredHighA <- numeric(nrows)
-  
-  info$scoredTCones <- numeric(nrows)
-  info$scoredTCubes <- numeric(nrows)
-  info$scoredACones <- numeric(nrows)
-  info$scoredACubes <- numeric(nrows)
-  
-  # ERROR HERE
-  
   # Interior vals
   
-  info$scoredTCones <- lapply(info$teleopCones, findLength)
-  info$scoredTCubes <- lapply(info$teleopCubes, findLength)
-  info$scoredACones <- lapply(info$autoCones, findLength)
-  info$scoredACubes <- lapply(info$autoCubes, findLength)
+  info$scoredTCones[1] <- findLength(info$teleopCones[1])
+  info$scoredTCubes[1] <- findLength(info$teleopCubes[1])
+  info$scoredACones[1] <- findLength(info$autoCones[1])
+  info$scoredACubes[1] <- findLength(info$autoCubes[1])
   
-  info$scoredT <- unlist(info$scoredTCones) + unlist(info$scoredTCubes)
-  info$scoredA <- unlist(info$scoredACones) + unlist(info$scoredACubes)
+  info$scoredT[1] <- unlist(info$scoredTCones[1]) + unlist(info$scoredTCubes[1])
+  info$scoredA[1] <- unlist(info$scoredACones[1]) + unlist(info$scoredACubes[1])
   
-  info$scoredCones <- unlist(info$scoredTCones) + unlist(info$scoredACones)
-  info$scoredCubes <- unlist(info$scoredTCubes) + unlist(info$scoredACubes)
+  info$scoredCones[1] <- unlist(info$scoredTCones[1]) + unlist(info$scoredACones[1])
+  info$scoredCubes[1] <- unlist(info$scoredTCubes[1]) + unlist(info$scoredACubes[1])
   
-  info$totalPickups <- unlist(info$scoredCones) + unlist(info$scoredCubes)
+  info$totalPickups[1] <- unlist(info$scoredCones[1]) + unlist(info$scoredCubes[1])
   
-  tConePoints <- findPointVal(info$teleopCones, "t")
-  tCubePoints <- findPointVal(info$teleopCubes, "t")
-  aConePoints <- findPointVal(info$autoCones, "a")
-  aCubePoints <- findPointVal(info$autoCubes, "a")
+  tConePoints <- findPointVal(info$teleopCones[1], "t")
+  tCubePoints <- findPointVal(info$teleopCubes[1], "t")
+  aConePoints <- findPointVal(info$autoCones[1], "a")
+  aCubePoints <- findPointVal(info$autoCubes[1], "a")
   
-  info$scoredLowT <- tConePoints[1] + tCubePoints[1]
-  info$scoredMidT <- tConePoints[2] + tCubePoints[2]
-  info$scoredHighT <- tConePoints[3] + tCubePoints[3]
+  info$scoredLowT[1] <- tConePoints[1] + tCubePoints[1]
+  info$scoredMidT[1] <- tConePoints[2] + tCubePoints[2]
+  info$scoredHighT[1] <- tConePoints[3] + tCubePoints[3]
   
-  info$scoredLowA <- aConePoints[1] + aCubePoints[1]
-  info$scoredMidA <- aConePoints[2] + aCubePoints[2]
-  info$scoredHighA <- aConePoints[3] + aCubePoints[3]
+  info$scoredLowA[1] <- aConePoints[1] + aCubePoints[1]
+  info$scoredMidA[1] <- aConePoints[2] + aCubePoints[2]
+  info$scoredHighA[1] <- aConePoints[3] + aCubePoints[3]
   
-  info$pointsT <- info$scoredLowT * 2 + info$scoredMidT * 3 + info$scoredHighT * 5
-  info$pointsA <- info$scoredLowA * 3 + info$scoredMidA * 4 + info$scoredHighT * 6
-  info$pointsTotal <- info$pointsT + info$pointsA
+  info$pointsT[1] <- info$scoredLowT[1] * 2 + info$scoredMidT[1] * 3 + info$scoredHighT[1] * 5
+  info$pointsA[1] <- info$scoredLowA[1] * 3 + info$scoredMidA[1] * 4 + info$scoredHighT[1] * 6
+  info$pointsTotal[1] <- info$pointsT[1] + info$pointsA[1]
   
-  info$ct <- (135 - as.double(info$balanceTime)) / unlist(info$scoredT)
+  info$ct[1] <- round((135 - as.double(info$balanceTime[1])) / unlist(info$scoredT[1]), digits = 3)
+  
+  
+  
+  teamNum <- info$teamNum[1]
+  teamIdx <- as.integer(which(vals$teamframe$teamNum == teamNum))
+  
+  matches <- data.frame()
+  
+  matches <- rbind(matches, info)
+  
+  matchIndexes <- which(vals$mainframe$teamNum == teamNum)
+  for(match in matchIndexes) {
+    matches <- rbind(matches, vals$mainframe[match, ])
+  }
   
   # aSt
-  vals$teamframe$aSt[teamIdx] <- mean(info$scoredT)
-  
-  
+  vals$teamframe$aSt[teamIdx] <- mean(matches$scoredT)
   
   # aSa
-  vals$teamframe$aSa[teamIdx] <- mean(info$scoredA)
+  vals$teamframe$aSa[teamIdx] <- mean(matches$scoredA)
   
   # aS
   vals$teamframe$aS[teamIdx] <- vals$teamframe$aSa[teamIdx] + vals$teamframe$aSt[teamIdx]
   
   # ECT
-  vals$teamframe$ECT[teamIdx] <- round(mean(as.double(info$ct)), digits = 1)
+  vals$teamframe$ECT[teamIdx] <- round(mean(as.double(matches$ct)), digits = 1)
   
   # ABT
-  vals$teamframe$ABT[teamIdx] <- mean(as.double(info$balanceTime))
+  vals$teamframe$ABT[teamIdx] <- mean(as.double(matches$balanceTime))
   
   # BC
   # Can't be done until SS data is integrated
   
   # aPPG
-  vals$teamframe$aPPG[teamIdx] <- mean(info$pointsTotal)
+  vals$teamframe$aPPG[teamIdx] <- mean(matches$pointsTotal)
   
   
   
   
   
+  return(info)
 }
+
+
 
 findTeamIndex <- function(teamNum) {
   return(which(vals$teamframe$teamNum == teamNum))
@@ -672,15 +734,25 @@ pullStatboticsData <- function() {
   }
   nrows <- nrow(vals$teamframe)
   
-  vals$teamframe$ECT <- numeric(nrows)
-  vals$teamframe$aPPG <- numeric(nrows)
-  vals$teamframe$SEf <- numeric(nrows)
-  vals$teamframe$sFlex <- numeric(nrows)
-  vals$teamframe$aSt <- numeric(nrows)
-  vals$teamframe$aSa <- numeric(nrows)
-  vals$teamframe$aS <- numeric(nrows)
-  vals$teamframe$ABT <- numeric(nrows)
-  vals$teamframe$BC <- numeric(nrows)
+  vals$teamframe$ECT <- numeric(1)
+  vals$teamframe$aPPG <- numeric(1)
+  vals$teamframe$SEf <- numeric(1)
+  vals$teamframe$sFlex <- numeric(1)
+  vals$teamframe$aSt <- numeric(1)
+  vals$teamframe$aSa <- numeric(1)
+  vals$teamframe$aS <- numeric(1)
+  vals$teamframe$ABT <- numeric(1)
+  vals$teamframe$BC <- numeric(1)
+}
+
+updateStatboticsEPAs <- function() {
+  for(team in 1:nrow(vals$teamframe)) {
+    teamNum <- vals$teamframe$teamNum[team]
+    
+    tEPA <- getStatboticsTeam(teamNum)$epa_end
+    
+    vals$teamframe$EPA[team] <- tEPA
+  }
 }
 
 calculateWinChance <- function(matchNum, fromAlliance = "default") {
@@ -939,9 +1011,10 @@ ui <- navbarPage(
            DTOutput("matchScheduleDT")),
   
   tabPanel("Functions",
-           actionButton("getWinChances", "Get Win Percents")),
-  
-  tabPanel("Settings"),
+           actionButton("getWinChances", "Get Win Percents"),
+           actionButton("updateData", "Update Data from Files"),
+           actionButton("resetEPAs", "Reset EPAs to defaults"),
+           actionButton("pullStatboticsEPAs", "Update EPAs from Statbotics")),
   
   selected = "Data"
 )
@@ -1020,14 +1093,13 @@ server <- function(input, output, session) {
     
     if(nrow(vals$previewframe) == 1) {
       if(nrow(vals$mainframe) == 0) {
-        vals$mainframe <- rbind(vals$mainframe, vals$previewframe[1, ])
+        vals$mainframe <- rbind(vals$mainframe, calcValues(vals$previewframe[1, ]))
         
         teamIndex <- findTeamIndex(vals$previewframe$teamNum[1])
         
         vals$teamframe$matchesPlayed[teamIndex] <- vals$teamframe$matchesPlayed[teamIndex] + 1
         
         saveMainframe()
-        updateCalcValues()
         saveTeamframe()
         vals$previewframe <- data.frame()
         updateTextAreaInput(session, "dataInput", value = "")
@@ -1043,14 +1115,13 @@ server <- function(input, output, session) {
           }
         }
         if(repeatFound == FALSE) {
-          vals$mainframe <- rbind(vals$mainframe, vals$previewframe[1, ])
+          vals$mainframe <- rbind(vals$mainframe, calcValues(vals$previewframe[1, ]))
           
           teamIndex <- findTeamIndex(vals$previewframe$teamNum[1])
           
           vals$teamframe$matchesPlayed[teamIndex] <- vals$teamframe$matchesPlayed[teamIndex] + 1
           
           saveMainframe()
-          updateCalcValues()
           saveTeamframe()
           vals$previewframe <- data.frame()
           updateTextAreaInput(session, "dataInput", value = "")
@@ -1390,14 +1461,20 @@ server <- function(input, output, session) {
       redScore <- as.integer(scores[1])
       blueScore <- as.integer(scores[2])
       
-      
       if(alliance != winTeam) {
         winPC <- 100 - winPC
+      }
+      
+      if(alliance == "r") {
+        alliance <- "Red"
+      } else if(alliance == "b") {
+        alliance <- "Blue"
       }
       
       output$winChance6672 <- renderText(paste("Win Chance: ", winPC, "%", sep = ""))
       output$driverStation <- renderText(paste("Driver Station: ", station))
       output$predictedScore <- renderText(paste("Predicted Score: ", redScore, " - ", blueScore, sep = ""))
+      output$alliance <- renderText(paste("Alliance:", alliance))
       output$plannertable <- renderDT(datatable(vals$plannerframe))
     }
     
@@ -1405,7 +1482,7 @@ server <- function(input, output, session) {
   
   
   
-  # TBA Page
+  # Functions Page
   
   observeEvent(input$getWinChances, {
     updateOurMatches()
@@ -1436,6 +1513,34 @@ server <- function(input, output, session) {
     vals$scheduleframe["winChances"] <- winChances
     vals$scheduleframe["predictedWinners"] <- predictedWinners
     
+  })
+  
+  observeEvent(input$updateData, {
+    
+    if(file.exists(paste0(path, "mainframe.csv"))) {
+      print("exists")
+      vals$mainframe <- read.csv(paste0(path, "mainframe.csv"))
+    }
+    
+    if(file.exists(paste0(path, "teamframe.csv"))) {
+      print("exists")
+      vals$teamframe <- read.csv(paste0(path, "teamframe.csv"))
+    }
+    
+    if(file.exists(paste0(path, "schedule.csv"))) {
+      print("exists")
+      vals$scheduleframe <- read.csv(paste0(path, "schedule.csv"))
+    }
+  })
+  
+  observeEvent(input$resetEPAs, {
+    vals$teamframe$EPA <- defaultEPA
+    saveTeamframe()
+  })
+  
+  observeEvent(input$pullStatboticsEPAs, {
+    updateStatboticsEPAs()
+    saveTeamframe()
   })
   
   
