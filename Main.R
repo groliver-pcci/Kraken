@@ -7,12 +7,13 @@ library(utils)
 library(devtools)
 library(shinyFiles)
 library(zip)
+library(bslib)
 load_all("C:\\Users\\wcbri\\Documents\\tbaR_1.0.1\\tbaR\\tbaR.Rproj")
 
 #link to pull from statbotics
 statbotics <- "https://api.statbotics.io/v2/"
 
-tbaKey <- "2022txirv"
+tbaKey <- "2022txdri"
 
 week <- 1
 
@@ -27,6 +28,10 @@ defaultEPA <- 30
 
 
 setwd(path)
+
+
+
+
 
 # The object that stores all of the values for the app
 vals <- reactiveValues(
@@ -148,6 +153,7 @@ vals <- reactiveValues(
   
   teamframe = data.frame(teamNum = c(),
                          matchesPlayed = c(),
+                         EPAi = c(),
                          EPA = c(),
                          ECT = c(),
                          aPPG = c(),
@@ -429,6 +435,8 @@ findTeamIndex <- function(teamNum) {
 updatePlannerTable <- function(idx) {
   vals$plannerframe <- data.frame()
   
+  
+  
   matchrow <- vals$scheduleframe[idx, ]
   
   red1 <- matchrow$red1[1]
@@ -446,6 +454,8 @@ updatePlannerTable <- function(idx) {
   vals$plannerframe <- rbind(vals$plannerframe, vals$teamframe[findTeamIndex(blue1), ])
   vals$plannerframe <- rbind(vals$plannerframe, vals$teamframe[findTeamIndex(blue2), ])
   vals$plannerframe <- rbind(vals$plannerframe, vals$teamframe[findTeamIndex(blue3), ])
+  
+  vals$plannerframe <- cbind(vals$plannerframe, alliance = c("r", "r", "r", "b", "b", "b"))
 }
 
 saveMainframe <- function() {
@@ -590,6 +600,36 @@ clearAFrame <- function(type) {
   }
 }
 
+getWinChances <- function() {
+  updateOurMatches()
+  
+  vals$winnersCalculated <- TRUE
+  
+  winChances <- c()
+  predictedWinners <- c()
+  
+  for(matchNum in 1:nrow(vals$scheduleframe)) {
+    winChance <- as.numeric(calculateWinChance(matchNum))
+    predictedWinner <- NA
+    
+    # ERROR HERE
+    if(winChance > 50) {
+      predictedWinner <- "r"
+    } else if(winChance < 50) {
+      predictedWinner <- "b"
+      winChance <- 100 - winChance
+    } else {
+      predictedWinner <- "even"
+    }
+    
+    winChances <- append(winChances, winChance)
+    predictedWinners <- append(predictedWinners, predictedWinner)
+  }
+  
+  vals$scheduleframe["winChances"] <- winChances
+  vals$scheduleframe["predictedWinners"] <- predictedWinners
+}
+
 getCoords <- function(index) {
   coords <- c()
   
@@ -706,7 +746,7 @@ pullStatboticsData <- function() {
   for(team in  1:length(teamsInfo$key)) {
     t <- list(teamNum = NA,
               matchesPlayed = NA,
-              EPA = NA)
+              EPAi = NA)
     
     teamNumber <- teamNums[team]
     
@@ -715,9 +755,9 @@ pullStatboticsData <- function() {
     t$teamNum <- teamNumber
     
     if(!(is.null(teamInfo$epa_end))) {
-      t$EPA <- teamInfo$epa_end
+      t$EPAi <- teamInfo$epa_end
     } else {
-      t$EPA <- "NA"
+      t$EPAi <- defaultEPA
     }
     
     if(!(is.null(teamInfo$count))) {
@@ -733,6 +773,8 @@ pullStatboticsData <- function() {
     vals$teamframe <- rbind(vals$teamframe, t)
   }
   nrows <- nrow(vals$teamframe)
+  
+  vals$teamframe$EPA <- vals$teamframe$EPAi
   
   vals$teamframe$ECT <- numeric(1)
   vals$teamframe$aPPG <- numeric(1)
@@ -783,6 +825,37 @@ calculateWinChance <- function(matchNum, fromAlliance = "default") {
 }
 
 
+calculateEPA <- function(teamNum) {
+  
+  indexes <- which(teamNum == vals$mainframe$teamNum)
+  
+  tindex <- which(teamNum == vals$teamframe$teamNum)
+  
+  mplayed <- vals$teamframe$matchesPlayed[tindex]
+  
+  k <- 0
+  m <- 0
+  
+  if(mplayed <= 6) {
+    k <- 0.5
+  } else if(mplayed <= 12 & mplayed > 6) {
+    k <- 0.5 - ((1/30) * (mplayed - 6))
+  } else {
+    k <- 0.3
+  }
+  
+  if(mplayed <= 12) {
+    m <- 0
+  } else if(mplayed <= 36 & mplayed > 12) {
+    m <- 1/24 * (mplayed - 12)
+  } else {
+    m <- 1
+  }
+  
+  # TO-DO: use this once superscout info is integrated
+  
+}
+
 
 updateOurMatches <- function() {
   for(match in 1:nrow(vals$scheduleframe)) {
@@ -822,7 +895,7 @@ getStatboticsTeam <- function(teamNum) {
 
 ui <- navbarPage(
   
-  title = div(icon("gitkraken", lib = "font-awesome", style = "color: #bb520a;"), "  Kraken"),
+  title = div(icon("gitkraken", lib = "font-awesome", style = "color: #bb520a;"), "   Kraken"),
   
   tabPanel("Data",
            fluidPage(
@@ -844,7 +917,7 @@ ui <- navbarPage(
                  fluidRow(
                    sidebarPanel(
                      h5("WARNING: this button will delete all current data. Consider exporting the data first."),
-                     actionButton("deleteFiles", "Delete Files", style = "background-color: #d41704;"),
+                     actionButton("deleteFiles", "Delete Files"),
                      width = 12
                    )
                  ),
@@ -1011,10 +1084,17 @@ ui <- navbarPage(
            DTOutput("matchScheduleDT")),
   
   tabPanel("Functions",
+           fluidRow(
+             textOutput("functionStatus")
+           ),
+           fluidRow(
            actionButton("getWinChances", "Get Win Percents"),
            actionButton("updateData", "Update Data from Files"),
            actionButton("resetEPAs", "Reset EPAs to defaults"),
-           actionButton("pullStatboticsEPAs", "Update EPAs from Statbotics")),
+           actionButton("pullStatboticsEPAs", "Update EPAs from Statbotics"),
+           actionButton("saveData", "Save Data")
+           )
+           ),
   
   selected = "Data"
 )
@@ -1047,7 +1127,6 @@ server <- function(input, output, session) {
         
         write.csv(vals$teamframe, paste0(path, "teamframe.csv"), row.names = FALSE)
       }
-      
       
       vals$startupDone <- TRUE
     }
@@ -1156,9 +1235,9 @@ server <- function(input, output, session) {
   
   deleteModal <- function() {
     modalDialog(
-      tagList(actionButton("confirmDelete", "Yes", style = "background-color: #d41704;")),
+      tagList(actionButton("confirmDelete", "Yes"),
       title = "Are you sure you want to delete all data?"
-      
+      )
     )
   }
   
@@ -1471,11 +1550,25 @@ server <- function(input, output, session) {
         alliance <- "Blue"
       }
       
+      # col 13 should be hidden
+      
       output$winChance6672 <- renderText(paste("Win Chance: ", winPC, "%", sep = ""))
       output$driverStation <- renderText(paste("Driver Station: ", station))
       output$predictedScore <- renderText(paste("Predicted Score: ", redScore, " - ", blueScore, sep = ""))
       output$alliance <- renderText(paste("Alliance:", alliance))
-      output$plannertable <- renderDT(datatable(vals$plannerframe))
+      
+      observe({
+        output$plannertable <- renderDT({
+          datatable(
+            vals$plannerframe,
+            options = list(columnDefs = list(list(visible = FALSE, targets = c(13))))
+          ) %>% formatStyle(
+            1, 13,
+            color = styleEqual(c("r", "b"), c("red", "blue"))
+          )
+        })
+      })
+      
     }
     
   })
@@ -1485,56 +1578,28 @@ server <- function(input, output, session) {
   # Functions Page
   
   observeEvent(input$getWinChances, {
-    updateOurMatches()
     
-    vals$winnersCalculated <- TRUE
-    
-    winChances <- c()
-    predictedWinners <- c()
-    
-    for(matchNum in 1:nrow(vals$scheduleframe)) {
-      winChance <- as.numeric(calculateWinChance(matchNum))
-      predictedWinner <- NA
-      
-      # ERROR HERE
-      if(winChance > 50) {
-        predictedWinner <- "r"
-      } else if(winChance < 50) {
-        predictedWinner <- "b"
-        winChance <- 100 - winChance
-      } else {
-        predictedWinner <- "even"
-      }
-      
-      winChances <- append(winChances, winChance)
-      predictedWinners <- append(predictedWinners, predictedWinner)
-    }
-    
-    vals$scheduleframe["winChances"] <- winChances
-    vals$scheduleframe["predictedWinners"] <- predictedWinners
+    getWinChances()
     
   })
   
   observeEvent(input$updateData, {
     
     if(file.exists(paste0(path, "mainframe.csv"))) {
-      print("exists")
       vals$mainframe <- read.csv(paste0(path, "mainframe.csv"))
     }
     
     if(file.exists(paste0(path, "teamframe.csv"))) {
-      print("exists")
       vals$teamframe <- read.csv(paste0(path, "teamframe.csv"))
     }
     
     if(file.exists(paste0(path, "schedule.csv"))) {
-      print("exists")
       vals$scheduleframe <- read.csv(paste0(path, "schedule.csv"))
     }
   })
   
   observeEvent(input$resetEPAs, {
-    vals$teamframe$EPA <- defaultEPA
+    vals$teamframe$EPAi <- defaultEPA
     saveTeamframe()
   })
   
@@ -1543,6 +1608,31 @@ server <- function(input, output, session) {
     saveTeamframe()
   })
   
+  observeEvent(input$saveData, {
+    
+    time <- as.POSIXlt(Sys.time())
+    
+    m <- time$mon + 1
+    d <- time$mday
+    
+    h <- time$hour
+    m <- as.character(time$min)
+    
+    ftime <- paste0(m, "-", d, "_", h, ".", m)
+    
+    foldername <- paste0("scoutingdata", "_", ftime)
+    
+    folderpath <- paste0(path, foldername, "\\")
+    
+    dir.create(paste0(path, foldername))
+    
+    write.csv(vals$mainframe, paste0(folderpath, "mainframe.csv"), row.names = FALSE)
+    write.csv(vals$scheduleframe, paste0(folderpath, "schedule.csv"), row.names = FALSE)
+    write.csv(vals$teamframe, paste0(folderpath, "teamframe.csv"), row.names = FALSE)
+    
+    showNotification("Data Saved!", type = "message")
+    
+  })
   
   
   
