@@ -87,6 +87,24 @@ vals <- reactiveValues(
                          ct = c()
                          ),
   
+  ssframe = data.frame(matchNum = c(),
+                       matchType = c(),
+                       
+                       redScore = c(),
+                       redLinks = c(),
+                       redCharge = c(),
+                       redPieces = c(),
+                       
+                       blueScore = c(),
+                       blueLinks = c(),
+                       blueCharge = c(),
+                       bluePieces = c(),
+                       
+                       redComments = c(),
+                       blueComments = c()
+                       
+                       ),
+  
   searchframe = data.frame(teamNum = c(),
                            matchNum = c(),
                            alliance = c(),
@@ -146,7 +164,6 @@ vals <- reactiveValues(
                            scoutName = c(),
                            comments = c()
   ),
-  
   
   previewframe = data.frame(),
   sspreviewframe = data.frame(),
@@ -466,6 +483,10 @@ saveTeamframe <- function() {
   write.csv(vals$teamframe, paste0(path, "teamframe.csv"), row.names = FALSE)
 }
 
+saveSSframe <- function() {
+  write.csv(vals$ssframe, paste0(path, "ssframe.csv"), row.names = FALSE)
+}
+
 findOurMatchIndex <- function(match) {
   for(row in 1:nrow(vals$matches6672)) {
     if(vals$matches6672$matches[row] == as.integer(match)) {
@@ -478,7 +499,7 @@ canPingSite <- function(test.site) {
   !as.logical(system(paste("ping", test.site)))
 }
 
-parseData <- function(string) {
+parseRData <- function(string) {
   info <- unlist(strsplit(unlist(strsplit(string, ";")), "="))
   
   names <- info[seq(1, length(info), 2)]
@@ -550,6 +571,92 @@ parseData <- function(string) {
   }
   
   return(parsedData)
+}
+
+parseSData <- function(string) {
+  info <- unlist(strsplit(string, ","))
+  
+  data <- data.frame(matchNum = integer(1),
+                     matchType = integer(1),
+                     
+                          redScore = integer(1),
+                          redLinks = integer(1),
+                          redCharge = character(1),
+                          redPieces = character(1),
+                     
+                          blueScore = integer(1),
+                          blueLinks = integer(1),
+                          blueCharge = character(1),
+                          bluePieces = character(1),
+                     
+                          redComments = character(1),
+                          blueComments = character(1)
+                          )
+  
+  mType <- info[1]
+  mNum <- info[2]
+  rScore <- info[3]
+  rLinks <- info[4]
+  rCharge <- info[5]
+  
+  # 1 = closest to loading zone
+  r1 <- info[6]
+  r2 <- info[7]
+  r3 <- info[8]
+  r4 <- info[9]
+  
+  rCom <- info[10]
+  
+  bScore <- info[11]
+  bLinks <- info[12]
+  bCharge <- info[13]
+  b1 <- info[14]
+  b2 <- info[15]
+  b3 <- info[16]
+  b4 <- info[17]
+  bCom <- info[18]
+  
+  
+  
+  data$matchNum[1] <- as.integer(mNum)
+  
+  if(mType == "Qualification") {
+    data$matchType[1] <- "qf"
+  } else {
+    data$matchType[1] <- "pl"
+  }
+  
+  data$redScore[1] <- as.integer(rScore)
+  data$redLinks[1] <- as.integer(rLinks)
+  
+  if(rCharge == "Docked") {
+    data$redCharge[1] <- "d"
+  } else if(rCharge == "Charged") {
+    data$redCharge[1] <- "c"
+  } else {
+    data$redCharge[1] <- "NA"
+  }
+  
+  data$redPieces[1] <- paste(r1, r2, r3, r4, sep = ",")
+  
+  data$blueScore[1] <- as.integer(bScore)
+  data$blueLinks[1] <- as.integer(bLinks)
+  
+  if(bCharge == "Docked") {
+    data$blueCharge[1] <- "d"
+  } else if(bCharge == "Charged") {
+    data$blueCharge[1] <- "c"
+  } else {
+    data$blueCharge[1] <- "NA"
+  }
+  
+  data$bluePieces[1] <- paste(b1, b2, b3, b4, sep = ",")
+  
+  data$redComments[1] <- rCom
+  data$blueComments[1] <- bCom
+  
+  return(data)
+  
 }
 
 clearTFrame <- function(type) {
@@ -1044,6 +1151,9 @@ ui <- navbarPage(
   tabPanel("Competition",
            DTOutput("mainframeOutput")),
   
+  tabPanel("Superscout",
+           DTOutput("ssframeOutput")),
+  
   tabPanel("Graph",
            plotOutput("graphOut")),
   
@@ -1109,6 +1219,7 @@ server <- function(input, output, session) {
   
   observe({  
     if(!vals$startupDone) {
+      
       if(!(file.exists(paste0(path, "schedule.csv")))) {
         pullTBAData()
         
@@ -1120,12 +1231,17 @@ server <- function(input, output, session) {
       if(file.exists(paste0(path, "mainframe.csv"))) {
         vals$mainframe <- read.csv(paste0(path, "mainframe.csv"))
       }
+      
       if(file.exists(paste0(path, "teamframe.csv"))) {
         vals$teamframe <- read.csv(paste0(path, "teamframe.csv"))
       } else {
         pullStatboticsData()
         
         write.csv(vals$teamframe, paste0(path, "teamframe.csv"), row.names = FALSE)
+      }
+      
+      if(file.exists(paste0(path, "ssframe.csv"))) {
+        vals$ssframe <- read.csv(paste0(path, "ssframe.csv"))
       }
       
       vals$startupDone <- TRUE
@@ -1135,65 +1251,26 @@ server <- function(input, output, session) {
   
   # Data Page
   
-  observeEvent(input$file, {
-    f <- NA
-    
-    d <- input$file
-    
-    if(is.null(d)) {
-      return(NULL)
-    }
-    
-    f <- read.csv(d$datapath, header = TRUE, sep = ",")
-    
-    if(input$inputType == "regScout") {
-      
-      vals$previewframe <- f
-      
-    } else if (input$inputType == "supScout") {
-      
-      vals$sspreviewframe <- f
-      
-    }
-    
-  })
-  
   observeEvent(input$enterData, {
-    f <- input$dataInput
-    
-    parsed <- parseData(f)
-    
-    vals$previewframe <- parsed
+    if(input$inputType == "regScout") {
+      f <- input$dataInput
+      
+      parsed <- parseRData(f)
+      
+      vals$previewframe <- parsed
+    } else if(input$inputType == "supScout") {
+      f <- input$dataInput
+      
+      parsed <- parseSData(f)
+      
+      vals$sspreviewframe <- parsed
+    }
   })
   
   observeEvent(input$yesData, {
-    
-    
-    
-    if(nrow(vals$previewframe) == 1) {
-      if(nrow(vals$mainframe) == 0) {
-        vals$mainframe <- rbind(vals$mainframe, calcValues(vals$previewframe[1, ]))
-        
-        teamIndex <- findTeamIndex(vals$previewframe$teamNum[1])
-        
-        vals$teamframe$matchesPlayed[teamIndex] <- vals$teamframe$matchesPlayed[teamIndex] + 1
-        
-        saveMainframe()
-        saveTeamframe()
-        vals$previewframe <- data.frame()
-        updateTextAreaInput(session, "dataInput", value = "")
-        return(NULL)
-      } else {
-        
-        repeatFound <- FALSE
-        
-        for(row in 1:length(vals$mainframe$teamNum)) {
-          if(vals$mainframe[row, 1] == vals$previewframe[1, 1] & vals$mainframe[row, 2] == vals$previewframe[1, 2]) {
-            repeatFound <- TRUE
-            showModal(repeatModal())
-          }
-        }
-        if(repeatFound == FALSE) {
+    if(input$inputType == "regScout") {
+      if(nrow(vals$previewframe) == 1) {
+        if(nrow(vals$mainframe) == 0) {
           vals$mainframe <- rbind(vals$mainframe, calcValues(vals$previewframe[1, ]))
           
           teamIndex <- findTeamIndex(vals$previewframe$teamNum[1])
@@ -1204,14 +1281,71 @@ server <- function(input, output, session) {
           saveTeamframe()
           vals$previewframe <- data.frame()
           updateTextAreaInput(session, "dataInput", value = "")
+          return(NULL)
+        } else {
+          
+          repeatFound <- FALSE
+          
+          for(row in 1:length(vals$mainframe$teamNum)) {
+            if(vals$mainframe[row, 1] == vals$previewframe[1, 1] & vals$mainframe[row, 2] == vals$previewframe[1, 2]) {
+              repeatFound <- TRUE
+              showModal(repeatModal())
+            }
+          }
+          if(repeatFound == FALSE) {
+            vals$mainframe <- rbind(vals$mainframe, calcValues(vals$previewframe[1, ]))
+            
+            teamIndex <- findTeamIndex(vals$previewframe$teamNum[1])
+            
+            vals$teamframe$matchesPlayed[teamIndex] <- vals$teamframe$matchesPlayed[teamIndex] + 1
+            
+            saveMainframe()
+            saveTeamframe()
+            vals$previewframe <- data.frame()
+            updateTextAreaInput(session, "dataInput", value = "")
+          }
+          
         }
-        
+      } else if(nrow(vals$previewframe) > 1) {
+        print("error")
+        return(NULL)
+      } else {
+        return(NULL)
       }
-    } else if(nrow(vals$previewframe) > 1) {
-      print("error")
-      return(NULL)
-    } else {
-      return(NULL)
+      
+      
+      
+    } else if(input$inputType == "supScout") {
+      
+      if(nrow(vals$sspreviewframe) == 1) {
+        if(nrow(vals$ssframe) == 0) {
+          vals$ssframe <- rbind(vals$ssframe, vals$sspreviewframe[1, ])
+          
+          saveSSframe()
+          
+          vals$sspreviewframe <- data.frame()
+          updateTextAreaInput(session, "dataInput", value = "")
+          return(NULL)
+        } else {
+          repeatFound <- FALSE
+          
+          for(row in 1:length(vals$ssframe$matchNum)) {
+            if(vals$ssframe$matchNum[row, 1] == vals$sspreviewframe$matchNum[1]) {
+              repeatFound <- TRUE
+              showModal(repeatModal())
+            } 
+          }
+          
+          if(repeatFound == FALSE) {
+            vals$ssframe <- rbind(vals$ssframe, vals$sspreviewframe[1, ])
+            
+            saveSSframe()
+            vals$previewframe <- data.frame()
+            updateTextAreaInput(session, "dataInput", value = "")
+          }
+        }
+      }
+      
     }
   })
   
@@ -1496,6 +1630,11 @@ server <- function(input, output, session) {
   output$mainframeOutput <- renderDT(datatable(vals$mainframe, options = list(scrollX = TRUE, scrollY = "540px",
                                                                               paging = FALSE)))
   
+  
+  # Superscout Page
+  
+  output$ssframeOutput <- renderDT(datatable(vals$ssframe, options = list(scrollX = TRUE, scrollY = "540px",
+                                                                          paging = FALSE)))
   
   
   # Qualitative Page
