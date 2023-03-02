@@ -13,7 +13,7 @@ load_all("C:\\Users\\wcbri\\Documents\\tbaR_1.0.1\\tbaR\\tbaR.Rproj")
 #link to pull from statbotics
 statbotics <- "https://api.statbotics.io/v2/"
 
-tbaKey <- "2022txdri"
+tbaKey <- "2022txirv"
 
 week <- 1
 
@@ -168,14 +168,21 @@ vals <- reactiveValues(
   previewframe = data.frame(),
   sspreviewframe = data.frame(),
   
+  teammatchesFound = FALSE,
+  
+  teammatchesframe = data.frame(teamNum = c(),
+                                matches = c(),
+                                alliances = c()
+                                ),
+  
   teamframe = data.frame(teamNum = c(),
-                         matchesPlayed = c(),
+                         matchesPlayedi = c(),
                          EPAi = c(),
+                         matchesPlayed = c(),
                          EPA = c(),
                          ECT = c(),
                          aPPG = c(),
                          SEf = c(),
-                         sFlex = c(),
                          aSt = c(),
                          aSa = c(),
                          aS = c(),
@@ -436,14 +443,301 @@ calcValues <- function(df) {
   # aPPG
   vals$teamframe$aPPG[teamIdx] <- mean(matches$pointsTotal)
   
-  
-  
-  
+
   
   return(info)
 }
 
 
+recalcValues <- function() {
+  for(team in 1:nrow(vals$teamframe)) {
+    
+    teamNum <- vals$teamframe$teamNum[team]
+    matchI <- which(vals$mainframe$teamNum == teamNum)
+    
+    matches <- data.frame()
+    
+    for(match in 1:length(matchI)) {
+      matchIndex <- matchI[match]
+      
+      matches <- rbind(matches, vals$mainframe[matchIndex, ])
+    }
+    
+    
+    
+    # aSt
+    vals$teamframe$aSt[team] <- mean(matches$scoredT)
+    
+    # aSa
+    vals$teamframe$aSa[team] <- mean(matches$scoredA)
+    
+    # aS
+    vals$teamframe$aS[team] <- vals$teamframe$aSa[team] + vals$teamframe$aSt[team]
+    
+    # ECT
+    vals$teamframe$ECT[team] <- round(mean(as.double(matches$ct)), digits = 1)
+    
+    # ABT
+    vals$teamframe$ABT[team] <- mean(as.double(matches$balanceTime))
+    
+    # aPPG
+    vals$teamframe$aPPG[team] <- mean(matches$pointsTotal)
+    
+    if(length(matchI) == 0) {
+      vals$teamframe$aSt[team] <- integer(1)
+      vals$teamframe$aSa[team] <- integer(1)
+      vals$teamframe$aS[team] <- integer(1)
+      vals$teamframe$ECT[team] <- integer(1)
+      vals$teamframe$ABT[team] <- integer(1)
+      vals$teamframe$aPPG[team] <- integer(1)
+    }
+    
+  }
+}
+
+
+findTeamMatch <- function(tNum, mNum) {
+  return(which(vals$mainframe$teamNum == tNum & vals$mainframe$matchNum == mNum))
+}
+
+getTeamMatches <- function() {
+  vals$teammatchesframe <- data.frame(teamNum = c(),
+                                      matches = c(),
+                                      alliances = c())
+  
+  
+  for(team in 1:nrow(vals$teamframe)) {
+    
+    teamNum <- vals$teamframe$teamNum[team]
+    
+    matches <- c()
+    alliances <- c()
+    
+    for(match in 1:nrow(vals$scheduleframe)) {
+      
+      if(vals$scheduleframe$red1[match] == teamNum ||
+         vals$scheduleframe$red2[match] == teamNum ||
+         vals$scheduleframe$red3[match] == teamNum) {
+        
+        matches <- append(matches, as.character(match))
+        alliances <- append(alliances, "r")
+        
+      } else if(vals$scheduleframe$blue1[match] == teamNum ||
+                vals$scheduleframe$blue2[match] == teamNum ||
+                vals$scheduleframe$blue3[match] == teamNum) {
+        
+        matches <- append(matches, as.character(match))
+        alliances <- append(alliances, "b")
+        
+      }
+      
+    }
+    
+    matchString <- paste(matches, collapse = ",")
+    allianceString <- paste(alliances, collapse = ",")
+    
+    vals$teammatchesframe <- rbind(vals$teammatchesframe, data.frame(teamNum = c(teamNum), 
+                                                                     matches = c(matchString),
+                                                                     alliances = c(allianceString)))
+  }
+  
+  vals$teammatchesFound = TRUE
+}
+
+calcSSValues <- function() {
+  for(team in 1:nrow(vals$teamframe)) {
+    vals$teamframe$EPA[team] <- vals$teamframe$EPAi[team]
+    vals$teamframe$matchesPlayed[team] <- vals$teamframe$matchesPlayedi[team]
+    
+    teamNum <- vals$teamframe$teamNum[team]
+    teamMatches <- as.integer(unlist(strsplit(as.character(vals$teammatchesframe$matches[team]), split = ",")))
+    teamAlliances <- unlist(strsplit(vals$teammatchesframe$alliances[team], split = ","))
+    
+    ssmatches <- c()
+    ssMatchI <- c()
+    
+    k <- 0
+    m <- 0
+    
+    for(i in 1:length(teamMatches)) {
+      ssmatches <- append(ssmatches, vals$ssframe$matchNum[which(vals$ssframe$matchNum == teamMatches[i])])
+    }
+    
+    tAlliances <- teamAlliances[ssmatches]
+    
+    balances <- 0
+    successes <- 0
+    
+    tIndexes <- which(vals$mainframe$teamNum == teamNum)
+    
+    mplayed <- as.integer(vals$teamframe$matchesPlayedi[team]) + length(tIndexes)
+    
+    if(length(tIndexes) > 0) {
+      for(match in 1:length(tIndexes)) {
+        
+        tI <- tIndexes[match]
+        mNum <- vals$mainframe$matchNum[tI]
+        
+        ssIndex <- which(vals$ssframe$matchNum == mNum)
+        
+        if(length(ssIndex) > 0) {
+          alli <- findTeamAlliance(teamNum, mNum)
+          
+          balance <- vals$mainframe$teleopBalance[tI]
+          
+          if(balance == "dock") {
+            balances <- balances + 1
+            if(alli == "r") {
+              if(vals$ssframe$redCharge[ssIndex] == "c") {
+                successes <- successes + 1
+              }
+            } else if(alli == "b") {
+              if(vals$ssframe$blueCharge[ssIndex] == "c") {
+                successes <- successes + 1
+              }
+            }
+          } else if(balance == "fail") {
+            balances <- balances + 1
+          }
+        }
+      }
+    }
+    
+    
+    
+    if(mplayed <= 6) {
+      k <- 0.5
+    } else if(mplayed <= 12 & mplayed > 6) {
+      k <- 0.5 - ((1/30) * (mplayed - 6))
+    } else {
+      k <- 0.3
+    }
+    
+    if(mplayed <= 12) {
+      m <- 0
+    } else if(mplayed <= 36 & mplayed > 12) {
+      m <- 1/24 * (mplayed - 12)
+    } else {
+      m <- 1
+    }
+    
+    for(match in 1:nrow(vals$ssframe)) {
+      if(length(which(vals$ssframe$matchNum[match] == teamMatches)) > 0) {
+        mNum <- vals$ssframe$matchNum[match]
+        
+        red <- unlist(as.list(vals$scheduleframe[mNum, 3:5]))
+        blue <- unlist(as.list(vals$scheduleframe[mNum, 6:8]))
+        
+        alliance <- character(1)
+        
+        if(length(which(teamNum == red)) > 0) {
+          alliance <- "r"
+        } else if(length(which(teamNum == blue)) > 0) {
+          alliance <- "b"
+        }
+        
+        redEPAs <- c(vals$teamframe$EPA[findTeamIndex(red[1])],
+                     vals$teamframe$EPA[findTeamIndex(red[2])],
+                     vals$teamframe$EPA[findTeamIndex(red[3])])
+        blueEPAs <- c(vals$teamframe$EPA[findTeamIndex(blue[1])],
+                      vals$teamframe$EPA[findTeamIndex(blue[2])],
+                      vals$teamframe$EPA[findTeamIndex(blue[3])])
+        
+        redEPA <- sum(redEPAs)
+        blueEPA <- sum(blueEPAs)
+        
+        redScore <- vals$ssframe$redScore[match]
+        blueScore <- vals$ssframe$blueScore[match]
+        
+        deltaEPA <- k * (1/(1 + m)) * ((redScore - redEPA) - m * (blueScore - blueEPA))
+        
+        if(alliance == "r") {
+          vals$teamframe$EPA[team] <- round((vals$teamframe$EPA[team] + deltaEPA), digits = 2)
+        } else if(alliance == "b") {
+          vals$teamframe$EPA[team] <- round((vals$teamframe$EPA[team] - deltaEPA), digits = 2)
+        }
+        
+      }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    SEf <- 0
+    BC <- 0
+    
+    if(successes == 0) {
+      BC <- 0
+    } else {
+      BC <- 100 * successes / balances
+    }
+    
+    vals$teamframe$BC[team] <- BC
+
+    if(length(ssmatches) > 0) {
+      for(m in 1:length(ssmatches)) {
+        match <- ssmatches[m]
+        
+        alliance <- teamAlliances[which(match == teamMatches)]
+        
+        matchI <- which(vals$ssframe$matchNum == match)
+        
+        rscored <- 0
+        bscored <- 0
+        
+        teamsInMatch <- as.list(vals$scheduleframe[match, 3:8])
+        
+        for(t in 1:6) {
+          
+          tNum <- teamsInMatch[t]
+          
+          tMatchI <- which(vals$mainframe$teamNum == tNum & vals$mainframe$matchNum == match)
+          tScored <- vals$mainframe$scoredT[tMatchI] + vals$mainframe$scoredA[tMatchI]
+          
+          if(length(tScored) > 0) {
+            if(t < 4) {
+              rscored <- rscored + tScored
+            } else {
+              bscored <- bscored + tScored
+            }
+          }
+        }
+        
+        if(alliance == "r") {
+          SEf <- append(SEf, (floor(rscored / 3) * 3) / vals$ssframe$redLinks[matchI])
+        } else if(alliance == "b") {
+          SEf <- append(SEf, (floor(bscored / 3) * 3) / vals$ssframe$blueLinks[matchI])
+        }
+        
+      }
+    }
+    
+    if(length(SEf) > 0) {
+      vals$teamframe$SEf[team] <- round(mean(SEf), digits = 2)
+    }
+    
+    
+  }
+}
+
+findTeamAlliance <- function(team, match) {
+  matchRow <- vals$scheduleframe[match, ]
+  
+  teams <- c(matchRow$red1, matchRow$red2, matchRow$red3, matchRow$blue1, matchRow$blue2, matchRow$blue3)
+  
+  if(teams[1] == team || teams[2] == team || teams[3]) {
+    return("r")
+  } else {
+    return("b")
+  }
+  
+  
+}
 
 findTeamIndex <- function(teamNum) {
   return(which(vals$teamframe$teamNum == teamNum))
@@ -487,6 +781,10 @@ saveSSframe <- function() {
   write.csv(vals$ssframe, paste0(path, "ssframe.csv"), row.names = FALSE)
 }
 
+saveTeamMatchFrame <- function() {
+  write.csv(vals$teammatchesframe, paste0(path, "teammatches.csv"), row.names = FALSE)
+}
+
 findOurMatchIndex <- function(match) {
   for(row in 1:nrow(vals$matches6672)) {
     if(vals$matches6672$matches[row] == as.integer(match)) {
@@ -501,6 +799,13 @@ canPingSite <- function(test.site) {
 
 parseRData <- function(string) {
   info <- unlist(strsplit(unlist(strsplit(string, ";")), "="))
+  
+  firstone <- info[1]
+  
+  if(firstone != "teamNum") {
+    return(NULL)
+  }
+  
   
   names <- info[seq(1, length(info), 2)]
   values <- info[seq(2, length(info), 2)]
@@ -575,6 +880,13 @@ parseRData <- function(string) {
 
 parseSData <- function(string) {
   info <- unlist(strsplit(string, ","))
+  
+  firstone <- info[1]
+  
+  if(firstone == "teamNum") {
+    return(NULL)
+  }
+  
   
   data <- data.frame(matchNum = integer(1),
                      matchType = integer(1),
@@ -852,7 +1164,7 @@ pullStatboticsData <- function() {
   
   for(team in  1:length(teamsInfo$key)) {
     t <- list(teamNum = NA,
-              matchesPlayed = NA,
+              matchesPlayedi = NA,
               EPAi = NA)
     
     teamNumber <- teamNums[team]
@@ -868,12 +1180,12 @@ pullStatboticsData <- function() {
     }
     
     if(!(is.null(teamInfo$count))) {
-      t$matchesPlayed <- teamInfo$count
+      t$matchesPlayedi <- teamInfo$count
     } else {
       if(week == 1) {
-        t$matchesPlayed <- 0
+        t$matchesPlayedi <- 0
       } else {
-        t$matchesPlayed <- 5
+        t$matchesPlayedi <- 5
       }
     }
     
@@ -882,11 +1194,11 @@ pullStatboticsData <- function() {
   nrows <- nrow(vals$teamframe)
   
   vals$teamframe$EPA <- vals$teamframe$EPAi
+  vals$teamframe$matchesPlayed <- vals$teamframe$matchesPlayedi
   
   vals$teamframe$ECT <- numeric(1)
   vals$teamframe$aPPG <- numeric(1)
   vals$teamframe$SEf <- numeric(1)
-  vals$teamframe$sFlex <- numeric(1)
   vals$teamframe$aSt <- numeric(1)
   vals$teamframe$aSa <- numeric(1)
   vals$teamframe$aS <- numeric(1)
@@ -929,38 +1241,6 @@ calculateWinChance <- function(matchNum, fromAlliance = "default") {
   formattedWinChance <- format(winChance * 100, digits = 3)
   
   return(formattedWinChance)
-}
-
-
-calculateEPA <- function(teamNum) {
-  
-  indexes <- which(teamNum == vals$mainframe$teamNum)
-  
-  tindex <- which(teamNum == vals$teamframe$teamNum)
-  
-  mplayed <- vals$teamframe$matchesPlayed[tindex]
-  
-  k <- 0
-  m <- 0
-  
-  if(mplayed <= 6) {
-    k <- 0.5
-  } else if(mplayed <= 12 & mplayed > 6) {
-    k <- 0.5 - ((1/30) * (mplayed - 6))
-  } else {
-    k <- 0.3
-  }
-  
-  if(mplayed <= 12) {
-    m <- 0
-  } else if(mplayed <= 36 & mplayed > 12) {
-    m <- 1/24 * (mplayed - 12)
-  } else {
-    m <- 1
-  }
-  
-  # TO-DO: use this once superscout info is integrated
-  
 }
 
 
@@ -1064,11 +1344,11 @@ ui <- navbarPage(
                  )
                ),
                fluidRow(sidebarPanel(
+                 textOutput("matches"),
                  textOutput("EPA"),
                  textOutput("ECT"),
                  textOutput("aS"),
                  textOutput("aPPG"),
-                 textOutput("sFlex"),
                  textOutput("ABT"),
                  textOutput("SEf"),
                  width = 12
@@ -1202,7 +1482,10 @@ ui <- navbarPage(
            actionButton("updateData", "Update Data from Files"),
            actionButton("resetEPAs", "Reset EPAs to defaults"),
            actionButton("pullStatboticsEPAs", "Update EPAs from Statbotics"),
-           actionButton("saveData", "Save Data")
+           actionButton("saveData", "Save Data"),
+           actionButton("calcSSData", "Calculate SS Values"),
+           actionButton("recalcVals", "Recalculate Calculated Values"),
+           actionButton("findTeamMatches", "Find Team Matches")
            )
            ),
   
@@ -1242,6 +1525,10 @@ server <- function(input, output, session) {
       
       if(file.exists(paste0(path, "ssframe.csv"))) {
         vals$ssframe <- read.csv(paste0(path, "ssframe.csv"))
+      }
+      
+      if(file.exists(paste0(path, "teammatches.csv"))) {
+        vals$teammatchesframe <- read.csv(paste0(path, "teammatches.csv"))
       }
       
       vals$startupDone <- TRUE
@@ -1292,6 +1579,7 @@ server <- function(input, output, session) {
               showModal(repeatModal())
             }
           }
+          
           if(repeatFound == FALSE) {
             vals$mainframe <- rbind(vals$mainframe, calcValues(vals$previewframe[1, ]))
             
@@ -1330,7 +1618,7 @@ server <- function(input, output, session) {
           repeatFound <- FALSE
           
           for(row in 1:length(vals$ssframe$matchNum)) {
-            if(vals$ssframe$matchNum[row, 1] == vals$sspreviewframe$matchNum[1]) {
+            if(vals$ssframe$matchNum[row] == vals$sspreviewframe$matchNum[1]) {
               repeatFound <- TRUE
               showModal(repeatModal())
             } 
@@ -1340,7 +1628,7 @@ server <- function(input, output, session) {
             vals$ssframe <- rbind(vals$ssframe, vals$sspreviewframe[1, ])
             
             saveSSframe()
-            vals$previewframe <- data.frame()
+            vals$sspreviewframe <- data.frame()
             updateTextAreaInput(session, "dataInput", value = "")
           }
         }
@@ -1451,12 +1739,14 @@ server <- function(input, output, session) {
     
     tIndex <- which(vals$teamframe$teamNum == searchVal)
     
+    teamMatches <- vals$teammatchesframe$matches[tIndex]
     teamEPA <- vals$teamframe$EPA[tIndex]
     teamECT <- vals$teamframe$ECT[tIndex]
     teamaS <- vals$teamframe$aS[tIndex]
     teamaPPG <- vals$teamframe$aPPG[tIndex]
     teamABT <- vals$teamframe$ABT[tIndex]
-      
+    
+    output$matches <- renderText(paste0("Matches: ", teamMatches))
     output$EPA <- renderText(paste0("EPA: ", teamEPA))
     output$ECT <- renderText(paste0("ECT: ", teamECT))
     output$aS <- renderText(paste0("aS: ", teamaS))
@@ -1653,9 +1943,6 @@ server <- function(input, output, session) {
   })
   
   
-  
-  
-  
   # Match Planner Page
   
   observe({
@@ -1735,6 +2022,14 @@ server <- function(input, output, session) {
     if(file.exists(paste0(path, "schedule.csv"))) {
       vals$scheduleframe <- read.csv(paste0(path, "schedule.csv"))
     }
+    
+    if(file.exists(paste0(path, "ssframe.csv"))) {
+      vals$ssframe <- read.csv(paste0(path, "ssframe.csv"))
+    }
+    
+    if(file.exists(paste0(path, "teammatches.csv"))) {
+      vals$teammatchesframe <- read.csv(paste0(path, "teammatches.csv"))
+    }
   })
   
   observeEvent(input$resetEPAs, {
@@ -1751,13 +2046,13 @@ server <- function(input, output, session) {
     
     time <- as.POSIXlt(Sys.time())
     
-    m <- time$mon + 1
+    mon <- time$mon + 1
     d <- time$mday
     
     h <- time$hour
     m <- as.character(time$min)
     
-    ftime <- paste0(m, "-", d, "_", h, ".", m)
+    ftime <- paste0(mon, "-", d, "_", h, ".", m)
     
     foldername <- paste0("scoutingdata", "_", ftime)
     
@@ -1768,11 +2063,29 @@ server <- function(input, output, session) {
     write.csv(vals$mainframe, paste0(folderpath, "mainframe.csv"), row.names = FALSE)
     write.csv(vals$scheduleframe, paste0(folderpath, "schedule.csv"), row.names = FALSE)
     write.csv(vals$teamframe, paste0(folderpath, "teamframe.csv"), row.names = FALSE)
+    write.csv(vals$ssframe, paste0(folderpath, "ssframe.csv"), row.names = FALSE)
+    write.csv(vals$teammatchesframe, paste0(folderpath, "teammatches.csv"), row.names = FALSE)
     
     showNotification("Data Saved!", type = "message")
     
   })
   
+  observeEvent(input$calcSSData, {
+    if(vals$teammatchesFound || file.exists(paste0(path, "teammatches.csv"))) {
+      calcSSValues()
+      saveSSframe()
+    }
+  })
+  
+  observeEvent(input$recalcVals, {
+    recalcValues()
+    saveTeamframe()
+  })
+  
+  observeEvent(input$findTeamMatches, {
+    getTeamMatches()
+    saveTeamMatchFrame()
+  })
   
   
   
