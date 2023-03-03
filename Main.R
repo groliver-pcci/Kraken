@@ -1478,14 +1478,22 @@ ui <- navbarPage(
              textOutput("functionStatus")
            ),
            fluidRow(
-           actionButton("getWinChances", "Get Win Percents"),
-           actionButton("updateData", "Update Data from Files"),
-           actionButton("resetEPAs", "Reset EPAs to defaults"),
-           actionButton("pullStatboticsEPAs", "Update EPAs from Statbotics"),
-           actionButton("saveData", "Save Data"),
-           actionButton("calcSSData", "Calculate SS Values"),
-           actionButton("recalcVals", "Recalculate Calculated Values"),
-           actionButton("findTeamMatches", "Find Team Matches")
+             h4("Calculate Values"),
+             actionButton("getWinChances", "Get Win Percents"),
+             actionButton("calcSSData", "Calculate SS Values"),
+             actionButton("recalcVals", "Recalculate Calculated Values"),
+             actionButton("findTeamMatches", "Find Team Matches"),
+             actionButton("resetEPAs", "Reset EPAs to defaults"),
+           ),
+           fluidRow(
+             h4("File Editing"),
+             actionButton("updateData", "Update Data from Files"),
+             actionButton("saveData", "Save Data")
+           ),
+           fluidRow(
+             h4("Online Functions"),
+             actionButton("pullStatboticsEPAs", "Update EPAs from Statbotics"),
+             actionButton("testConnection", "Test Internet Connection")
            )
            ),
   
@@ -2085,6 +2093,10 @@ server <- function(input, output, session) {
   observeEvent(input$findTeamMatches, {
     getTeamMatches()
     saveTeamMatchFrame()
+  })
+  
+  observeEvent(input$testConnection, {
+    
   })
   
   
