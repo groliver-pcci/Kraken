@@ -8,18 +8,18 @@ library(devtools)
 library(shinyFiles)
 library(zip)
 library(bslib)
-load_all("C:\\Users\\wcbri\\Documents\\tbaR_1.0.1\\tbaR\\tbaR.Rproj")
+load_all("C:\\Users\\robotics\\Documents\\tbaR_1.0.1\\tbaR\\tbaR.Rproj")
 
 #link to pull from statbotics
 statbotics <- "https://api.statbotics.io/v2/"
 
-tbaKey <- "2022txirv"
+tbaKey <- "2023txwac"
 
 week <- 1
 
-path <- "C:\\Users\\wcbri\\Documents\\krakendata\\"
+path <- "C:\\Users\\robotics\\Documents\\krakendata\\"
 
-year <- "2022"
+year <- "2023"
 
 numCols <- 28
 
@@ -132,37 +132,81 @@ vals <- reactiveValues(
                            speed = c(),
                            driver = c(),
                            scoutName = c(),
-                           comments = c()
+                           comments = c(),
+                           
+                           scoredT = c(),
+                           scoredA = c(),
+                           scoredCones = c(),
+                           scoredCubes = c(),
+                           scoredTCones = c(),
+                           scoredTCubes =  c(),
+                           scoredACones = c(),
+                           scoredACubes = c(),
+                           totalPickups = c(),
+                           pointsT = c(),
+                           pointsA = c(),
+                           pointsTotal = c(),
+                           
+                           scoredLowT = c(),
+                           scoredMidT = c(),
+                           scoredHighT = c(),
+                           scoredLowA = c(),
+                           scoredMidA = c(),
+                           scoredHighA = c(),
+                           
+                           ct = c()
                            ),
   
   matchsearchframe = data.frame(teamNum = c(),
-                           matchNum = c(),
-                           alliance = c(),
-                           startLocation = c(),
-                           preload = c(),
-                           mobility = c(),
-                           autoPickups = c(),
-                           autoCones = c(),
-                           autoCubes = c(),
-                           autoBalance = c(),
-                           communityPickups = c(),
-                           neutralPickups = c(), 
-                           singlePickups = c(),
-                           doublePickups = c(),
-                           teleopCones = c(),
-                           teleopCubes = c(),
-                           shuttle = c(),
-                           teleopBalance = c(),
-                           buddyClimb = c(),
-                           balanceTime = c(),
-                           everybot = c(),
-                           drivetrainType = c(),
-                           drivetrain = c(),
-                           intake = c(),
-                           speed = c(),
-                           driver = c(),
-                           scoutName = c(),
-                           comments = c()
+                                matchNum = c(),
+                                alliance = c(),
+                                startLocation = c(),
+                                preload = c(),
+                                mobility = c(),
+                                autoPickups = c(),
+                                autoCones = c(),
+                                autoCubes = c(),
+                                autoBalance = c(),
+                                communityPickups = c(),
+                                neutralPickups = c(), 
+                                singlePickups = c(),
+                                doublePickups = c(),
+                                teleopCones = c(),
+                                teleopCubes = c(),
+                                shuttle = c(),
+                                teleopBalance = c(),
+                                buddyClimb = c(),
+                                balanceTime = c(),
+                                everybot = c(),
+                                drivetrainType = c(),
+                                drivetrain = c(),
+                                intake = c(),
+                                speed = c(),
+                                driver = c(),
+                                scoutName = c(),
+                                comments = c(),
+                                
+                                scoredT = c(),
+                                scoredA = c(),
+                                scoredCones = c(),
+                                scoredCubes = c(),
+                                scoredTCones = c(),
+                                scoredTCubes =  c(),
+                                scoredACones = c(),
+                                scoredACubes = c(),
+                                totalPickups = c(),
+                                pointsT = c(),
+                                pointsA = c(),
+                                pointsTotal = c(),
+                                
+                                scoredLowT = c(),
+                                scoredMidT = c(),
+                                scoredHighT = c(),
+                                scoredLowA = c(),
+                                scoredMidA = c(),
+                                scoredHighA = c(),
+                                
+                                ct = c()
   ),
   
   previewframe = data.frame(),
@@ -349,7 +393,7 @@ calcValues <- function(df) {
   
   
   parsevals <- function(string) {
-    values <- as.integer(unlist(strsplit(string, ",")))
+    values <- unlist(strsplit(string, ","))
     return(values)
   }
   
@@ -389,10 +433,27 @@ calcValues <- function(df) {
   
   info$totalPickups[1] <- unlist(info$scoredCones[1]) + unlist(info$scoredCubes[1])
   
-  tConePoints <- findPointVal(info$teleopCones[1], "t")
-  tCubePoints <- findPointVal(info$teleopCubes[1], "t")
-  aConePoints <- findPointVal(info$autoCones[1], "a")
-  aCubePoints <- findPointVal(info$autoCubes[1], "a")
+  if(is.na(info$teleopCones[1])) {
+    tConePoints <- 0
+  } else {
+    tConePoints <- findPointVal(info$teleopCones[1], "t")
+  }
+  
+  if(is.na(info$teleopCubes[1])) {
+    tCubePoints <- 0
+  } else {
+    tCubePoints <- findPointVal(info$teleopCubes[1], "t")
+  }
+  
+  if(is.na(info$autoCones[1])) {
+    aConePoints <- 0
+  } else {
+    aConePoints <- findPointVal(info$autoCones[1], "a")
+  }
+  
+  if(is.na(info$autoCubes[1])) {
+    aCubePoints <- findPointVal(info$autoCubes[1], "a")
+  }
   
   info$scoredLowT[1] <- tConePoints[1] + tCubePoints[1]
   info$scoredMidT[1] <- tConePoints[2] + tCubePoints[2]
@@ -585,7 +646,7 @@ calcSSValues <- function() {
           
           balance <- vals$mainframe$teleopBalance[tI]
           
-          if(balance == "dock") {
+          if(balance == "dock" || balance == "engage") {
             balances <- balances + 1
             if(alli == "r") {
               if(vals$ssframe$redCharge[ssIndex] == "c") {
@@ -1132,7 +1193,7 @@ pullTBAData <- function() {
                                   blue3 = c()
   )
   
-  tbaMatchListTemp <- event_matches("2022txirv")
+  tbaMatchListTemp <- event_matches(tbaKey)
   
   tbaMatchListTemp <- tbaMatchListTemp[order(tbaMatchListTemp$match_number), ]
   
@@ -1140,7 +1201,7 @@ pullTBAData <- function() {
     if(tbaMatchListTemp$comp_level[match] == "qm") {
       currentMatchTeams <- data.frame(round = tbaMatchListTemp$comp_level[match],
                                       match_number = tbaMatchListTemp$match_number[match],
-                                      red1 = substr(tbaMatchListTemp$red1[match], 4, 7),
+                                      red1 = substr(tbaMatchListTemp$red$teamkeys[1][match], 4, 7),
                                       red2 = substr(tbaMatchListTemp$red2[match], 4, 7),
                                       red3 = substr(tbaMatchListTemp$red3[match], 4, 7),
                                       blue1 = substr(tbaMatchListTemp$blue1[match], 4, 7),
@@ -1710,7 +1771,7 @@ server <- function(input, output, session) {
                                    autoCubes = c(),
                                    autoBalance = c(),
                                    communityPickups = c(),
-                                   neutralPickups = c(),
+                                   neutralPickups = c(), 
                                    singlePickups = c(),
                                    doublePickups = c(),
                                    teleopCones = c(),
@@ -1726,20 +1787,40 @@ server <- function(input, output, session) {
                                    speed = c(),
                                    driver = c(),
                                    scoutName = c(),
-                                   comments = c()
+                                   comments = c(),
+                                   
+                                   scoredT = c(),
+                                   scoredA = c(),
+                                   scoredCones = c(),
+                                   scoredCubes = c(),
+                                   scoredTCones = c(),
+                                   scoredTCubes =  c(),
+                                   scoredACones = c(),
+                                   scoredACubes = c(),
+                                   totalPickups = c(),
+                                   pointsT = c(),
+                                   pointsA = c(),
+                                   pointsTotal = c(),
+                                   
+                                   scoredLowT = c(),
+                                   scoredMidT = c(),
+                                   scoredHighT = c(),
+                                   scoredLowA = c(),
+                                   scoredMidA = c(),
+                                   scoredHighA = c(),
+                                   
+                                   ct = c()
                                    )
     
-    s <- input$search
+    s <- as.integer(input$search)
     
     if(is.null(s) || is.null(vals$mainframe)) {
       return(NULL)
     }
     
     for(newrow in 1:nrow(vals$mainframe)) {
-      if(toString(vals$mainframe$teamNum[newrow]) == s) {
+      if(vals$mainframe$teamNum[newrow] == s) {
         vals$searchframe <- rbind(vals$searchframe, vals$mainframe[newrow, ])
-      } else {
-        return(NULL)
       }
     }
     
@@ -1820,46 +1901,66 @@ server <- function(input, output, session) {
   
   observeEvent(input$entermatchSearch, {
     vals$matchsearchframe <- data.frame(teamNum = c(),
-                                   matchNum = c(),
-                                   alliance = c(),
-                                   startLocation = c(),
-                                   preload = c(),
-                                   mobility = c(),
-                                   autoPickups = c(),
-                                   autoCones = c(),
-                                   autoCubes = c(),
-                                   autoBalance = c(),
-                                   communityPickups = c(),
-                                   neutralPickups = c(),
-                                   singlePickups = c(),
-                                   doublePickups = c(),
-                                   teleopCones = c(),
-                                   teleopCubes = c(),
-                                   shuttle = c(),
-                                   teleopBalance = c(),
-                                   buddyClimb = c(),
-                                   balanceTime = c(),
-                                   everybot = c(),
-                                   drivetrainType = c(),
-                                   drivetrain = c(),
-                                   intake = c(),
-                                   speed = c(),
-                                   driver = c(),
-                                   scoutName = c(),
-                                   comments = c()
+                                        matchNum = c(),
+                                        alliance = c(),
+                                        startLocation = c(),
+                                        preload = c(),
+                                        mobility = c(),
+                                        autoPickups = c(),
+                                        autoCones = c(),
+                                        autoCubes = c(),
+                                        autoBalance = c(),
+                                        communityPickups = c(),
+                                        neutralPickups = c(), 
+                                        singlePickups = c(),
+                                        doublePickups = c(),
+                                        teleopCones = c(),
+                                        teleopCubes = c(),
+                                        shuttle = c(),
+                                        teleopBalance = c(),
+                                        buddyClimb = c(),
+                                        balanceTime = c(),
+                                        everybot = c(),
+                                        drivetrainType = c(),
+                                        drivetrain = c(),
+                                        intake = c(),
+                                        speed = c(),
+                                        driver = c(),
+                                        scoutName = c(),
+                                        comments = c(),
+                                        
+                                        scoredT = c(),
+                                        scoredA = c(),
+                                        scoredCones = c(),
+                                        scoredCubes = c(),
+                                        scoredTCones = c(),
+                                        scoredTCubes =  c(),
+                                        scoredACones = c(),
+                                        scoredACubes = c(),
+                                        totalPickups = c(),
+                                        pointsT = c(),
+                                        pointsA = c(),
+                                        pointsTotal = c(),
+                                        
+                                        scoredLowT = c(),
+                                        scoredMidT = c(),
+                                        scoredHighT = c(),
+                                        scoredLowA = c(),
+                                        scoredMidA = c(),
+                                        scoredHighA = c(),
+                                        
+                                        ct = c()
     )
     
-    s <- input$matchsearch
+    s <- as.integer(input$matchsearch)
     
     if(is.null(s) || is.null(vals$mainframe)) {
       return(NULL)
     }
     
     for(newrow in 1:nrow(vals$mainframe)) {
-      if(toString(vals$mainframe$matchNum[newrow]) == s) {
+      if(vals$mainframe$matchNum[newrow] == s) {
         vals$matchsearchframe <- rbind(vals$matchsearchframe, vals$mainframe[newrow, ])
-      } else {
-        return(NULL)
       }
     }
     
