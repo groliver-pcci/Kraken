@@ -31,8 +31,6 @@ setwd(path)
 
 
 
-
-
 # The object that stores all of the values for the app
 vals <- reactiveValues(
   mainframe = data.frame(teamNum = c(),
@@ -88,7 +86,7 @@ vals <- reactiveValues(
                        redLinks = c(),
                        
                        blueScore = c(),
-                       blueLinks = c(),
+                       blueLinks = c()
                        ),
   
   searchframe = data.frame(teamNum = c(),
@@ -365,7 +363,6 @@ vals <- reactiveValues(
   
   startupDone = FALSE
 )
-
 
 
 # Functions to update values
@@ -678,43 +675,11 @@ calcSSValues <- function() {
     
     tAlliances <- teamAlliances[ssmatches]
     
-    balances <- 0
-    successes <- 0
-    
     tIndexes <- which(vals$mainframe$teamNum == teamNum)
     
     mplayed <- as.integer(vals$teamframe$matchesPlayedi[team]) + length(tIndexes)
     
-    if(length(tIndexes) > 0) {
-      for(match in 1:length(tIndexes)) {
-        
-        tI <- tIndexes[match]
-        mNum <- vals$mainframe$matchNum[tI]
-        
-        ssIndex <- which(vals$ssframe$matchNum == mNum)
-        
-        if(length(ssIndex) > 0) {
-          alli <- findTeamAlliance(teamNum, mNum)
-          
-          balance <- vals$mainframe$teleopBalance[tI]
-          
-          if(balance == "dock" || balance == "engage") {
-            balances <- balances + 1
-            if(alli == "r") {
-              if(vals$ssframe$redCharge[ssIndex] == "c") {
-                successes <- successes + 1
-              }
-            } else if(alli == "b") {
-              if(vals$ssframe$blueCharge[ssIndex] == "c") {
-                successes <- successes + 1
-              }
-            }
-          } else if(balance == "fail") {
-            balances <- balances + 1
-          }
-        }
-      }
-    }
+    
     
     
     
@@ -775,22 +740,7 @@ calcSSValues <- function() {
     
     
     
-    
-    
-    
-    
-    
-    
     SEf <- 0
-    BC <- 0
-    
-    if(successes == 0) {
-      BC <- 0
-    } else {
-      BC <- 100 * successes / balances
-    }
-    
-    vals$teamframe$BC[team] <- BC
 
     if(length(ssmatches) > 0) {
       for(m in 1:length(ssmatches)) {
@@ -1031,7 +981,7 @@ parseRData <- function(string) {
 }
 
 parseSData <- function(string) {
-  info <- unlist(strsplit(string, "|"))
+  info <- unlist(strsplit(string, "|", fixed = TRUE))
   
   firstone <- info[1]
   
@@ -1046,7 +996,7 @@ parseSData <- function(string) {
                           redLinks = integer(1),
                      
                           blueScore = integer(1),
-                          blueLinks = integer(1),
+                          blueLinks = integer(1)
   )
   
   mNum <- info[1]
@@ -2467,11 +2417,22 @@ server <- function(input, output, session) {
     
     indexes <- which(vals$mainframe$teamNum == teamNum)
     
-    for(i in 1:length(indexes)) {
-      idx <- indexes[i]
-      
-      vals$pickframe <- rbind(vals$pickframe, vals$mainframe[idx, ])
+    print(length(indexes))
+    print(paste0("nrows: ", nrow(vals$pickframe)))
+    
+    print("passed 1")
+    
+    
+    if(length(indexes > 0)) {
+      for(i in 1:length(indexes)) {
+        idx <- indexes[i]
+        
+        vals$pickframe <- rbind(vals$pickframe, vals$mainframe[idx, ])
+      }
     }
+    
+    print(nrow(vals$pickframe))
+    
     
     output$pickframeout <- renderDT(datatable(vals$pickframe, extensions = "FixedColumns", selection = "single",
                                               options = list(scrollX = TRUE, paging = FALSE, scrollY = "240 px",
@@ -2492,7 +2453,6 @@ server <- function(input, output, session) {
       
       tCones <- unlist(strsplit(toString(row$teleopCones), ","))
       tCubes <- unlist(strsplit(toString(row$teleopCubes), ","))
-      
       
       if(aCones[1] != "NA") {
         addScores(aCones, "a", "cone", "pick")
@@ -2518,40 +2478,43 @@ server <- function(input, output, session) {
     
     output$pickCalcData <- renderDT(datatable(vals$pickcalcframe, options = list(scrollX = TRUE, scrollY = "220px",
                                                                           paging = FALSE)))
-
-    for(row in 1:nrow(vals$pickframe)) {
-      df <- data.frame(matchNum = numeric(1),
-                       scoredA = numeric(1),
-                       scoredLowA = numeric(1),
-                       scoredMidA = numeric(1),
-                       scoredHighA = numeric(1),
-                       mobility = logical(1),
-                       autoBalance = character(1),
-                       scoredT = numeric(1),
-                       scoredLowT = numeric(1),
-                       scoredMidT = numeric(1), 
-                       scoredHighT = numeric(1),
-                       teleopBalance = character(1),
-                       comments = character(1)
-                       )
-      
-      
-      df$matchNum[1] <- vals$pickframe$matchNum[row]
-      df$scoredA[1] <- vals$pickframe$scoredA[row]
-      df$scoredLowA[1] <- vals$pickframe$scoredLowA[row]
-      df$scoredMidA[1] <- vals$pickframe$scoredMidA[row]
-      df$scoredHighA[1] <- vals$pickframe$scoredHighA[row]
-      df$mobility[1] <- vals$pickframe$mobility[row]
-      df$autoBalance[1] <- vals$pickframe$autoBalance[row]
-      df$scoredT[1] <- vals$pickframe$scoredT[row]
-      df$scoredLowT[1] <- vals$pickframe$scoredLowT[row]
-      df$scoredMidT[1] <- vals$pickframe$scoredMidT[row]
-      df$scoredHighT[1] <- vals$pickframe$scoredHighT[row] 
-      df$teleopBalance[1] <- vals$pickframe$teleopBalance[row]
-      df$comments[1] <- vals$pickframe$comments[row]
-      
-      vals$pickcalcframe <- rbind(vals$pickcalcframe, df)
-      
+    
+    
+    if(nrow(vals$pickframe) > 0) {
+      for(row in 1:nrow(vals$pickframe)) {
+        df <- data.frame(matchNum = numeric(1),
+                         scoredA = numeric(1),
+                         scoredLowA = numeric(1),
+                         scoredMidA = numeric(1),
+                         scoredHighA = numeric(1),
+                         mobility = logical(1),
+                         autoBalance = character(1),
+                         scoredT = numeric(1),
+                         scoredLowT = numeric(1),
+                         scoredMidT = numeric(1), 
+                         scoredHighT = numeric(1),
+                         teleopBalance = character(1),
+                         comments = character(1)
+        )
+        
+        
+        df$matchNum[1] <- vals$pickframe$matchNum[row]
+        df$scoredA[1] <- vals$pickframe$scoredA[row]
+        df$scoredLowA[1] <- vals$pickframe$scoredLowA[row]
+        df$scoredMidA[1] <- vals$pickframe$scoredMidA[row]
+        df$scoredHighA[1] <- vals$pickframe$scoredHighA[row]
+        df$mobility[1] <- vals$pickframe$mobility[row]
+        df$autoBalance[1] <- vals$pickframe$autoBalance[row]
+        df$scoredT[1] <- vals$pickframe$scoredT[row]
+        df$scoredLowT[1] <- vals$pickframe$scoredLowT[row]
+        df$scoredMidT[1] <- vals$pickframe$scoredMidT[row]
+        df$scoredHighT[1] <- vals$pickframe$scoredHighT[row] 
+        df$teleopBalance[1] <- vals$pickframe$teleopBalance[row]
+        df$comments[1] <- vals$pickframe$comments[row]
+        
+        vals$pickcalcframe <- rbind(vals$pickcalcframe, df)
+        
+      }
     }
     
     total <- nrow(vals$pickcalcframe)
@@ -2578,43 +2541,51 @@ server <- function(input, output, session) {
     fails <- 0
     nas <- 0
     
-    for(r in 1:nrow(vals$pickcalcframe)) {
-      row <- vals$pickcalcframe[r, ]
-
-      if(row$autoBalance[1] == "fail" || row$autoBalance[1] == "dock") {
-        abfail <- abfail + 1
-      } else if(row$autoBalance == "engage") {
-        absuccess <- absuccess + 1
-      }
-      
-      asH <- asH + row$scoredHighA
-      asM <- asM + row$scoredMidA
-      asL <- asL + row$scoredLowA
-      
-      if(row$mobility == TRUE) {
-        mob <- mob + 1
-      }
-      
-      tPieces <- tPieces + row$scoredT
-      tHigh <- tHigh + row$scoredHighT
-      tMid <- tMid + row$scoredMidT
-      tLow <- tLow + row$scoredLowT
-      
-      neut <- neut + vals$pickframe$neutralPickups[r]
-      com <- com + vals$pickframe$communityPickups[r]
-      single <- single + vals$pickframe$singlePickups[r]
-      double <- double + vals$pickframe$doublePickups[r]
-      
-      if(row$teleopBalance[1] == "engage") {
-        engages <- engages + 1
-      } else if(row$teleopBalance[1] == "dock") {
-        docks <- docks + 1
-      } else if(row$teleopBalance[1] == "park") {
-        parks <- parks + 1
-      } else if(row$teleopBalance[1] == "fail") {
-        fails <- fails + 1
-      } else {
-        nas <- nas + 1
+    print(nrow(vals$pickcalcframe))
+    
+    if(nrow(vals$pickcalcframe > 0)) {
+      for(r in 1:nrow(vals$pickcalcframe)) {
+        row <- vals$pickcalcframe[r, ]
+        
+        print("passed 2")
+        
+        if(row$autoBalance[1] == "fail" || row$autoBalance[1] == "dock") {
+          abfail <- abfail + 1
+        } else if(row$autoBalance == "engage") {
+          absuccess <- absuccess + 1
+        }
+        
+        asH <- asH + row$scoredHighA
+        asM <- asM + row$scoredMidA
+        asL <- asL + row$scoredLowA
+        
+        if(row$mobility == TRUE) {
+          mob <- mob + 1
+        }
+        
+        print("passed 4")
+        
+        tPieces <- tPieces + row$scoredT
+        tHigh <- tHigh + row$scoredHighT
+        tMid <- tMid + row$scoredMidT
+        tLow <- tLow + row$scoredLowT
+        
+        neut <- neut + vals$pickframe$neutralPickups[r]
+        com <- com + vals$pickframe$communityPickups[r]
+        single <- single + vals$pickframe$singlePickups[r]
+        double <- double + vals$pickframe$doublePickups[r]
+        
+        if(row$teleopBalance[1] == "engage") {
+          engages <- engages + 1
+        } else if(row$teleopBalance[1] == "dock") {
+          docks <- docks + 1
+        } else if(row$teleopBalance[1] == "park") {
+          parks <- parks + 1
+        } else if(row$teleopBalance[1] == "fail") {
+          fails <- fails + 1
+        } else {
+          nas <- nas + 1
+        }
       }
     }
     
