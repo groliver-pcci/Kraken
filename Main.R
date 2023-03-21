@@ -13,7 +13,7 @@ load_all("C:\\Users\\wcbri\\Documents\\tbaR_1.0.1\\tbaR\\tbaR.Rproj")
 #link to pull from statbotics
 statbotics <- "https://api.statbotics.io/v2/"
 
-tbaKey <- "2023txwac"
+tbaKey <- "2023txfor"
 
 week <- 1
 
@@ -524,9 +524,11 @@ calcValues <- function(df) {
   info$pointsA[1] <- info$scoredLowA[1] * 3 + info$scoredMidA[1] * 4 + info$scoredHighA[1] * 6
   info$pointsTotal[1] <- info$pointsT[1] + info$pointsA[1]
   
-  info$ct[1] <- round(135 / unlist(info$scoredT[1]), digits = 3)
-  
-  
+  if(info$scoredT[1] > 0) {
+    info$ct[1] <- round(135 / unlist(info$scoredT[1]), digits = 3)
+  } else {
+    info$ct[1] <- 0
+  }
   
   teamNum <- info$teamNum[1]
   teamIdx <- as.integer(which(vals$teamframe$teamNum == teamNum))
@@ -550,7 +552,9 @@ calcValues <- function(df) {
   vals$teamframe$aS[teamIdx] <- round((vals$teamframe$aSa[teamIdx] + vals$teamframe$aSt[teamIdx]), digits = 2)
   
   # ECT
-  vals$teamframe$ECT[teamIdx] <- round(mean(as.double(matches$ct)), digits = 1)
+  goodmatches <- which(matches$ct != 0)
+  
+  vals$teamframe$ECT[teamIdx] <- round(mean(as.double(matches$ct[goodmatches])), digits = 1)
   
   # BC
   # Can't be done until SS data is integrated
@@ -772,9 +776,17 @@ calcSSValues <- function() {
         }
         
         if(alliance == "r") {
-          SEf <- append(SEf, (floor(rscored / 3) * 3) / vals$ssframe$redLinks[matchI])
+          if(rscored > 0 & vals$ssframe$redLinks[matchI] > 0) {
+            SEf <- append(SEf, (floor(rscored / 3) * 3) / vals$ssframe$redLinks[matchI])
+          } else {
+            SEf <- append(SEf, 0)
+          }
         } else if(alliance == "b") {
-          SEf <- append(SEf, (floor(bscored / 3) * 3) / vals$ssframe$blueLinks[matchI])
+          if(bscored > 0 & vals$ssframe$blueLinks[matchI] > 0) {
+            SEf <- append(SEf, (floor(bscored / 3) * 3) / vals$ssframe$blueLinks[matchI])
+          } else {
+            SEf <- append(SEf, 0)
+          }
         }
         
       }
@@ -782,6 +794,8 @@ calcSSValues <- function() {
     
     if(length(SEf) > 0) {
       vals$teamframe$SEf[team] <- round(mean(SEf), digits = 2)
+    } else {
+      vals$teamframe$SEf[team] <- 0
     }
     
     
@@ -2344,10 +2358,13 @@ server <- function(input, output, session) {
     teamNum <- input$pickTeamNum
     
     picPath <- paste0(path, "Pictures\\", teamNum, ".png")
+    picAlt <- paste0(path, "Pictures\\", teamNum, ".JPG")
     nopePath <- paste0(path, "Pictures\\nope.png")
     
     if(file.exists(picPath)) {
       output$teamPhoto <- renderImage(list(src = picPath, width = 280), deleteFile = FALSE)
+    } else if(file.exists(picAlt)) {
+      output$teamPhoto <- renderImage(list(src = picAlt, width = 280), deleteFile = FALSE)
     } else {
       output$teamPhoto <- renderImage(list(src = nopePath, width = 280), deleteFile = FALSE)
     }
@@ -2417,11 +2434,6 @@ server <- function(input, output, session) {
     
     indexes <- which(vals$mainframe$teamNum == teamNum)
     
-    print(length(indexes))
-    print(paste0("nrows: ", nrow(vals$pickframe)))
-    
-    print("passed 1")
-    
     
     if(length(indexes > 0)) {
       for(i in 1:length(indexes)) {
@@ -2431,11 +2443,9 @@ server <- function(input, output, session) {
       }
     }
     
-    print(nrow(vals$pickframe))
-    
     
     output$pickframeout <- renderDT(datatable(vals$pickframe, extensions = "FixedColumns", selection = "single",
-                                              options = list(scrollX = TRUE, paging = FALSE, scrollY = "240 px",
+                                              options = list(scrollX = TRUE, paging = FALSE, scrollY = "240px",
                                                              fixedColumns = list(leftColumns = 3))))
     
     output$pickautonscoring <- renderTable(vals$pickautonScoring)
@@ -2541,13 +2551,9 @@ server <- function(input, output, session) {
     fails <- 0
     nas <- 0
     
-    print(nrow(vals$pickcalcframe))
-    
     if(nrow(vals$pickcalcframe > 0)) {
       for(r in 1:nrow(vals$pickcalcframe)) {
         row <- vals$pickcalcframe[r, ]
-        
-        print("passed 2")
         
         if(row$autoBalance[1] == "fail" || row$autoBalance[1] == "dock") {
           abfail <- abfail + 1
@@ -2562,8 +2568,6 @@ server <- function(input, output, session) {
         if(row$mobility == TRUE) {
           mob <- mob + 1
         }
-        
-        print("passed 4")
         
         tPieces <- tPieces + row$scoredT
         tHigh <- tHigh + row$scoredHighT
