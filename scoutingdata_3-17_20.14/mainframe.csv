@@ -1,0 +1,603 @@
+"teamNum","matchNum","alliance","driveStation","startLocation","preload","mobility","autoPickups","autoCones","autoCubes","autoBalance","communityPickups","neutralPickups","singlePickups","doublePickups","teleopCones","teleopCubes","shuttle","teleopBalance","buddyClimb","driver","scoutName","comments","scoredT","scoredA","scoredCones","scoredCubes","totalPickups","scoredLowT","scoredMidT","scoredHighT","scoredLowA","scoredMidA","scoredHighA","scoredTCones","scoredTCubes","scoredACones","scoredACubes","pointsT","pointsA","pointsTotal","ct"
+"7503","1","b","b3","2","cube","TRUE",NA,NA,"23","engage","0","4","0","0","1","2","FALSE","dock","FALSE","3","gordon","slow, rough start, multiple failed attempts to pick up cones
+",2,1,1,2,3,0,0,2,1,0,0,1,1,0,1,10,3,13,67.5
+"8816","1","r","r2","1","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","park","FALSE","2","Kari","Stalled for 30s during teleop. Wandered in middle for most of the time, played a little defense, tried to knock pieces away from opposing robots. Didn't use intake at all. Wasn't able to score in auton, no mobility, maybe got stuck on wire.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"6526","1","r","r3","2","cube","FALSE",NA,NA,NA,"na","0","1","0","0",NA,"25","FALSE","fail","FALSE","1","cobleigh","intake did not look structurally sound. unable to pick up cubes or cones off ground. not very skilled driver and not very fast.
+",1,0,0,1,1,1,0,0,0,0,0,0,1,0,0,2,0,2,135
+"7506","1","r","r1","3","cube","FALSE",NA,NA,NA,"na","1","0","0","3","7",NA,"FALSE","engage","FALSE","2","harold","had trouble keeping cargo in intake. can only pick up cargo from shelf. one cube was almost fully in hybrid but not quite. took about 4s to get on charge station. 
+",1,0,1,0,1,0,0,1,0,0,0,1,0,0,0,5,0,5,135
+"7321","1","b","b2","3","cube","TRUE",NA,NA,NA,"na","0","1","0","0",NA,NA,"TRUE","na","FALSE","3","Ha","Broke down on the field. Would probably be tippy due to useless structure on the top. 
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"8528","1","b","b3","1","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,"20","FALSE","fail","FALSE","1","soriano","didnt drive during auton, very slow bot, new driver, just pushed, jerked cube into hybrid zone
+",1,0,0,1,1,1,0,0,0,0,0,0,1,0,0,2,0,2,135
+"7271","2","b","b1","1",NA,"TRUE",NA,NA,NA,"na","0","0","0","0",NA,NA,"TRUE","engage","FALSE","2","gordon","didnt even try to push cones or cubes, just ran arund hitting other bots
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"8749","2","b","r3","3","cube","TRUE",NA,NA,"27","na","2","0","0","2","19,21","23,24,25,14","FALSE","engage","FALSE","4","soriano","fast swerve, pick up pieces and shoots them into ground and shelf grid spots
+",6,1,2,5,7,5,1,0,1,0,0,2,4,0,1,13,3,16,22.5
+"5613","2","r","r2","1","cube","FALSE",NA,NA,NA,"na","0","1","1","0","21","25,26","FALSE","engage","FALSE","3","Kari","Doesn't use intake during game. Pushes pieces into their nodes. Only can do bottom row. Slow moving around the field. Attempted charge station with 30s remaining.
+",3,0,1,2,3,3,0,0,0,0,0,1,2,0,0,6,0,6,45
+"9105","2","r","r3","3",NA,"TRUE",NA,NA,NA,"na","0","1","0","0","24",NA,"FALSE","engage","FALSE","4","cobleigh","pretty good robot. intake did not seem to work well. played strong defense and had a very good endgame balance. pushed to score
+",1,0,1,0,1,1,0,0,0,0,0,1,0,0,0,2,0,2,135
+"7534","2","r","r1","2","cube","FALSE",NA,NA,NA,"na","0","0","1","0",NA,"23","FALSE","park","FALSE","2","harold","swerve pancake bot. seemed to be waiting near the other alliance's cargo zone to play defense against them. did not play very good defense though. browned out after hitting wall. 
+",1,0,0,1,1,1,0,0,0,0,0,0,1,0,0,2,0,2,135
+"4192","2","b","b2","2",NA,"FALSE",NA,NA,NA,"na","0","1","0","2","21","23","FALSE","na","FALSE","2","Ha","Defended against heavily, was not able to evade. Had difficulty intaking all pieces, piece security was suboptimal. elevator mechanism broke on field. 
+",2,0,1,1,2,2,0,0,0,0,0,1,1,0,0,4,0,4,67.5
+"9128","3","b","b3","3","cone","TRUE",NA,"26",NA,"na","0","3","0","2",NA,"8,17,5,11","TRUE","dock","FALSE","3","soriano","cobra-like intake, shuttle bot auton, goes only for cubes
+",4,1,1,4,5,0,2,2,1,0,0,0,4,1,0,16,3,19,33.75
+"8858","3","r","r1","1","cube","TRUE",NA,NA,"17","na","0","0","0","2",NA,NA,"FALSE","na","FALSE","2","harold","very tippy robot because it is an everybot. missed a cone on the grid. not very good at intaking. had some periodic brownouts during the match.
+",0,1,0,1,1,0,0,0,0,1,0,0,0,0,1,0,4,4,0
+"9156","3","b","b3","1","cone","TRUE",NA,"1",NA,"na","0","0","0","3","19,20","2","FALSE","na","FALSE","2","Miele","Very slow tank drive wtih human player not knowing what to give the bot. Only has shelf pickup and robot drops pieces from intake easily
+",3,1,3,1,4,2,0,1,0,0,1,2,1,1,0,9,6,15,45
+"6672","3","r","r3","3","cone","TRUE",NA,"10","11","na","2","4","3","1","12","21,19,20,22,23,24,5","FALSE","engage","FALSE","5","cobleigh","efficent low and medium scoring. good speed and intake skill. very close to three piece auton.
+",8,2,2,8,10,6,1,1,0,2,0,1,7,1,1,20,8,28,16.875
+"2714","3","r","r2","2","cone","FALSE",NA,"4",NA,"engage","0","0","0","5","6,7,9","25,8","FALSE","engage","FALSE","5","Kari","Quick Movement, picked up only from the double sub. Focused on completing link in top row. Placed mostly cones, only two cubes. Didn't disrupt other robots.
+",5,1,4,2,6,1,0,4,0,0,1,3,2,1,0,22,6,28,27
+"5411","4","b","b3","1","cone","FALSE",NA,NA,NA,"na","0","0","0","3","9,7,6",NA,"FALSE","fail","FALSE","3","soriano","tipped over last minute on charge station, only picked up cones from shelf
+",3,0,3,0,3,0,0,3,0,0,0,3,0,0,0,15,0,15,45
+"7119","4","r","r1","1","cube","FALSE",NA,NA,"17","na","0","2","1","0",NA,"26,5,2","FALSE","fail","FALSE","3","harold","almost got mobility in auton but not quite. has an interesting cube shooter that made it most of the time but not all the time. 
+",3,1,0,4,4,1,0,2,0,1,0,0,3,0,1,12,4,16,45
+"7540","4","r","r3","3","cone","FALSE",NA,"19",NA,"na","0","0","0","3","1,3,4",NA,"FALSE","na","FALSE","3","cobleigh","decent speed. scored pretty consistently. did not work when trying to pick up pieces from the ground
+",3,1,4,0,4,0,0,3,1,0,0,3,0,1,0,15,3,18,45
+"7535","4","r","r2","2","cube","TRUE",NA,NA,"23","na","0","0","0","0",NA,NA,"FALSE","engage","FALSE","2","Kari","Didn't pick up any pieces. Wandered around in the middle. Got a penalty for hitting robot in sub zone.
+",0,1,0,1,1,0,0,0,1,0,0,0,0,0,1,0,3,3,0
+"6369","4","b","b3","2","cube","FALSE",NA,NA,"23","na","0","4","0","0","12,10,13,24",NA,"FALSE","dock","FALSE","4","novinski","decent driver on a swerve. fast and a little tippy. ground pick up of cones is good. didn't use cubes outside of auton. dropped two pieces(accidentally)into hybrid nodes
+",4,1,4,1,5,1,3,0,1,0,0,4,0,0,1,11,3,14,33.75
+"3310","3","b","b2","2","cone","FALSE",NA,NA,NA,"engage","0","0","6","0","9,7,6,4,3,20",NA,"TRUE","engage","FALSE","4","Ha","Move and score efficiently. Overall good bot. balance well. missed one score on auton.",6,0,6,0,6,1,0,5,0,0,0,6,0,0,0,27,0,27,22.5
+"4153","5","b","b3","2","cube","FALSE",NA,NA,NA,"dock","0","1","1","0",NA,"23,27,26","FALSE","engage","FALSE","3","gabri","intake is janky, takes forever to secure a cube in it, mostly cubes in hybrid
+",3,0,0,3,3,3,0,0,0,0,0,0,3,0,0,6,0,6,45
+"4641","5","b","b2","3","cube","TRUE",NA,NA,"8","na","0","4","0","0",NA,"20","TRUE","engage","FALSE","3","Duhe","-perhaps buddy climb? cant tell-failed intake of cube in auton-no cone intake
+",1,1,0,2,2,1,0,0,0,0,1,0,1,0,1,2,6,8,135
+"3005","5","r","r3","3","cube","TRUE",NA,"1","2","na","0","3","5","0","3,4,25,6,10,13,15,7","11","FALSE","fail","FALSE","5","cobleigh","incredible speed and scoring skill. very solid robot.
+",9,2,9,2,11,1,4,4,0,0,2,8,1,1,1,34,12,46,15
+"4251","5","r","r1","1","cone","FALSE",NA,NA,NA,"na","0","1","0","0",NA,NA,"FALSE","fail","FALSE","2","harold","arm always fully extended so has hard time intaking. 148 was pushing them around a lot. tried to climb but the arm was giving them a hard time. the climb ultimately failed. 
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"148","5","b","b3","1","cube","FALSE",NA,"19",NA,"na","0","0","0","0",NA,NA,"FALSE","engage","FALSE","4","novinski","good driver and swerve, but their arm broke sometime in auton. good defense with drawing penalties
+",0,1,1,0,1,0,0,0,1,0,0,0,0,1,0,0,3,3,0
+"4206","5","r","r2","2","cube","FALSE",NA,NA,NA,"na","1","0","4","0",NA,"14,26,25,23,5","FALSE","fail","FALSE","5","Kari","No Auton. Picked up cubes and filled part of bottom row. Picked up from single sub mostly. Good speed and control.
+",5,0,0,5,5,3,1,1,0,0,0,0,5,0,0,14,0,14,27
+"9299","6","r","r3","2",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","1","cobleigh","did not show up to the match.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"9080","6","b","b2","3",NA,"FALSE",NA,NA,NA,"na","0","3","1","0",NA,"5,2,26,17","FALSE","na","FALSE","2","Duhe","-almost engaged, but fell off at end-a bit slow, sometimes struggled on top of charge station-no auton-intake only cubes
+",4,0,0,4,4,1,1,2,0,0,0,0,4,0,0,15,0,15,33.75
+"7506","6","r","r1","1","cube","FALSE","4",NA,NA,"na","1","0","0","2","6,4","5","FALSE","park","FALSE","3","harold","missed preload during auton. is a bit slow in intaking cargo. tried to balance with another robot but could not get up. was also tippy during some moments. 
+",3,0,2,1,3,0,0,3,0,0,0,2,1,0,0,15,0,15,45
+"6974","6","r","r2","3","cone","FALSE",NA,NA,NA,"na","1","0","0","0","3",NA,"FALSE","fail","FALSE","3","Kari","Large robot, takes up alot of space. Picks up cones and tries to score on top row. Intake picks up piece and extends out.
+",1,0,1,0,1,0,0,1,0,0,0,1,0,0,0,5,0,5,135
+"9088","6","b","b1","2",NA,"FALSE",NA,NA,NA,"fail","0","3","0","1","6,4,24","8","FALSE","engage","FALSE","3","soriano","semi fast, tippy tamk drive
+",4,0,3,1,4,1,0,3,0,0,0,3,1,0,0,17,0,17,33.75
+"7534","6","b","b3","1","cube","FALSE",NA,NA,NA,"na","0","0","0","0","22","20","TRUE","fail","FALSE","1","Miele","Jittery driving, driver didnt understand the orientation of the robot despite having swerve drive. Tried to shuttle and defend but wasn't very effective
+",2,0,1,1,2,2,0,0,0,0,0,1,1,0,0,4,0,4,67.5
+"5431","4","b","b2","3","cube","FALSE",NA,NA,"8","na","0","1","1","3",NA,"5,14,11,17","FALSE","fail","FALSE","2","Oliver","hard to move around tough places, only did cubes.
+",4,1,0,5,5,0,3,1,0,0,1,0,4,0,1,14,6,20,33.75
+"5411","7","b","b2","2","cube","TRUE",NA,NA,NA,"fail","1","1","0","3","15,21","2,23","FALSE","fail","FALSE","3","harold","dropped much of the cargo when trying to score high but it sometimes landed in the grid anyway. made the motion of the desire to climb but stayed out because it would not do very well on it. has a pretty reliable intake that can generally pick up and score most of the time. 
+",4,0,2,2,4,2,1,1,0,0,0,2,2,0,0,12,0,12,33.75
+"4153","8","r","r1","2","cube","FALSE","4",NA,NA,"engage","0","1","2","0",NA,"23,24","FALSE","engage","FALSE","2","Oliver","Had to go onto charge station to disloge cubes to score, arm may have broken, 
+",2,0,0,2,2,2,0,0,0,0,0,0,2,0,0,4,0,4,67.5
+"6672","8","r","r3","3","cone","TRUE","4,3","10","11","na","0","2","4","3","13,3,1,6","20,19,21,2,23","FALSE","engage","FALSE","5","Duhe","-fast, efficient, quick, smooth engage, consistent
+",9,2,5,6,11,4,1,4,0,2,0,4,5,1,1,31,8,39,15
+"7119","7","b","b3","1","cube","TRUE",NA,NA,"11","na","0","1","2","0",NA,"20,24","FALSE","dock","FALSE","2","Minear","slow. they have a cube launcher but it isn't accurate. Twice it fell to the bottom node. They did not pickup any cones. Tried twice to dock but failed both times losing the blue alliance's already engaged bot
+",2,1,0,3,3,2,0,0,0,1,0,0,2,0,1,4,4,8,67.5
+"9182","8","b","b1","2","cone","TRUE",NA,NA,NA,"engage","0","1","4","0","19,1","2,5,20,14","FALSE","na","FALSE","4","minear","Low Center of gravity eliminates most tipping and it can go faster. Quick back and forth scoring. 
+",6,0,2,4,6,2,1,3,0,0,0,2,4,0,0,22,0,22,22.5
+"8528","8","b","b3","3","cube","FALSE",NA,NA,NA,"na","0","1","0","0","25","26","FALSE","engage","FALSE","2","Pozo","Had an intake that would not come out after beginning so they just pushed pieces into hybrid nodes. Drive speed was kind of slow but were able to engage pretty easily
+",2,0,1,1,2,2,0,0,0,0,0,1,1,0,0,4,0,4,67.5
+"6369","8","b","b2","1","cube","FALSE",NA,NA,"11","na","0","1","0","0","10,21",NA,"FALSE","engage","FALSE","3","harold","scored mostly mid cones and cubes. the arm and intake were having troubles near the end to the point where it was unusable. they did climb well, however. 
+",2,1,2,1,3,1,1,0,0,1,0,2,0,0,1,5,4,9,67.5
+"7271","8","r","r2","1",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","1","Ha","Robot broke down on the field. unable to do mobility, but has auton that can move. 
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"4641","9","r","r1","1","cube","TRUE",NA,NA,"17","na","0","3","0","0",NA,"26,20","FALSE","engage","FALSE","2","Oliver","Driver had issues picking up and keeping cubes in robot, got defended easily, didn't attempt cone. although the robot had an arm, it wasn't used.
+",2,1,0,3,3,2,0,0,0,1,0,0,2,0,1,4,4,8,67.5
+"5431","9","b","b1","1","cone","FALSE",NA,NA,"2","na","0","2","1","0","1,3","5","FALSE","dock","FALSE","3","minear","Placed a cone in a cube node. medium speed but consistant grabbing neutral zone pieces and scoring them. It looked like their auton messed up and should have gotten mobility. 
+",3,1,2,2,4,0,0,3,0,0,1,2,1,0,1,15,6,21,45
+"6526","9","b","b2","3",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","fail","FALSE","2","harold","mecanum drive. seemed almost physically incapable of intaking from the shelf. tried reverting to defense in the little time left of the round after trying for very long with the shelf. tried to climb but did not make it. 
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"4206","9","r","r2","2","cube","TRUE",NA,NA,"5","fail","0","3","1","3","4,6,21,3","2","FALSE","engage","FALSE","4","Ha","Increased quality of performance from Florida. Unable to complete a possible 2 piece intake auton + Balance. Moves quickly, but would rather stay on flat ground than go over charge station to score. Good balance. Intake can pick up both ground and shelf. 
+",5,1,4,2,6,1,0,4,0,0,1,4,1,0,1,22,6,28,27
+"4192","9","r","r3","3","cube","FALSE",NA,NA,NA,"na","0","0","2","0",NA,"20,19,23","FALSE","fail","FALSE","1","Duhe","-attempted engage, but no time (2 other robots engaged)- intake struggled to pick up cubes, and did not intake cones-often failed to capture cube it attempted to intake- no auton
+",3,0,0,3,3,3,0,0,0,0,0,0,3,0,0,6,0,6,45
+"9299","9","b","b3","2",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","park","FALSE","2","Pozo","pretty good defensive bot but commited two fouls by going into the opposite loading zone and community. tried to climb but got pushed off so parked 
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"7540","10","b","b2","3","cone","TRUE",NA,NA,NA,"na","0","1","0","2","9,25","24","FALSE","engage","FALSE","3","cobleigh","not a great intake. dropped a lot of game pieces\
+                                                                                            ",3,0,2,1,3,2,0,1,0,0,0,2,1,0,0,9,0,9,45
+"9080","10","b","b1","1",NA,"FALSE",NA,NA,NA,"na","0","1","1","0",NA,"5","FALSE","na","FALSE","2","Kari","Very slow and fidgety driving. Long intake that got stuck early in game. Wasn't able to pick up pieces easily. Tried to pick up from double sub but missed.
+",1,0,0,1,1,0,0,1,0,0,0,0,1,0,0,5,0,5,135
+"3310","10","r","r3","2","cone","FALSE",NA,"4",NA,"engage","0","0","5","0","3,13,21,22,20",NA,"FALSE","dock","FALSE","4","minear","Was engaged at the end but was messed up by a team mate. Quick back and forth scoring from the ground only. Lost 2 pieces during the match.
+",5,1,6,0,6,3,1,1,0,0,1,5,0,1,0,14,6,20,27
+"9105","10","b","b3","2","cube","FALSE",NA,NA,NA,"fail","0","0","0","0",NA,"21","FALSE","engage","FALSE","3","novinski","either didn't realize they were holding a cone or their intake/outake was broken. played some Ok defense. everybot intake with a swerve base
+",1,0,0,1,1,1,0,0,0,0,0,0,1,0,0,2,0,2,135
+"9088","10","r","r1","1","cone","TRUE",NA,NA,NA,"na","0","0","2","0",NA,"8,17","FALSE","engage","FALSE","3","harold","robot is tippy. dropped some cargo. climbed well. played some defense. 
+",2,0,0,2,2,0,1,1,0,0,0,0,2,0,0,8,0,8,67.5
+"3005","10","r","r2","2","cone","FALSE",NA,"4",NA,"engage","0","5","6","0","6,15,13,7,9,18,16,23","5,14,11","FALSE","na","FALSE","5","Ha","Extremely good robot, fast, manueverable (but collided with alliance partners a few times), scores easily, intakes efficiently. almost attempted triple climb. 
+",11,1,9,3,12,1,6,4,0,0,1,8,3,1,0,40,6,46,12.273
+"4251","11","b","b2","1",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","fail","FALSE","2","cobleigh","not very fast and intake did not seem to work. did have a heads up play by helping their team robot become upright.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"4251","10","b","b3","1",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","fail","FALSE","2","novinski","intake doesn't work. no auton. no defense. pushed a teamate back up once but besides that didn't know what they were doing
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"2714","11","b","b1","2","cone","FALSE",NA,"24",NA,"engage","0","1","0","4","9","25,26,23,8","FALSE","fail","FALSE","4","Kari","Good driving, quick and efficient. Focusd a lot on bottom link then moved to place a few on top row. Tried to interact with charge station too late. Picked up mostly from double sub.
+",5,1,2,4,6,3,0,2,1,0,0,1,4,1,0,16,3,19,27
+"6974","11","r","r1","3","cube","FALSE",NA,NA,"20","na","0","1","0","0","21",NA,"FALSE","park","FALSE","2","harold","has a difficult intake that makes it really hard to pick up cargo. tippy robot. arm is suspended by a cord. spent most of the game trying to pick up one cargo. 
+",1,1,1,1,2,1,0,0,1,0,0,1,0,0,1,2,3,5,135
+"7503","11","r","r3","2","cube","FALSE",NA,NA,NA,"dock","0","1","1","0",NA,"5,11","FALSE","engage","FALSE","2","minear","Slow and a bit tipsy. They scored a few pieces with some defense during the middle of the game. They engaged pretty quickly during teleop
+",2,0,0,2,2,0,1,1,0,0,0,0,2,0,0,8,0,8,67.5
+"8858","11","r","r2","1","cube","TRUE",NA,NA,"8","na","1","0","0","3","6,4,7","24","FALSE","engage","FALSE","4","Pozo","Picked up all cones at shelf and showed great maneuverability against defense but oncethey reached the nodes they would take a while to score and had two instances of just shifting around slightly in community for about 3-5 seconds
+",4,1,3,2,5,1,0,3,0,0,1,3,1,0,1,17,6,23,33.75
+"7535","12","b","b2","2",NA,"FALSE",NA,NA,NA,"na","0","2","0","0",NA,"20","FALSE","na","FALSE","2","cobleigh","not very impactful. had no auton
+",1,0,0,1,1,1,0,0,0,0,0,0,1,0,0,2,0,2,135
+"7534","12","r","r3","2","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,"22","FALSE","engage","FALSE","2","minear","Pancake bot. Scored only the preload. Tried to play defense but got pushed around instead. Quick engage in endgame
+",1,0,0,1,1,1,0,0,0,0,0,0,1,0,0,2,0,2,135
+"148","12","r","r1","1","cone","TRUE",NA,NA,NA,"na","0","0","3","0","24,26,27","8,17","FALSE","engage","FALSE","4","harold","one cone from high fell in low. very fast driving. evaded much defense. could score pretty quickly. for some reason, at the beginning of the match they were not doing anything. balanced pretty quickly. 
+",5,0,3,2,5,3,1,1,0,0,0,3,2,0,0,14,0,14,27
+"5613","12","b","b3","1","cube","FALSE",NA,NA,"20","na","0","1","1","0",NA,"21,23","FALSE","engage","FALSE","3","novinski","didn't use intake. good driver, but tank drive constrains them. got an engage pretty well
+",2,1,0,3,3,2,0,0,1,0,0,0,2,0,1,4,3,7,67.5
+"5431","12","b","b1","3","cube","FALSE",NA,NA,NA,"na","0","1","0","0",NA,"25,26","FALSE","engage","FALSE","3","Kari","Didn't score much, wasn't able to pick up many pieces from neutral zone. Wandered around in middle for part of the game. Penalty for hitting 148 in community. Kind of slow sometimes.
+",2,0,0,2,2,2,0,0,0,0,0,0,2,0,0,4,0,4,67.5
+"9128","12","r","r2","3","cone","TRUE",NA,"1",NA,"na","1","5","3","0","3,22","5,14,2,11,23,21","FALSE","na","FALSE","5","Pozo","Very skilled at collecting pieces from neutral zone and racing back from single substation. Smaller robot than most and and finished off 2 links. Could score with cubes at all 3 levels and cones at top and bottom (did not see any mid scores for cones)
+",8,1,3,6,9,3,2,3,0,0,1,2,6,1,0,27,6,33,16.875
+"9105","13","b","b2","1","cone","FALSE",NA,"1",NA,"na","0","1","0","0","3",NA,"FALSE","na","FALSE","2","cobleigh","not great at lining up for intaking, but was a solid robot. had a big collision then stopped moving.
+",1,1,2,0,2,0,0,1,0,0,1,1,0,1,0,5,6,11,135
+"9088","13","b","b3","2","cone","FALSE",NA,NA,NA,"fail","1","2","0","1","4","2,5","FALSE","engage","FALSE","4","novinski","good double balance. placed two cubes in the same node. intake is a little inconsistent
+",3,0,1,2,3,0,0,3,0,0,0,1,2,0,0,15,0,15,45
+"9156","13","b","b1","1","cone","TRUE",NA,"27",NA,"na","0","2","0","0","26,25",NA,"FALSE","engage","FALSE","3","Kari","Didn't use intake. Pushed pieces into nodes. Tried to play defense in middle of the field but struggled. Slow movement and not enough control at times.
+",2,1,3,0,3,2,0,0,1,0,0,2,0,1,0,4,3,7,67.5
+"4153","13","r","r3","2","cube","FALSE",NA,NA,NA,"engage","0","0","2","0",NA,"14,20","FALSE","engage","FALSE","3","minear","didn't score its preload during auton, instead engaging. Scored twice and then played ok defense the rest of the time despite having a cube. Top heavy and almost tipped trying to dock at one point. around 5 seconds to engage.
+",2,0,0,2,2,1,1,0,0,0,0,0,2,0,0,5,0,5,67.5
+"6369","13","r","r1","1","cube","FALSE",NA,NA,"17","na","0","1","0","0","18,27",NA,"FALSE","engage","FALSE","4","harold","played a lot of good defense. narrow intake made intaking kind of difficult. climbed pretty well as well. 
+",2,1,2,1,3,1,1,0,0,1,0,2,0,0,1,5,4,9,67.5
+"7506","13","r","r2","3","cone","TRUE",NA,"1",NA,"na","0","0","0","3","3,4,7",NA,"FALSE","park","FALSE","3","Pozo","Not a reliable intake and struggled at shelf at first but was able to find open nodes and score high very quickly. a bit too big to avoid contact with other robots and nearly drew a foul because of it
+",3,1,4,0,4,0,0,3,0,0,1,3,0,1,0,15,6,21,45
+"8816","14","r","r3","1","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","3","minear","Was shut down for the whole match. I don't know why.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"8858","14","b","b2","2","cube","TRUE",NA,NA,"20","na","0","0","0","2","6","5","FALSE","engage","FALSE","4","cobleigh","pretty good scorer. had some problems with their intake.
+",2,1,1,2,3,0,0,2,1,0,0,1,1,0,1,10,3,13,67.5
+"4192","14","r","r1","3","cube","FALSE",NA,NA,NA,"na","0","0","3","0",NA,"20,19,22,23","FALSE","engage","FALSE","4","harold","only scored low and can do it really well. climbed pretty well. focused on getting links on the lower grid as well. 
+",4,0,0,4,4,4,0,0,0,0,0,0,4,0,0,8,0,8,33.75
+"5411","14","r","r2","2","cone","FALSE",NA,"6",NA,"na","0","0","0","3",NA,NA,"FALSE","engage","FALSE","3","Pozo","Had trouble keeping the cones in their intake and spent almost a whole minute trying to score 1 cone. Dropped inside frame and then dropped in neutral zone. 
+",0,1,1,0,1,0,0,0,0,0,1,0,0,1,0,0,6,6,0
+"4641","14","b","b1","1","cube","TRUE",NA,NA,"20","na","0","2","0","0",NA,NA,"TRUE","engage","FALSE","3","Kari","Moves pieces for alliance members to use. Doesn't go near subs. Wanders around in middle looking for pieces. Good balancing on charge station.
+",0,1,0,1,1,0,0,0,1,0,0,0,0,0,1,0,3,3,0
+"3005","14","b","b1","3","cone","FALSE",NA,"7",NA,"dock","1","5","2","0","1,3,12,10","2,11,14,19,20","FALSE","park","FALSE","4","novinski","very quick and reliable. intake takes a second to grab.threw many pieces out of the slightly janky intake",9,1,5,5,10,2,4,3,0,0,1,4,5,1,0,31,6,37,15
+"3310","15","r","r2","2","cone","FALSE",NA,"6",NA,"engage","0","3","2","3","4,3,1,9,7","5,2,8","FALSE","fail","FALSE","5","cobleigh","very solid high scorer. good auton balance. very good robot.
+",8,1,6,3,9,0,0,8,0,0,1,5,3,1,0,40,6,46,16.875
+"8528","15","b","b3","1","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,"19","FALSE","engage","FALSE","2","Gordon","very light and unbalanced, arm probably was not working, did not use it for entire match and only played weak defense
+",1,0,0,1,1,1,0,0,0,0,0,0,1,0,0,2,0,2,135
+"7321","15","r","r1","3","cube","TRUE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","fail","FALSE","2","Kari","No intake, wandered in middle for most of the game. Played a little defense but wasn't very successful. Got in the way of some of their alliance members. Robot is pretty big, large frame.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"8749","15","b","b2","3","cube","TRUE",NA,NA,NA,"na","1","3","2","0",NA,"26,25,24,23,21","FALSE","na","FALSE","4","Miele","Hybrid only bot but cycles so quickly and scores so fast. Driver is fast and efficient and has a plan. Tried to score mid but failed after finishing all of the bottom rom
+",5,0,0,5,5,5,0,0,0,0,0,0,5,0,0,10,0,10,27
+"4206","15","b","b1","2","cube","TRUE",NA,NA,"23","na","5","3","0","0","7,6","19,20,21,5,8,25","FALSE","engage","FALSE","4","Poon","good
+",8,1,2,7,9,4,0,4,1,0,0,2,6,0,1,28,3,31,16.875
+"7535","15","r","r3","1",NA,"TRUE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","2","novinski","no intake. no defense. didn't get any pieces. just stood in the enemies protected zone and got penalized for a lot but they also trapped him in so it was weird
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"9080","16","r","r2","1",NA,"FALSE",NA,NA,NA,"na","1","1","1","0","3","21","FALSE","fail","FALSE","2","cobleigh","not very fast. did not score a lot. not a horrible robot though.",2,0,1,1,2,1,0,1,0,0,0,1,1,0,0,7,0,7,67.5
+"4251","16","b","b2","2",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"TRUE","na","FALSE","1","Miele","Very long intake arm that drags along the ground but barely works if at all. Hit a bump and died in community zone. Tried to shuttle but arm just got in the way and messed things up. Did nothing in totatality.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"7271","16","b","b1","3",NA,"TRUE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","2","Poon","did not have intake, nor did it really try to shuttle pieces for teammates. 
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"6974","16","r","r3","3",NA,"FALSE",NA,NA,NA,"na","1","3","0","0","1,20","19","FALSE","na","FALSE","2","novinski","intake takes a while to line up. VERY susceptible to defense. drove out of the community at the end for no reason which kept them from scoring a parh
+",3,0,2,1,3,2,0,1,0,0,0,2,1,0,0,9,0,9,45
+"7119","16","b","b3","1","cube","TRUE",NA,NA,"11","na","0","1","1","0",NA,"21","FALSE","fail","FALSE","2","Gordon","Very slow, arm is very flimsy and clumsy, 
+",1,1,0,2,2,1,0,0,0,1,0,0,1,0,1,2,4,6,135
+"2714","16","r","r1","2","cone","FALSE",NA,"6",NA,"engage","0","0","0","5","9,7,4","8","FALSE","fail","FALSE","4","Kari","Only pickups from double sub. Good speed, gets around field fast. Tries to get top row links.
+",4,1,4,1,5,0,0,4,0,0,1,3,1,1,0,20,6,26,33.75
+"7540","17","r","r2","1","cone","FALSE",NA,"27",NA,"na","0","1","1","1","1,3,4","2","FALSE","dock","FALSE","3","cobleigh","pretty consistent high scorer. good, fast balance
+",4,1,4,1,5,0,0,4,1,0,0,3,1,1,0,20,3,23,33.75
+"6526","17","r","r1","3","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","1","Kari","Stalled for most of game. Intake went down very slowly. 
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"9299","17","b","b3","2",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"TRUE","fail","FALSE","1","Gordon","Amost did nothing, barely even played Defense
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"6672","17","b","b1","3","cone","TRUE","3,2","12","11","dock","5","5","0","0","18,16,9,7,3,1","17,26,25,8,21","FALSE","engage","FALSE","5","Poon","Very unbiased review. AMAZING. Peak performance in teleop, scored in auto as well. Engaged in endgame too. The pinnacle of FIRST Robotics.
+",11,2,7,6,13,3,3,5,0,2,0,6,5,1,1,40,8,48,12.273
+"148","17","b","b2","1","cone","TRUE","1","10","19","na","0","4","2","0","3,4,12","5,14,22,23,24","FALSE","engage","FALSE","5","Miele","Driver is fast, driving around defence in the middle and cycling quickly. Stole auton setup pieces from other team first in teleop
+",8,2,4,6,10,3,2,3,1,1,0,3,5,1,1,27,7,34,16.875
+"7503","17","r","r3","2","cube","FALSE",NA,NA,"23","dock","0","1","0","1","26","20","FALSE","engage","FALSE","2","novinski","slow with a bad intake. driver doesn't know what he's doing
+",2,1,1,2,3,2,0,0,1,0,0,1,1,0,1,4,3,7,67.5
+"4206","18","b","b3","2","cube","TRUE",NA,NA,"2","engage","1","0","0","3","4,3,7","5,8","FALSE","engage","FALSE","5","gordon","Very stable and quick, low to the ground, good driver
+",5,1,3,3,6,0,0,5,0,0,1,3,2,0,1,25,6,31,27
+"8528","18","r","r2","3","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","fail","FALSE","3","cobleigh","got in other teammates way. not very helpful. did not do much.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"9156","18","b","b2","1","cone","TRUE",NA,"1",NA,"na","0","0","0","4","6,9,13,12",NA,"FALSE","park","FALSE","3","Miele","For an everybot, the driver is very solid with their decisiveness. Very fast at intaking at the shelf and cycling back. A little tippy on the tank drive but still pretty balanced
+",4,1,5,0,5,0,2,2,0,0,1,4,0,1,0,16,6,22,33.75
+"7506","18","b","b1","3","cone","TRUE",NA,NA,NA,"na","2","0","0","0",NA,"27","FALSE","engage","FALSE","2","Poon","Bot's intake was relatively ineffective. Strugged to manipulate cubes, and so its scores came only from hybrid zones. Did not try to pick up cones in this match. Idled in the middle of the match for a little bit. Was able to engage. 
+",1,0,0,1,1,1,0,0,0,0,0,0,1,0,0,2,0,2,135
+"5411","18","r","r1","1","cone","FALSE",NA,NA,NA,"na","0","0","0","4","9,26,7,27",NA,"FALSE","na","FALSE","3","Kari","Picks up mostly cones from double sub. Focuses on top row to place cones. Decent driver, medium speed.
+",4,0,4,0,4,2,0,2,0,0,0,4,0,0,0,14,0,14,33.75
+"3310","18","r","r3","2","cone","FALSE",NA,"6",NA,"engage","0","2","6","0","3,1,4","20,2,14,5,8","FALSE","fail","FALSE","4","novinski","fast and reliable but loses time on the intake. still great
+",8,1,4,5,9,1,1,6,0,0,1,3,5,1,0,35,6,41,16.875
+"7321","19","b","b2","1","cone","TRUE",NA,NA,NA,"na","0","0","0","0",NA,NA,"TRUE","engage","FALSE","1","Miele","No intake, didn't play defence and climbed with a minute left. tried to shuttle but wasn't able to push pieces
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"6974","19","r","r2","2","cube","FALSE",NA,NA,NA,"na","0","3","0","0",NA,"24,21,19,20","FALSE","fail","FALSE","2","cobleigh","not very fast. did not score very much. not very impactful.
+",4,0,0,4,4,4,0,0,0,0,0,0,4,0,0,8,0,8,33.75
+"3005","19","b","b3","3","cone","TRUE","4","6",NA,"dock","5","1","2","0","3,1,12,10,4,7,9","2,11,8,5","FALSE","na","FALSE","5","Gordon","Very fast and very versitile and fast pick up system, very precise
+",11,1,8,4,12,0,3,8,0,0,1,7,4,1,0,49,6,55,12.273
+"9128","19","r","r3","3","cone","TRUE","2","19",NA,"na","0","1","5","0","1,3,4","2,5","FALSE","fail","FALSE","2","novinski","tipped a teamate over on the charge station. good cycles and speed outside of that. dropped some pieces
+",5,1,4,2,6,0,0,5,1,0,0,3,2,1,0,25,3,28,27
+"7119","19","r","r1","1","cube","TRUE",NA,NA,"27","na","0","1","1","0",NA,NA,"FALSE","na","FALSE","3","Kari","Stalled for most of teleop, toppled at the end. Picks up pieces off the floor, mostly cubes. Tries to complete cube nodes.
+",0,1,0,1,1,0,0,0,1,0,0,0,0,0,1,0,3,3,0
+"6369","19","b","b1","2","cone","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"TRUE","engage","FALSE","4","Poon","Did not use intake (maybe broken?). Was good at shuttling game pieces to teammates despite intake problems. High speed and engaged in endgame.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"7503","20","b","b2","2",NA,"FALSE",NA,NA,NA,"engage","2","1","0","0",NA,"5,17,20","FALSE","engage","FALSE","2","soriano","slow at driving and picking up cubes. semi good at placing them, but on a scale of 1 - 5 is a 2 for placing. a bit tippy
+",3,0,0,3,3,1,1,1,0,0,0,0,3,0,0,10,0,10,45
+"7271","20","r","r2","1",NA,"TRUE",NA,NA,NA,"na","0","0","0","0",NA,NA,"TRUE","engage","FALSE","2","Miele","Tried to steal all enemy auton setup game pievces... drover over all of them and got a cone stuck under them for the whole match. Before that, driver seemed to be fast
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"8858","20","r","r1","2","cube","FALSE",NA,NA,"5","na","4","0","0","0","9,7,23",NA,"FALSE","na","FALSE","3","Poon","Scored in auto. Lacks precision in scoring in the upper nodes, so sometimes, the game pieces will fall to the hybrid nodes. Pretty much average in most aspects.
+",3,1,3,1,4,1,0,2,0,0,1,3,0,0,1,12,6,18,45
+"7535","20","b","b3","1","cube","TRUE",NA,NA,"19","na","0","0","0","0",NA,NA,"TRUE","na","FALSE","1","Gordon","Shuttle bot with stationary grabber inside body of robot. Could not move for teleop.
+",0,1,0,1,1,0,0,0,1,0,0,0,0,0,1,0,3,3,0
+"4192","20","b","b1","3","cube","FALSE",NA,NA,"26","na","0","2","4","0",NA,"25,22,21,14","FALSE","engage","FALSE","3","Duhe","-good speed, but sometimes stuggles to intake- ran out of time to place cone at end, so engaged with 1 other robot
+",4,1,0,5,5,3,1,0,1,0,0,0,4,0,1,9,3,12,33.75
+"5431","20","r","r3","3","cube","FALSE",NA,NA,"2","na","0","2","0","0","1,4",NA,"FALSE","engage","FALSE","2","novinski","intake wasn't consistent and teir drivetrain is a bit janky
+",2,1,2,1,3,0,0,2,0,0,1,2,0,0,1,10,6,16,67.5
+"7534","21","r","r2","1","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,"26","TRUE","engage","FALSE","4","Miele","Very good shuttlebot. Fast and small swerve. Played good defence, shutting teams down in the neutral center area.
+",1,0,0,1,1,1,0,0,0,0,0,0,1,0,0,2,0,2,135
+"4153","21","b","b3","2","cube","TRUE",NA,NA,NA,"fail","2","0","0","0","7","26,19","FALSE","engage","FALSE","3","Gordon","Very tipsy and light, arm may have stopped working halfway through, did not pick up anything after 50 seconds left
+",3,0,1,2,3,2,0,1,0,0,0,1,2,0,0,9,0,9,45
+"6526","21","b","b2","1","cube","FALSE",NA,NA,NA,"na","0","0","1","0",NA,"20","FALSE","na","FALSE","1","soriano","slow and finecky intake. only picked up one cube the entire match. slow to deploy intake and slow to pick up any pieces
+",1,0,0,1,1,1,0,0,0,0,0,0,1,0,0,2,0,2,135
+"9105","21","b","b1","3","cone","TRUE",NA,"7",NA,"na","0","1","1","1","6,9","8","FALSE","engage","FALSE","2","Duhe","- bad evasion of 7534's defense- almost tipped at start, generally not very stable, sometimes uncontrolled speed after driving through charge station-engaged with 1 other robot
+",3,1,3,1,4,0,0,3,0,0,1,2,1,1,0,15,6,21,45
+"7540","21","r","r3","2","cone","FALSE",NA,"23",NA,"fail","0","0","0","3","1,3","2","FALSE","engage","FALSE","4","novinski","REALLY good triple balance. consistent intake on shelf worsse on ground pick up outake is good also. drivetrain seems a bit janky but fine
+",3,1,3,1,4,0,0,3,1,0,0,2,1,1,0,15,3,18,45
+"8749","21","r","r1","3","cube","TRUE","1,3",NA,"20,21","na","3","2","0","0",NA,"25,27,24,26,17","FALSE","engage","FALSE","3","Poon","Very fast in picking up cubes in community/neutral. Cannot score higher. Can only score in hybrid (cones and cubes) and middle (cubes). Cones in teleop is very questionable. 
+",5,2,0,7,7,4,1,0,2,0,0,0,5,0,2,11,6,17,27
+"9299","22","r","r2","1",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","1","miele","did nothing besides wander around the field
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"5613","22","b","b2","1","cube","FALSE",NA,NA,NA,"na","0","0","2","0",NA,"19,20,21","FALSE","engage","FALSE","3","soriano","very interesting intake: rubbermaid bucket for collecting from the chute and claws for collecting from elsewhere. just drops cubes into hybrid nodes. mid
+",3,0,0,3,3,3,0,0,0,0,0,0,3,0,0,6,0,6,45
+"2714","22","r","r1","2","cone","FALSE",NA,"6",NA,"engage","0","0","0","5","4,3,9,7","8","FALSE","engage","FALSE","4","Poon","Accurate in scoring in the top zones, especially cones. Managed to score a top zone in auto. Very good overall.
+",5,1,5,1,6,0,0,5,0,0,1,4,1,1,0,25,6,31,27
+"148","22","b","b1","3","cone","TRUE","4","18","17","dock","0","6","2","0","9,7,16,27,26,24","8,25,23","FALSE","engage","FALSE","4","Duhe","-fast climb-fast, consistent driving/intake, but somewhat unstable, especially when driving over corners of charge station
+",9,2,7,4,11,5,1,3,0,2,0,6,3,1,1,28,8,36,15
+"4251","22","b","b3","2",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","1","gordon","Sopped moving at 70 seconds left, began moving again at 15 seconds left
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"9088","22","r","r3","3","cone","TRUE",NA,NA,NA,"na","0","2","1","1","1,7","2,5,11","FALSE","engage","FALSE","3","novinski","decent scoring bot with a consistent intake. just went for mobility in auton
+",5,0,2,3,5,0,1,4,0,0,0,2,3,0,0,23,0,23,27
+"7271","23","b","b3","1",NA,"TRUE",NA,NA,NA,"na","0","0","0","0",NA,NA,"TRUE","engage","FALSE","3","gordon","good defense
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"9080","23","b","b2","2","cube","FALSE",NA,NA,NA,"na","0","1","0","1",NA,"14,22","FALSE","engage","FALSE","2","soriano","a bit slow in picking up pieces and moving, tank
+",2,0,0,2,2,1,1,0,0,0,0,0,2,0,0,5,0,5,67.5
+"6672","23","r","r2","3","cone","TRUE","4,3","10,21","11","na","0","2","3","0","13,23,6,7","20","FALSE","engage","FALSE","4","miele","cycled quickly to shute through alot of traffic in the middle, missed a high cone. 
+",5,3,6,2,8,2,1,2,1,2,0,4,1,2,1,17,11,28,27
+"4641","23","r","r1","2","cube","FALSE",NA,NA,"5","fail","0","1","1","0",NA,"8","FALSE","engage","FALSE","1","Poon","Intake simply doesn't work, as there's almost nothing keeping the game pieces in the robot once it's inside. Doesn't seem to be able to pick up cones. It's one saving grace is that it can put cubes on the top rack reliably, but that's really it.
+",1,1,0,2,2,0,0,1,0,0,1,0,1,0,1,5,6,11,135
+"9156","23","r","r3","1","cone","TRUE",NA,"9",NA,"na","0","0","0","3","1",NA,"FALSE","park","FALSE","2","novinski","intake is inconsistent and robot is slow
+",1,1,2,0,2,0,0,1,0,0,1,1,0,1,0,5,6,11,135
+"8816","23","b","b1","3","cone","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","1","Duhe","- no auton- intake made cracking noise at start after it rotated too much- did not move much for rest of game- tipped a bit when changing direction- did not do anything, not even defense
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"7503","24","r","r3","3","cube","FALSE",NA,NA,"20","na","0","0","1","0","12,23","26","FALSE","park","FALSE","4","novinski","good driver, saw that there were pieces and tried to  get them off. did well but got knocked over
+",3,1,2,2,4,2,1,0,1,0,0,2,1,0,1,7,3,10,45
+"3005","24","b","b2","3","cone","TRUE",NA,"9","8,17","na","0","1","6","0","6,7,4,16,18,26,25,15,13","","FALSE","engage","FALSE","5","soriano","tips a bit, very fast, consistent loading zone to node placement, takes the same path every time
+",9,3,10,2,12,2,4,3,0,1,2,9,0,1,2,31,16,47,15
+"3310","24","r","r1","2","cone","FALSE",NA,"6",NA,"engage","0","3","4","0","7,1,25,3,22","8,5","FALSE","engage","FALSE","5","Poon","Rather stable. Good at scoring in all zones with cubes and cones, but especially cones. Somehow able to clutch engaging in multiple matches last minute. Scores a lot : Good.
+",7,1,6,2,8,2,0,5,0,0,1,5,2,1,0,29,6,35,19.286
+"7535","24","b","b3","1","cube","FALSE",NA,NA,"20","na","0","0","0","0",NA,NA,"TRUE","engage","FALSE","2","gordon","tried to play defense but was to light and got shoved back by heavier bots
+",0,1,0,1,1,0,0,0,1,0,0,0,0,0,1,0,3,3,0
+"9105","24","r","r2","1","cone","TRUE",NA,"9",NA,"na","0","0","0","2","15,4",NA,"FALSE","fail","FALSE","4","miele","very solid sturdy robot, fast scoring in community, zippy through the neutral but not the fastest intaking from shelf. Was engaged in end game but pushed off by 3310.
+",2,1,3,0,3,0,1,1,0,0,1,2,0,1,0,8,6,14,67.5
+"6526","25","b","b3","1","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,"11,19","FALSE","na","FALSE","1","Oliver","overhead claw takes long to extend and pick up. while claw extended, extremly tippy. Drives stop and go.
+",2,0,0,2,2,1,1,0,0,0,0,0,2,0,0,5,0,5,67.5
+"8858","25","b","b2","2","cube","FALSE",NA,NA,"5","dock","0","0","0","3","13,6",NA,"FALSE","engage","FALSE","2","Ha","Very tippy robot but can score high (inconsistent). For some reason went mid for first placement. decent balance (idk if possible for 3).
+",2,1,2,1,3,0,1,1,0,0,1,2,0,0,1,8,6,14,67.5
+"5613","25","b","b1","3",NA,"FALSE",NA,NA,NA,"na","0","0","0","2",NA,"25,27,24","FALSE","engage","FALSE","3","Duhe","-engaged about 5 seconds before endgame and allowed 1 other robot to engage as well- decent driving and speed, but no ground intake (box)- attempted mid score, but missed and made low
+",3,0,0,3,3,3,0,0,0,0,0,0,3,0,0,6,0,6,45
+"2714","25","r","r3","2","cone","FALSE",NA,"22",NA,"na","0","0","0","4","1,3,4,6",NA,"FALSE","engage","FALSE","4","novinski","solid intake and fast. almost pushed a teamate over. loses time on cycles from turning around
+",4,1,5,0,5,0,0,4,1,0,0,4,0,1,0,20,3,23,33.75
+"5431","25","r","r1","1","cube","FALSE",NA,NA,"8","na","0","1","0","0",NA,"2","FALSE","engage","FALSE","2","Poon","Robot browned out in the middle of the match. Was able to score some cubes in top row despite that. Somewhat unstable as well.
+",1,1,0,2,2,0,0,1,0,0,1,0,1,0,1,5,6,11,135
+"7540","25","r","r2","3","cone","TRUE",NA,"19",NA,"na","0","1","0","1",NA,"21,5,26","FALSE","na","FALSE","3","minear","Browned out in the middle of the match until pushed by another robot. Didn't score very much during the match. Its arm makes it slightly top heavy and tipsy.
+",3,1,1,3,4,2,0,1,1,0,0,0,3,1,0,9,3,12,45
+"7506","26","r","r1","1","cone","TRUE",NA,"27",NA,"na","0","0","0","3","9,7","8","FALSE","na","FALSE","2","Poon","Robot relatively slow. Able to score accurately in the top zones for teleop, but cannot do it as fast as the top tier robots.
+",3,1,3,1,4,0,0,3,1,0,0,2,1,1,0,15,3,18,45
+"4641","26","b","b2","1","cube","TRUE",NA,NA,"2","na","0","0","1","0",NA,NA,"FALSE","fail","FALSE","1","Ha","Spotty, erratic driving. Driver seems unable to control the robot, completely unable to climb. unable to turn, cant move forward without going back. 
+",0,1,0,1,1,0,0,0,0,0,1,0,0,0,1,0,6,6,0
+"8528","26","r","r2","2","cube","FALSE",NA,NA,NA,"na","0","1","0","0",NA,"24","FALSE","engage","FALSE","2","minear","Had an arm to score but only ever scored the preload. Went to the loading station but never grabbed anything. Played minimal defense. Very quick to dock and engage in the endgame
+",1,0,0,1,1,1,0,0,0,0,0,0,1,0,0,2,0,2,135
+"5411","26","b","b1","2","cone","TRUE",NA,"4",NA,"dock","0","0","0","3","6,9",NA,"FALSE","engage","FALSE","2","Duhe","- Did not intake outside of substation- Dropped cube- Slow
+",2,1,3,0,3,0,0,2,0,0,1,2,0,1,0,10,6,16,67.5
+"8749","26","b","b3","3","cube","FALSE",NA,NA,"27","na","0","1","6","0",NA,"20,19,21,22,23,24","FALSE","na","FALSE","4","Oliver","Quick low cube, was able to dodge enemy and allied robots, had some trouble picking up due to lineup.
+",6,1,0,7,7,6,0,0,1,0,0,0,6,0,1,12,3,15,22.5
+"148","26","r","r3","3","cone","FALSE",NA,"10",NA,"dock","1","4","3","0","3,1,12,20,22","2,11,21,23,5","FALSE","engage","FALSE","4","novinski","really good. syrprisingly tippy. almost fell over at the beginning
+",10,1,6,5,11,4,2,4,0,1,0,5,5,1,0,34,4,38,13.5
+"7534","27","r","r1","1","cube","FALSE",NA,NA,NA,"na","1","0","0","0",NA,"27","FALSE","engage","FALSE","1","Poon","Almost did absolutely nothing except for pushing a cube into the hybrid zone. Intake also very, very clunky, almost impossible to use.
+",1,0,0,1,1,1,0,0,0,0,0,0,1,0,0,2,0,2,135
+"4251","27","r","r2","2",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","dock","FALSE","2","minear","Were balenced on the charge station but had a long arm that never moved during the match and was touching the ground at the end, creating a dock, not engage. Didn't score anything during the match and attempted, unsucessfully to play defense.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"6672","27","b","b1","3","cone","TRUE","4,3","18","17","dock","0","1","4","2","16,9,27,7,15,4","26","FALSE","engage","FALSE","4","Duhe","- STOP DOUBLE CUBE- Few high misses- Engaged with 1 other robot
+",7,2,7,2,9,2,2,3,0,2,0,6,1,1,1,25,8,33,19.286
+"6974","27","b","b3","2","cube","FALSE",NA,NA,NA,"dock","1","0","1","0","1","11,2","FALSE","na","FALSE","2","Oliver","When the robot had a game piece, it becomes tippy. Very slow intake, only could intake upward cones extremly slowly.
+",3,0,1,2,3,0,1,2,0,0,0,1,2,0,0,13,0,13,45
+"7321","27","b","b2","1","cube","TRUE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","engage","FALSE","1","Ha","Too tippy and too slow to play defense, intake doesnt exist. Balance is decent. 
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"4192","27","r","r3","3","cube","FALSE",NA,NA,"20","na","0","3","3","0",NA,"19,21,22,23,24,25","FALSE","engage","FALSE","4","novinski","really fast hybrid scorer. JUST hybrid scorer but with an intake. intake is consistent
+",6,1,0,7,7,6,0,0,1,0,0,0,6,0,1,12,3,15,22.5
+"8816","28","b","b2","3","cone","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","1","Ha","Cant move drivetrain, but can move arm... sort of. Didn't really do anything this match. 
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"6369","28","b","b3","1","cube","FALSE",NA,NA,"11","na","0","3","2","0","10,12,13,15",NA,"FALSE","engage","FALSE","3","Oliver","Attempted to go over the charge station while in endgame, blocked teammate. 
+",4,1,4,1,5,0,4,0,0,1,0,4,0,0,1,12,4,16,33.75
+"7119","28","r","r1","3","cube","TRUE",NA,NA,"11","na","0","1","2","0",NA,"14,8,27","FALSE","na","FALSE","3","Poon","Intake good at picking up cubes. Did not attempt cones. Accurate in scoring top/middle zones. It could be a little faster in movement and scoring though.
+",3,1,0,4,4,1,1,1,0,1,0,0,3,0,1,10,4,14,45
+"4206","27","r","r3","2","cube","FALSE",NA,NA,"5","engage","0","2","3","2","19,1,3","2,17","FALSE","engage","FALSE","4","novinski","good double engage. really fast with a good intake. takes maybe too long to place
+",5,1,3,3,6,1,1,3,0,0,1,3,2,0,1,20,6,26,27
+"9080","28","r","r2","1","cube","FALSE",NA,NA,NA,"na","0","1","2","0",NA,"26,25,23,20","FALSE","engage","FALSE","3","minear","Only scored cubes in the hybrid zones. It looked like they tried to go higher at one point but it fell down and that was the only time they attempted for higher. Engaged quickly at the end but was slowed down by its teammates
+",4,0,0,4,4,4,0,0,0,0,0,0,4,0,0,8,0,8,33.75
+"9299","28","b","b1","2",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"TRUE","fail","FALSE","1","Duhe","- engaged twice, but moved (perhaps to allow 6369 to engage?)- tank pancake, basically provides no defense- went into red community for some reason? ""flew"" after going over red charge station- shuttled one cone near beginning
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"7503","29","r","r1","2",NA,"FALSE",NA,NA,NA,"dock","0","1","0","2","23,13,18",NA,"FALSE","na","FALSE","3","Poon","Reliable intake, able to score consistently with cones. Did not try to pick up cubes. Movement a little slow.
+",3,0,3,0,3,1,2,0,0,0,0,3,0,0,0,8,0,8,45
+"5411","29","r","r3","3","cone","TRUE",NA,NA,NA,"na","0","0","0","4","20,1,3",NA,"FALSE","engage","FALSE","4","novinski","speedy robot and reliable intake. outake dropped a few pieces. double balance could have been better
+",3,0,3,0,3,1,0,2,0,0,0,3,0,0,0,12,0,12,45
+"2714","29","b","b3","2","cone","FALSE",NA,"6",NA,"engage","0","0","0","5","3,7,25,16","5","FALSE","engage","FALSE","4","Oliver","Quick, able to move around, constitent shooting, arm is kind of slow
+",5,1,5,1,6,1,1,3,0,0,1,4,1,1,0,20,6,26,27
+"9088","29","r","r2","1","cone","TRUE",NA,NA,NA,"na","0","3","0","0","6","5,8,2,11","FALSE","engage","FALSE","4","minear","A bit tipsy, but reliably got high nodes and were quick. They are an everybot. 
+",5,0,1,4,5,0,1,4,0,0,0,1,4,0,0,23,0,23,27
+"9128","29","b","b1","3","cone","TRUE","4","9",NA,"na","0","2","4","0","7,25","8,17,14","FALSE","na","FALSE","3","Duhe","- missed cone two times in a row, cost them the link bonus- good speed, but some trouble with intake- attempted to throw three cubes backwards in auton, one was thrown, one was pushed to the other side, and one was obstructed by another robot
+",5,1,3,3,6,1,2,2,0,0,1,2,3,1,0,18,6,24,27
+"7321","30","b","b2","2","cube","FALSE",NA,NA,NA,"fail","0","0","0","0",NA,NA,"FALSE","na","FALSE","2","Kari","No intake. Slow moving around, tried to play defense but wasn't played well. Just wandered around for most of game.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"7271","30","b","b1","3",NA,"TRUE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","fail","FALSE","2","cobleigh","no intake. did not play defense.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"7506","30","b","b1","1","cone","TRUE",NA,"1",NA,"na","0","0","0","2","3","2,5","FALSE","dock","FALSE","3","harold","scored pretty consistently. focused on links well. not a very fast robot. 
+",3,1,2,2,4,0,0,3,0,0,1,1,2,1,0,15,6,21,45
+"148","30","r","r1","1","cone","FALSE",NA,"27",NA,"engage","1","6","3","0","9,18,16,7,26","8,17,14,24","FALSE","engage","FALSE","5","Pozo","Excellennt movement and scoring capabilities and showed ease in neutral zone completing 2 links completely solo
+",9,1,6,4,10,2,4,3,1,0,0,5,4,1,0,31,3,34,15
+"9105","29","b","b2","1","cone","TRUE",NA,"1",NA,"na","0","2","0","0",NA,"2","FALSE","engage","FALSE","1","Ha","Drove around aimlessly, balanced early. I am frightened because their piece security isnt great. Intake is not very good. They have to reach back to score. They are not very fast or manueverable.
+",1,1,1,1,2,0,0,1,0,0,1,0,1,1,0,5,6,11,135
+"8858","30","r","r3","2","cube","FALSE",NA,NA,"5","na","0","0","0","4","22,4,6",NA,"FALSE","engage","FALSE","2","Ha","Can score decently, but is very tippy (would not recommend for ferry). Can balance decently but takes a while. Not really able to avoid defense. 
+",3,1,3,1,4,1,0,2,0,0,1,3,0,0,1,12,6,18,45
+"7535","29","r","r2","3",NA,"TRUE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","1","Oliver","Bad intake, or just bad driving, no defense even when unable to score, almost caused alliance to fail balance, inconsistent with pit scouting claims
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"4206","31","b","b1","2","cube","FALSE",NA,NA,"5","engage","0","1","2","2","6,4","27,26,25","FALSE","engage","FALSE","4","cobleigh","pretty consistant scorer. good intake. pretty fast
+",5,1,2,4,6,3,0,2,0,0,1,2,3,0,1,16,6,22,27
+"4251","31","r","r1","1",NA,"FALSE",NA,NA,NA,"na","0","1","0","0",NA,"19","TRUE","engage","FALSE","2","Pozo","pLAYED some defense but not very effective. Able to easily make it on to the chargung station but could only push pieces 
+",1,0,0,1,1,1,0,0,0,0,0,0,1,0,0,2,0,2,135
+"7540","31","r","r2","3","cone","TRUE",NA,"19",NA,"na","0","2","0","1","1,3",NA,"FALSE","engage","FALSE","3","Duhe","- some electronics detached on arm just as it was about to score a cube, 45-60 seconds left in teleop (including endgame)- average driving- engaged with one other bot-engaged efore start of endagme (broke) 
+",2,1,3,0,3,0,0,2,1,0,0,2,0,1,0,10,3,13,67.5
+"8816","31","b","b1","3","cone","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","park","FALSE","1","harold","preloaded cone but did nothing with it, which inhibited the ability to be a good shuttlebot. played some defense but mostly wandered around aimlessly. 
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"4153","31","r","r2","2","cube","FALSE",NA,NA,NA,"na","0","3","1","0","26","23,27,25","FALSE","na","FALSE","1","Ha","Died on the field at the end. Was able to push decently due to swerve.  A little tippy, unable to get a piece back to the community without the help of a wall. 
+",4,0,1,3,4,4,0,0,0,0,0,1,3,0,0,8,0,8,33.75
+"5613","31","b","b2","1","cube","FALSE",NA,NA,NA,"na","1","0","2","0",NA,"21,19,20,22","FALSE","engage","FALSE","3","Kari","Added bucket to intake, use single sub to drop cubes into it. Bucket can only score on hybrid nodes. Used intake once, intake needs to go all the way backwards for robot to be able to score. 
+",4,0,0,4,4,4,0,0,0,0,0,0,4,0,0,8,0,8,33.75
+"7534","32","r","b3","3","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","engage","FALSE","1","Ha","Not really able to move (died on field or tech issues)
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"9156","32","r","r1","1","cone","TRUE",NA,"9",NA,"na","0","0","0","3","7",NA,"FALSE","engage","FALSE","2","Pozo","Struggled keeping game pieces in intake and only was able to score once while not being a shuttlebot
+",1,1,2,0,2,0,0,1,0,0,1,1,0,1,0,5,6,11,135
+"6672","32","b","b1","3","cone","FALSE","3,4","18","17","dock","1","6","4","1","16,7,9","26,27,25,8,24,23,22,19","FALSE","engage","FALSE","5","cobleigh","great low scoring. solid game
+",11,2,4,9,13,7,1,3,0,2,0,3,8,1,1,32,8,40,12.273
+"6526","32","b","b1","2","cube","FALSE",NA,NA,NA,"na","0","2","0","0",NA,"14,25","FALSE","park","FALSE","2","harold","had some trouble intaking due to slow intake. the cargo placement process was also slow due to the slow arm. 
+",2,0,0,2,2,1,1,0,0,0,0,0,2,0,0,5,0,5,67.5
+"6369","32","r","r2","2","cube","FALSE",NA,NA,"14","dock","0","1","0","0",NA,NA,"FALSE","engage","FALSE","3","Oliver","Intake got stuck, immedeatly started defending 6672, defended well
+",0,1,0,1,1,0,0,0,0,1,0,0,0,0,1,0,4,4,0
+"7119","32","b","b2","1","cube","TRUE",NA,NA,"20","na","0","3","0","0",NA,"21,2","FALSE","engage","FALSE","3","Kari","Only picked up cubes. Shooter kinda off sometimes in shooting cubes. Picked up off floor most of the time.
+",2,1,0,3,3,1,0,1,1,0,0,0,2,0,1,7,3,10,67.5
+"9128","33","r","r2","3","cone","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","1","Duhe","- dead for whole match (was there though)
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"4641","33","r","r3","2","cube","FALSE",NA,NA,"2","fail","0","1","1","0",NA,"5,14,23","FALSE","fail","FALSE","2","Ha","Unable to balance due to broken charge station. Decent movement but is very jerky in it's movement. Very hard to intake, takes a while to score. 
+",3,1,0,4,4,1,1,1,0,0,1,0,3,0,1,10,6,16,45
+"6974","33","b","b1","1","cube","TRUE",NA,NA,NA,"na","0","0","0","0",NA,"2","FALSE","na","FALSE","2","cobleigh","did not make much of an impact.",1,0,0,1,1,0,0,1,0,0,0,0,1,0,0,5,0,5,135
+"3310","33","b","b2","2","cone","TRUE",NA,"6",NA,"engage","0","1","0","6","4,1,3,9,7","5,8","FALSE","engage","FALSE","5","Kari","Completed all links on top row pretty much all by themselves. Good driver. Only goes for single sub, can pick up pieces while pushing the piece with the robot.
+",7,1,6,2,8,0,0,7,0,0,1,5,2,1,0,35,6,41,19.286
+"8749","33","b","b1","2","cube","FALSE","4",NA,"27,26","na","0","3","4","0",NA,"24,23,21,22,19,25","TRUE","engage","FALSE","5","harold","very fast, efficient robot. scored all low, but did it really quickly and effectively. climbed really quickly and well as well. 
+",6,2,0,8,8,6,0,0,2,0,0,0,6,0,2,12,6,18,22.5
+"9080","34","r","r1","2","cone","FALSE",NA,NA,NA,"na","1","0","0","0",NA,NA,"FALSE","na","FALSE","1","Pozo","No movement in auton. During teleop it took in a cube and got stuck on judges side of the cahrge station and stopped moving. It sputtered back to life and then stopped again in the neutral zone 
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"4192","34","b","b1","3","cube","FALSE",NA,NA,"26","na","0","0","3","0","16","25,17","FALSE","na","FALSE","3","cobleigh","was not intaking particularly fast. but scored a decent amount of pieces on the low and mid levels
+",3,1,1,3,4,1,2,0,1,0,0,1,2,0,1,8,3,11,45
+"8528","34","r","r3","1","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","engage","FALSE","1","Duhe","- no auton/intake, mediocre and ineffective defense- engaged with 1 other robot- often wandered seemingly aimlessly around the middle, easily evaded by blue
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"3005","34","r","r2","3","cone","TRUE","1","1","2","engage","2","4","6","0","3,4,6,13,15,22,20,19,21","5,14,11","FALSE","engage","FALSE","5","Ha","Its 3005. They were undefended for most of the match and whentheywre defended they went around the defense. Currently. Driver seems pretty confident, but sometimes there is a little hesitation. 
+",12,2,10,4,14,4,4,4,0,0,2,9,3,1,1,40,12,52,11.25
+"5431","34","b","b2","2","cube","TRUE",NA,NA,"5","engage","0","0","0","2","6",NA,"FALSE","engage","FALSE","4","Kari","Good driving, able to move around quickly. When hit hard or hits something, pieces have a chance of falling. Prefers to use double sub because of intake.
+",1,1,1,1,2,0,0,1,0,0,1,1,0,0,1,5,6,11,135
+"9088","34","b","b1","1","cone","TRUE",NA,NA,NA,"na","0","1","2","0","1","11,2","FALSE","engage","FALSE","3","harold","robot was wobbly. did climb well on the charge station. 
+",3,0,1,2,3,0,1,2,0,0,0,1,2,0,0,13,0,13,45
+"7535","35","b","b3","2","cube","FALSE",NA,NA,"22","na","0","1","0","0",NA,NA,"FALSE","dock","FALSE","1","soriano","slow, inexperienced driver, picked up two pieces at one point, didnt pick up pieces well/ at all
+",0,1,0,1,1,0,0,0,1,0,0,0,0,0,1,0,3,3,0
+"9105","35","b","b1","1","cone","TRUE",NA,"1",NA,"na","0","1","0","3","7","8","FALSE","engage","FALSE","4","Kari","Good driving. Picked up from neutral and double sub. Handled defense and hits pretty well. Helped complete most of top nodes with 6672.
+",2,1,2,1,3,0,0,2,0,0,1,1,1,1,0,10,6,16,67.5
+"6672","35","b","b2","3","cone","TRUE","4","18","17","engage","1","4","3","2","27,1,3,4,6,9","2,5,25,26","FALSE","na","FALSE","5","cobleigh","great scoring on all levels. good defense evasion
+",10,2,7,5,12,3,0,7,0,2,0,6,4,1,1,41,8,49,13.5
+"1489","35","r","r2","1","cone","TRUE",NA,"27",NA,"dock","0","0","0","0",NA,NA,"FALSE","engage","FALSE","3","minear","Defended for most of the match, especially against 6672. Didn't score except the preload despite previously being a quick scoring bot. 
+",0,1,1,0,1,0,0,0,1,0,0,0,0,1,0,0,3,3,0
+"6526","35","r","r1","2","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,"14","TRUE","park","FALSE","2","harold","indecisive driver. tried to pick up game pieces but gave up. wandered aimlessly. tried being a shuttlebot but was not a very effective one. 
+",1,0,0,1,1,0,1,0,0,0,0,0,1,0,0,3,0,3,135
+"4206","35","r","r3","3","cone","FALSE",NA,"19","2","na","0","0","1","6","20,15,13,10",NA,"FALSE","engage","FALSE","4","Pozo","Fast intake from shelf but very innacurate when it cameto scoring missing 3 seperate times. Made up for it with fast run times and easy engagement but worried about accuracy
+",4,2,5,1,6,1,3,0,1,0,1,4,0,1,1,11,9,20,33.75
+"4641","36","r","r3","2","cube","FALSE",NA,NA,"5","engage","2","1","0","0",NA,"2,19,23","FALSE","na","FALSE","2","novinski","weird intake is inconsistent and takes a while. really bad at pushing stuff in because of their intake. kind of slow
+",3,1,0,4,4,2,0,1,0,0,1,0,3,0,1,9,6,15,45
+"4153","36","b","b2","3",NA,"TRUE",NA,NA,NA,"na","0","3","1","0",NA,"22,23,21,24","FALSE","engage","FALSE","3","cobleigh","nothing too special. pretty decent low scorer
+",4,0,0,4,4,4,0,0,0,0,0,0,4,0,0,8,0,8,33.75
+"7534","36","b","b3","1","cube","FALSE",NA,"27","26","na","0","4","0","0",NA,"20,19,21","TRUE","na","FALSE","3","soriano","self shuttle bot, swerve, decent 2nd pick imo, just shuttled pieces by itself into nodes
+",3,2,1,4,5,3,0,0,2,0,0,0,3,1,1,6,6,12,45
+"7321","36","r","r1","1","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"TRUE","engage","FALSE","1","harold","must be a very light robot, for it had trouble getting up the charge station. not very decisive driving. did some shuttlebot work. 
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"2714","36","b","b1","2","cone","TRUE",NA,"4",NA,"engage","0","0","0","6","9,7,6,3","8,5","FALSE","engage","FALSE","5","Kari","Good driving and speed. Completed most of top nodes by themselves. Goes mainly for double sub and attempts to engage charge station during auton. 
+",6,1,5,2,7,0,0,6,0,0,1,4,2,1,0,30,6,36,22.5
+"8816","36","r","r2","1","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","2","minear","dropped preload without scoring it. Had machinery to score points but didn't use it. Played poor defense for most of the match. It seemed like it tried to dock but it didn't.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"9156","37","b","b2","2","cone","TRUE",NA,"4",NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","3","cobleigh","overall pretty strong beginning, got knocked over my teammate
+",0,1,1,0,1,0,0,0,0,0,1,0,0,1,0,0,6,6,0
+"9299","37","b","b3","1",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"TRUE","engage","FALSE","1","soriano","fast tank but inexpereience driver, once 9156 tipped, driver seemed like he didnt know what to do. didnt even really shuttle game pieces
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"8528","37","r","r3","1","cube","FALSE",NA,NA,NA,"na","0","2","0","0",NA,"27,26","TRUE","engage","FALSE","3","Pozo","Started by dribbling cubes into hybrid nodes twice but then just began shuttling any piece it could to its teammate since defense from the opposing side stopped it from taking in any pieces from the shelf
+",2,0,0,2,2,2,0,0,0,0,0,0,2,0,0,4,0,4,67.5
+"8858","37","r","r1","2","cube","FALSE",NA,NA,"5","fail","0","0","0","4","6,4,3",NA,"FALSE","park","FALSE","4","harold","very good everybot. could get and score cargo efficiently and effectively. evaded some defense from two brick bots on the other alliance. 
+",3,1,3,1,4,0,0,3,0,0,1,3,0,0,1,15,6,21,45
+"7271","37","b","b1","3",NA,"TRUE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","engage","FALSE","3","Kari","No intake, pancake bot. decent but not great defense. tank drive so can't move around as quick.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"7540","37","r","r2","3","cube","TRUE",NA,"19",NA,"na","0","0","2","2","3","2,8","FALSE","engage","FALSE","3","minear","Went back and forth to get pieces. At the end it tried to score a cone but it fell and didn't even go in the hybrid node. Double engage at the end.
+",3,1,2,2,4,0,0,3,1,0,0,1,2,1,0,15,3,18,45
+"9128","38","b","b1","1","cone","TRUE",NA,NA,NA,"fail","0","0","0","6","1,3,9,7,6",NA,"FALSE","engage","FALSE","4","Gordon","Good at picking up cones from double substation but if they are on the ground it becomes very difficult
+",5,0,5,0,5,0,0,5,0,0,0,5,0,0,0,25,0,25,27
+"3310","38","r","r3","2","cone","FALSE",NA,"6",NA,"engage","0","2","5","0","4,3,1,7,27","2","FALSE","engage","FALSE","4","Pozo","Used single substation for nearly all intakes and aimed mostly for high nodes with cones. They missed twice at the beginning and shot a cube at the end. Pretty good movement but should aim for more neutral zone pickups
+",6,1,6,1,7,1,0,5,0,0,1,5,1,1,0,27,6,33,22.5
+"9088","38","b","b2","3","cone","TRUE",NA,NA,NA,"na","0","1","1","1","25","23,2,8","FALSE","engage","FALSE","3","cobleigh","good showing. 
+",4,0,1,3,4,2,0,2,0,0,0,1,3,0,0,14,0,14,33.75
+"4251","38","b","b1","2",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","3","Kari","No pieces picked up, intake may not be working. Tried to play defense, ended up getting penalty for hitting robot in substation zone. Tank drive, not quick enough to play defense.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"7119","38","r","r1","1","cube","TRUE",NA,NA,"17","na","0","2","2","0",NA,"26,25,14","FALSE","park","FALSE","4","harold","effectively scored and intaked. there was one high cube that the announcer said did not count. quickly got to community to get parking bonus. 
+",3,1,0,4,4,2,1,0,0,1,0,0,3,0,1,7,4,11,45
+"4192","38","r","r2","3","cube","FALSE",NA,NA,NA,"na","0","1","2","0",NA,"20,26,23,21","FALSE","engage","FALSE","3","minear","Relatively quick at grabbing and scoring pieces. Engaged at the end barely before the end of the match. No auton.
+",4,0,0,4,4,4,0,0,0,0,0,0,4,0,0,8,0,8,33.75
+"7503","39","b","b2","2","cube","FALSE",NA,NA,"23","engage","0","2","0","2","22,21,3",NA,"FALSE","engage","FALSE","4","cobleigh","pretty speedy and was a consistant scorer
+",3,1,3,1,4,2,0,1,1,0,0,3,0,0,1,9,3,12,45
+"5613","39","r","r3","1","cube","FALSE",NA,NA,NA,"na","0","1","1","0",NA,"26,20,21","FALSE","engage","FALSE","3","Pozo","Used intake to grab cubes and drahg them to hybrid nodes. Ok driving but slow to let go of pieces. If in need of speed there are better options
+",3,0,0,3,3,3,0,0,0,0,0,0,3,0,0,6,0,6,45
+"6369","39","r","r1","2","cube","FALSE",NA,NA,"14","dock","0","2","0","0","21,27",NA,"TRUE","engage","FALSE","3","harold","intake not fully working, so reverted to shuttlebot activity and defense. got a foul for pinning for too long. climbed pretty well. 
+",2,1,2,1,3,2,0,0,0,1,0,2,0,0,1,4,4,8,67.5
+"7506","39","b","b1","1","cone","TRUE",NA,"19",NA,"na","0","0","0","3","21,1,27","2","FALSE","na","FALSE","3","gordon","very slow tank drive, takes a long time to deploy cones
+",4,1,4,1,5,2,0,2,1,0,0,3,1,1,0,14,3,17,33.75
+"8749","39","b","b1","3","cube","TRUE",NA,NA,"26,25","na","0","1","5","0",NA,"27,24,20,17,11","FALSE","engage","FALSE","4","Kari","Good and quick bot. Goes mainly for cubes at single sub. Good intake and is compact.
+",5,2,0,7,7,3,2,0,2,0,0,0,5,0,2,12,6,18,27
+"6974","39","r","r2","3","cube","TRUE",NA,NA,NA,"na","0","1","0","1","3","19","FALSE","na","FALSE","2","minear","Slowly moved out during auton to get mobility. Top heavy and tipsy. Its piece grabber is slow and does not hold onto pieces very well. 
+",2,0,1,1,2,1,0,1,0,0,0,1,1,0,0,7,0,7,67.5
+"5411","40","b","b2","3","cone","TRUE",NA,"9",NA,"na","0","0","0","3","7,22,3",NA,"FALSE","engage","FALSE","4","miele","Good cycling and intaking on the shelf, takes their time aiming but scores high with pretty high accuracy.
+",3,1,4,0,4,1,0,2,0,0,1,3,0,1,0,12,6,18,45
+"3005","40","r","r2","3","cone","TRUE","4","1",NA,"na","0","3","1","0","4,15,6,20,12,10","21,2,11,14","FALSE","engage","FALSE","5","gordon","very fast intake, fast and confident movement overall, quick engagement
+",10,1,7,4,11,2,5,3,0,0,1,6,4,1,0,34,6,40,13.5
+"7534","40","r","r1","1","cone","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","na","FALSE","2","cobleigh","tried to play defense, did not play it well
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"8858","40","b","b3","2","cube","FALSE",NA,NA,"5","na","0","0","0","3","4,6,1",NA,"FALSE","engage","FALSE","4","Poon","Quickly made it to the shelf and back. Scored well.
+",3,1,3,1,4,0,0,3,0,0,1,3,0,0,1,15,6,21,45
+"9080","40","b","b1","1","cube","FALSE",NA,NA,NA,"na","0","1","1","1",NA,"2,8,17","FALSE","engage","FALSE","3","novinski","a bit slow and dropped some pieces. played nice for a triple balance
+",3,0,0,3,3,0,1,2,0,0,0,0,3,0,0,13,0,13,45
+"5431","40","r","r3","2","cube","FALSE",NA,NA,"5","engage","0","2","1","0",NA,NA,"TRUE","engage","FALSE","4","Kari","Pushed pieces for 3005 to score. Didn't pick up much from subs. Quick to gather pieces away from opposing robots.
+",0,1,0,1,1,0,0,0,0,0,1,0,0,0,1,0,6,6,0
+"9105","41","r","r2","2","cone","TRUE",NA,"4",NA,"dock","0","1","1","1","6","5","FALSE","engage","FALSE","3","gordon","large and heavy intake that made it hard to reach pieces in corners or against the wall. Also, weak intake grip strength and if piece was dropped, it was dropped into robot body
+",2,1,2,1,3,0,0,2,0,0,1,1,1,1,0,10,6,16,67.5
+"8528","41","b","b2","1","cube","FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"FALSE","fail","FALSE","3","miele","plays some good defence but kinda stalls for some time clogging up the neutral zone
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"7119","41","b","b3","3","cube","TRUE",NA,NA,"17","na","0","2","2","0",NA,"25,26,21","FALSE","na","FALSE","2","Poon","Does not have the capability of shooting into top zones, and most of the time can't shoot into middle zones either. Could've been more efficient.
+",3,1,0,4,4,3,0,0,0,1,0,0,3,0,1,6,4,10,45
+"7321","41","r","r3","3","cube","TRUE",NA,NA,NA,"na","0","1","0","0",NA,NA,"TRUE","na","FALSE","2","Kari","Tried to gather game pieces for teammates, but large frame caused them to be in the way of their teammates. No intake creates disadvantage.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"9156","41","b","b1","2","cone","TRUE",NA,"6",NA,"fail","0","0","0","3","7,9","8","FALSE","fail","FALSE","4","novinski","fast everybot on a swerve base. almost fell over but not their fault. good placement
+",3,1,3,1,4,0,0,3,0,0,1,2,1,1,0,15,6,21,45
+"148","41","r","r1","1","cone","TRUE",NA,"27",NA,"na","1","3","3","1","9,7,26,16,24","8,17,14","FALSE","engage","FALSE","4","cobleigh","fast scorer, not perfect driving
+",8,1,6,3,9,2,3,3,1,0,0,5,3,1,0,28,3,31,16.875
+"4206","42","r","r2","2","cube","TRUE",NA,NA,"5","dock","0","3","0","1","13,15,23","14","FALSE","engage","FALSE","3","gordon","fast swerve, slow intake and hard to position to pick up cones
+",4,1,3,2,5,1,3,0,0,0,1,3,1,0,1,11,6,17,33.75
+"7535","42","r","r1","1","cube","FALSE",NA,NA,"26","na","0","0","0","0",NA,NA,"FALSE","na","FALSE","1","cobleigh","very slow. not good defense at all. just stayed in the middle and could not defend.
+",0,1,0,1,1,0,0,0,1,0,0,0,0,0,1,0,3,3,0
+"9088","42","b","b3","2","cone","FALSE",NA,NA,NA,"fail","1","2","1","0","12,10,6","5","FALSE","dock","FALSE","3","Poon","Able to score on all levels. Arm has questionable stability when aiming for top levels. 
+",4,0,3,1,4,0,2,2,0,0,0,3,1,0,0,16,0,16,33.75
+"7271","42","r","r3","3",NA,"TRUE",NA,NA,NA,"na","0","2","0","0",NA,NA,"TRUE","na","FALSE","2","Kari","No intake, supposed to be a defense bot. Gathered pieces for teammates. Didn't play much defense, wandered around in middle for part of game while teammates scored.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"6526","42","b","b2","1","cube","FALSE",NA,NA,NA,"na","0","2","0","0",NA,"11,23,21","FALSE","fail","FALSE","1","miele","very slow intake that is horrible at picking up cubes. tippy when intake is out which is 90 percent of the time. 
+",3,0,0,3,3,2,1,0,0,0,0,0,3,0,0,7,0,7,45
+"6974","42","b","b1","3","cube","TRUE",NA,NA,"27","na","0","2","0","0","9,26",NA,"FALSE","na","FALSE","2","novinski","intake takes way too long to line up. didn't park for some reason.  wouldn't socre in high
+",2,1,2,1,3,1,0,1,1,0,0,2,0,0,1,7,3,10,67.5
+"6672","43","r","r1","3","cone","TRUE","4","10","11","engage","0","1","5","0","7,18","8,17,26","FALSE","fail","FALSE","3","cobleigh","a little slower than usual scoring the game pieces. failed climb
+",5,2,3,4,7,1,2,2,0,2,0,2,3,1,1,18,8,26,27
+"7506","43","r","r2","1","cube","TRUE",NA,"9",NA,"na","0","0","0","2","13",NA,"FALSE","dock","FALSE","2","gordon","slow overall, akward intake angle, not very precise intake
+",1,1,2,0,2,0,1,0,0,0,1,1,0,1,0,3,6,9,135
+"8749","43","b","b2","3","cube","TRUE","4,3",NA,"27,26","na","0","0","6","0",NA,"19,20,21,22,23,24","FALSE","engage","FALSE","5","miele","extremely speedy and zippy robot. cycles cubes into hybrid very fast and can dodge defence well. Got out of 3005 way so they could score
+",6,2,0,8,8,6,0,0,2,0,0,0,6,0,2,12,6,18,22.5
+"4192","43","r","r3","2","cube","FALSE",NA,NA,"22","na","0","0","5","0",NA,"11,20,21,23,24","FALSE","na","FALSE","4","Kari","Goes mostly for hybrid nodes with cubes picked up from single sub. Quick but has large frame.
+",5,1,0,6,6,4,1,0,1,0,0,0,5,0,1,11,3,14,27
+"2714","43","b","b3","2","cone","FALSE",NA,"4",NA,"engage","1","0","0","4","1,3,13","5","FALSE","engage","FALSE","4","Poon","Occasional game pieces falling out of intake. Did alright in auto. Scored mainly cones in top row.
+",4,1,4,1,5,0,1,3,0,0,1,3,1,1,0,18,6,24,33.75
+"3005","43","b","b1","1","cone","FALSE",NA,NA,NA,"na","0","5","3","0","4,7,6,18,16","8,17","FALSE","park","FALSE","4","novinski","really fast and reallyconsistent. dropped a piece
+",7,0,5,2,7,0,3,4,0,0,0,5,2,0,0,29,0,29,19.286
+"9128","44","r","r1","3","cone","TRUE","3","19",NA,"na","0","1","3","0","9,7","8","FALSE","na","FALSE","4","cobleigh","fast robot. a little clumsy. good scorer.
+",3,1,3,1,4,0,0,3,1,0,0,2,1,1,0,15,3,18,45
+"5431","44","b","b2","2","cube","FALSE",NA,NA,"5","fail","0","0","2","0","4,6",NA,"FALSE","engage","FALSE","3","miele","floppy intake. slow cycle time and got their intake stuck on a pole... they were able to recover 
+",2,1,2,1,3,0,0,2,0,0,1,2,0,0,1,10,6,16,67.5
+"4251","44","b","b3","1",NA,"FALSE",NA,NA,NA,"na","0","1","0","0","19",NA,"FALSE","engage","FALSE","1","Poon","Intake does not work. Driver was inexperienced and only managed to get one hybrid node in teleop. Slightly unstable as well.
+",1,0,1,0,1,1,0,0,0,0,0,1,0,0,0,2,0,2,135
+"4153","44","r","r2","2","cube","FALSE",NA,NA,NA,"engage","0","2","2","0",NA,"5,21,27,25,23","FALSE","engage","FALSE","4","soriano","very fast and has a decent/good driver. quick shuttle time from nodes to loading zone. tank
+",5,0,0,5,5,4,0,1,0,0,0,0,5,0,0,13,0,13,27
+"5411","44","r","r3","1","cone","FALSE",NA,NA,NA,"na","0","0","0","4","1,21",NA,"FALSE","engage","FALSE","3","Kari","Shooter not very accurate, missed a couple on the high nodes. They also take a while to pickup pieces from the double sub. Go for cones mostly.
+",2,0,2,0,2,1,0,1,0,0,0,2,0,0,0,7,0,7,67.5
+"7503","44","b","b1","3","cube","FALSE",NA,NA,"26","na","0","3","0","1","22,6","8","FALSE","fail","FALSE","3","novinski","outake is inconsistent and slow. waited for most of endgame for no reason and then tried for a last second triple balance which didn't work
+",3,1,2,2,4,1,0,2,1,0,0,2,1,0,1,12,3,15,45
+"9299","45","b","b1","1",NA,"FALSE",NA,NA,NA,"na","0","0","0","0",NA,NA,"TRUE","na","FALSE","1","soriano","browned out because it hit the ground/wall too hard after flying off the charge station, *very* fas but not a good driver equals cant control the bot very well. ast tank
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"7540","45","b","b3","3","cone","TRUE",NA,NA,NA,"na","0","1","0","2","1,3,12",NA,"FALSE","fail","FALSE","3","gordon","small intake which makes it harder to pick up cones
+",3,0,3,0,3,0,1,2,0,0,0,3,0,0,0,13,0,13,45
+"6369","45","r","r1","1",NA,"FALSE",NA,NA,NA,"na","0","3","0","0","27,25",NA,"TRUE","engage","FALSE","3","novinski","intake doesn't work. bad at dribbling. okay double engage, red card and damage inside another frame perimeter
+",2,0,2,0,2,2,0,0,0,0,0,2,0,0,0,4,0,4,67.5
+"4641","45","r","r2","2","cube","FALSE",NA,NA,"5","engage","0","2","0","0",NA,"14,22","FALSE","engage","FALSE","2","miele","bad intake for and can't corral the cubes well. can't hand off between intake and arm well 
+",2,1,0,3,3,1,1,0,0,0,1,0,2,0,1,5,6,11,67.5
+"3310","45","b","b2","2","cone","FALSE",NA,"4",NA,"engage","0","0","6","0","6,7,9","5,8,26","FALSE","dock","FALSE","5","harold","high speed. could score high very effectively. sometimes soccerballed it for transporting cubes. intake kind of narrow but they work around it very well.
+",6,1,4,3,7,1,0,5,0,0,1,3,3,1,0,27,6,33,22.5
+"8816","46","b","b1","1","cube","FALSE","NA","NA","NA","na","0","0","0","0","NA","NA","FALSE","na","FALSE","1","soriano","i think they browned out atthe begining of the match, but their indicator light was still blinking. didnt move or do anything
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"7506","46","r","r3","3","cone","TRUE","NA","27","NA","na","1","0","0","1","1,3","NA","FALSE","na","FALSE","1","Poon","Robot was unstable, and therefore couldn't move fast to get back to the community to score. Pieces fell out/got stuck on the intake.
+",2,1,3,0,3,0,0,2,1,0,0,2,0,1,0,10,3,13,67.5
+"9088","46","r","r2","2","cone","FALSE","NA","NA","NA","na","0","5","0","1","4,6,24","5,2","FALSE","engage","FALSE","4","miele","very good at intaking upright cones and cubes on the floor. Can score high fairly easily
+",5,0,3,2,5,1,0,4,0,0,0,3,2,0,0,22,0,22,27
+"6974","46","b","b3","3","cube","TRUE","NA","NA","NA","na","0","0","0","2","NA","NA","FALSE","dock","FALSE","1","gordon","only went for shelf, didnt even try to go for ground. intake took a long time to grab the cone and had to be very precise. also very tipsy and light.
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"7534","46","b","b2","2","cube","FALSE","NA","NA","NA","na","0","3","0","0","NA","23,27,25","FALSE","fail","FALSE","3","harold","browned out frequently during the match. also browned out on the charge station, inhibiting the rest of the alliance from doing it. other than that, it is pretty fast swerve brick bot with good soccerballing abilities.
+",3,0,0,3,3,3,0,0,0,0,0,0,3,0,0,6,0,6,45
+"5613","46","r","r1","3","cube","FALSE","NA","NA","NA","na","0","0","1","0","NA","NA","FALSE","engage","FALSE","3","novinski","outake broke I think so they tried to play defense, but two of the opponent bots browned out, so they just waited for that last bot. Okay defense when it got the chance
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"5431","47","r","r2","2","cube","FALSE","NA","NA","5","engage","0","0","3","0","4,6,20","NA","FALSE","engage","FALSE","3","miele","slow at placing pieces to score, slow with intaking from shute (lining it up). 
+",3,1,3,1,4,1,0,2,0,0,1,3,0,0,1,12,6,18,45
+"6672","47","b","r1","2","cube","TRUE","NA","4","NA","engage","2","2","4","0","1,3,10,12,13","2,11,19,20","FALSE","engage","FALSE","5","gordon","good
+",9,1,6,4,10,2,4,3,0,0,1,5,4,1,0,31,6,37,15
+"7503","47","b","b2","1","cube","FALSE","NA","NA","NA","na","0","2","3","0","NA","NA","TRUE","engage","FALSE","4","harold","very good shuttlebot. extremely helpful for the rest of the members of the alliance. climbed really well also. 
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"3005","47","b","b1","3","cone","FALSE","NA","9","NA","na","0","9","4","0","3,6,18,16,7,15,27","8,17,5,14,26,25","FALSE","park","FALSE","5","novinski","3005 is really really good. fast and reliable
+",13,1,8,6,14,3,5,5,0,0,1,7,6,1,0,46,6,52,10.385
+"9156","47","r","r3","3","cone","FALSE","NA","9","NA","na","0","0","1","1","6","8","FALSE","engage","FALSE","2","Poon","Robot unstable. Intake is finicky to work with, and inaccurate when placing. Pieces can fall out of intake as well. Driver is inexperienced and there was a point in the match when he wasn't doing anything.
+",2,1,2,1,3,0,0,2,0,0,1,1,1,1,0,10,6,16,67.5
+"4251","48","r","r2","2","cube","FALSE","NA","NA","NA","na","0","0","0","0","NA","14","FALSE","na","FALSE","1","miele","cant intake at all, didnt play any defence or shuttle. did nothing
+",1,0,0,1,1,0,1,0,0,0,0,0,1,0,0,3,0,3,135
+"9080","48","b","b1","1","cube","FALSE","NA","NA","NA","na","0","2","1","0","NA","2,5,8,21","FALSE","fail","FALSE","3","gordon","slow extension of intake arm, has a tank swivel mount with swerve drive
+",4,0,0,4,4,1,0,3,0,0,0,0,4,0,0,17,0,17,33.75
+"7535","48","b","b3","2","cube","FALSE","NA","NA","23","na","0","1","0","0","NA","22","FALSE","dock","FALSE","1","minear","Moved around aimlessly for most of the match and only scored one extra piece. Almost a pancake bot but has some small machinery.
+",1,1,0,2,2,1,0,0,1,0,0,0,1,0,1,2,3,5,135
+"9128","48","b","b2","3","cone","TRUE","NA","9","NA","na","0","0","2","0","4,6,7,3,1","NA","FALSE","dock","FALSE","4","harold","fast robot that can score effectively and efficiently. intake made a loud sound at some point. the intake also seems to get a little stuck at the chute station. managed to stay on the charge station for dock. 
+",5,1,6,0,6,0,0,5,0,0,1,5,0,1,0,25,6,31,27
+"6526","48","r","r1","3","cube","FALSE","NA","NA","NA","na","1","2","0","0","NA","11,20","FALSE","park","FALSE","1","novinski","intake moves AGONIZINGLY slow and then drops the pieces it got. stayed in the same place the whole game. reminds me of a sickly victorian child
+",2,0,0,2,2,1,1,0,0,0,0,0,2,0,0,5,0,5,67.5
+"8528","48","r","b1","1","cube","FALSE","NA","NA","NA","na","0","3","0","0","NA","26,27","TRUE","engage","FALSE","2","Pozo","Goes to neutral zone and pushes pieces into community and hybrid nodes for teammates. Easily made it up the charging station but the driving is not consistent enough for it to be deemed great 
+",2,0,0,2,2,2,0,0,0,0,0,0,2,0,0,4,0,4,67.5
+"6369","49","b","b1","1","cube","TRUE","NA","NA","11","na","0","1","1","0","19","NA","FALSE","na","FALSE","2","gordon","bumper fell off
+",1,1,1,1,2,1,0,0,0,1,0,1,0,0,1,2,4,6,135
+"8816","49","r","r1","1","NA","FALSE","NA","NA","NA","na","0","0","0","0","NA","NA","FALSE","na","FALSE","1","SOO","IN THIS MATCH, THE ROBOT APPEARED TO BE IMMOBILE BESIDES THE EXTENSION AND RETRACTION OF THE ARM. THE ROBOT WAS UNABLE TO MOVE FROM ITS STARTING POSITION. i just realized i had caps lock on. the robot also had cool RGB
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"8749","49","r","r2","3","cube","TRUE","NA","NA","19","na","3","5","3","0","24","20,23,21,22,25,26","FALSE","engage","FALSE","5","miele","extremely fast robot that shuttles cubes to itself and scores all hybird nodes. saw that 148 was going for a cone and stole it right from them. 
+",7,1,1,7,8,7,0,0,1,0,0,1,6,0,1,14,3,17,19.286
+"8858","49","r","r3","2","cube","FALSE","NA","NA","5","na","0","0","0","4","4,6,1","2","FALSE","engage","FALSE","4","Pozo","Made very good use of single substation and displayed improved driving from earlier today. If they can speed up a bit they could become dangerous top node scorers
+",4,1,3,2,5,0,0,4,0,0,1,3,1,0,1,20,6,26,33.75
+"3310","49","b","b3","2","cone","FALSE","NA","6","NA","engage","0","0","6","0","9,23,7,24,16,26","17","FALSE","engage","FALSE","4","minear","Very quick back and forth to score pieces. Very quick to engage during the endgame. 
+",7,1,7,1,8,3,2,2,0,0,1,6,1,1,0,22,6,28,19.286
+"148","49","b","b2","2","cone","TRUE","NA","18","NA","na","0","2","5","0","13,4,25","5,11,8,2","FALSE","engage","FALSE","5","harold","fast robot that scores very well. evaded some defense but got one cube stolen by 8858. climbed very fast too. 
+",7,1,4,4,8,1,2,4,0,1,0,3,4,1,0,28,4,32,19.286
+"7119","50","r","r2","3","cone","TRUE","NA","NA","11","na","1","0","4","0","NA","20,19,2,21,23","FALSE","na","FALSE","3","Mackey","Slow Tank Drive, Slow Arm, but it works! No dropped pieces, all pieces intaken were scored
+",5,1,0,6,6,4,0,1,0,1,0,0,5,0,1,13,4,17,27
+"4192","50","b","b2","1","cube","FALSE","NA","NA","19","na","0","2","3","0","NA","20,22,25","FALSE","na","FALSE","3","harold","tried to help a fellow teammate off the charge station that was half off it and got literally tangled with that robot during the endgame. 
+",3,1,0,4,4,3,0,0,1,0,0,0,3,0,1,6,3,9,45
+"9105","51","r","r3","1","cone","TRUE","NA","9","NA","na","0","1","0","1","1,3,7","NA","FALSE","dock","FALSE","3","Pozo","Had some trouble intaking from shelf and smashed into wall multiple times but were able to score on top node most of the time. Need to work on consistent intake and top scoring 
+",3,1,4,0,4,0,0,3,0,0,1,3,0,1,0,15,6,21,45
+"5613","50","b","b3","2","cube","FALSE","NA","NA","NA","na","0","1","0","1","NA","20,23,17","FALSE","na","FALSE","2","Duhe","- caught onto 4192 in endgame, preventing both from going onto the charge station- initially doubled a cube on the bottom and fixed it- slow to pick up pieces, intake unreliable
+",3,0,0,3,3,2,1,0,0,0,0,0,3,0,0,7,0,7,45
+"7540","50","b","b3","3","cone","TRUE","NA","27","NA","na","0","1","2","1","9,7","5,8","FALSE","engage","FALSE","3","Ha","decent high scorer. Intake scares me due to how flimsy it is, but somehow it has pretty good piece security, even though it takes a while to intake because it requires a lot of precision. It can balance well. 
+",4,1,3,2,5,0,0,4,1,0,0,2,2,1,0,20,3,23,33.75
+"4641","50","r","r1","2","cube","FALSE","NA","NA","5","engage","1","2","0","3","7,25","27,8","FALSE","fail","FALSE","2","novinski","weird intake barely works. dropped piece. slow.
+",4,1,2,3,5,2,0,2,0,0,1,2,2,0,1,14,6,20,33.75
+"4153","51","b","b2","3","cube","TRUE","NA","NA","NA","na","0","1","2","0","NA","8,25,19","FALSE","park","FALSE","3","harold","very tippy robot. it tried to balance and tipped over. 
+",3,0,0,3,3,2,0,1,0,0,0,0,3,0,0,9,0,9,45
+"2714","51","r","r2","2","cone","TRUE","NA","6","NA","engage","0","0","0","6","4,3,1,7","5,2","FALSE","engage","FALSE","3","Mackey","Consistent slow arm, swerve drive, Only shelf, no floor/shute. Consistent Auton and Teleop balance
+",6,1,5,2,7,0,0,6,0,0,1,4,2,1,0,30,6,36,22.5
+"5411","51","r","r3","3","cone","TRUE","NA","19","NA","na","0","1","0","1","1","2","FALSE","na","FALSE","3","Poon","Did really well but robot was unstable, and fell over halfway through the match.
+",2,1,2,1,3,0,0,2,1,0,0,1,1,1,0,10,3,13,67.5
+"7271","51","r","r1","1","cube","TRUE","NA","NA","NA","na","0","1","0","0","27","26","FALSE","engage","FALSE","3","novinski","brickbot that played some ok defense and some good defense. ok at dribbling
+",2,0,1,1,2,2,0,0,0,0,0,1,1,0,0,4,0,4,67.5
+"9299","51","b","b3","1","NA","FALSE","NA","NA","NA","na","0","0","0","0","NA","NA","FALSE","na","FALSE","1","Duhe","- no auton- shook a bit after travelling behind charge sattion at start of teleop- pushed 2 cubes next to a wall in the center of the field and guarded them until endgame- this piece hoarding was at the detriment of their own alliance as much as it was for the other one- overall ineffective defense
+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+"4206","1","b","b3","2","cube","FALSE","NA","NA","5","engage","0","2","6","0","7,26","27,23,25,24,22,20","FALSE","dock","FALSE","4","Ha","Arm seemed to not work, but stil brought and scored efficiently on their own. Tried to climb but alliance partner tipped and forced the charge station down. able to evade decently
+",8,1,2,7,9,7,0,1,0,0,1,2,6,0,1,19,6,25,16.875
+"8749","52","r","r3","1","cube","TRUE","NA","NA","27","na","0","7","0","0","NA","20,22,21,23,24,25","FALSE","na","FALSE","5","soriano","very fast, didnt need to play defense, just sped around and put pieces in the bottom nodes
+",6,1,0,7,7,6,0,0,1,0,0,0,6,0,1,12,3,15,22.5
+"6672","52","r","r2","3","cone","TRUE","2,3","10","11","engage","0","2","1","3","12,4,6,13,15","14","FALSE","engage","FALSE","5","Poon","PEAK performance. Crashed into other robots near the end, but recovered quickly. Scored a lot. Enough said.
+",6,2,6,2,8,0,4,2,0,2,0,5,1,1,1,22,8,30,22.5
+"9088","52","r","r1","1","cone","TRUE","NA","NA","NA","na","0","1","0","2","9,7","8,5","FALSE","engage","FALSE","4","novinski","actually really good! solid cycling and confident driving. played nice and drove well for a solid double balance
+",4,0,2,2,4,0,0,4,0,0,0,2,2,0,0,20,0,20,33.75
+"7534","52","b","b2","1","cube","FALSE","NA","NA","20","na","0","0","0","0","NA","NA","TRUE","engage","FALSE","2","harold","seemed to be wandering aimlessly for some duration of the match. did shuttlebot work but did not do it well. did climb well, though.
+",0,1,0,1,1,0,0,0,1,0,0,0,0,0,1,0,3,3,0
+"3310","52","b","b3","1","cone","TRUE","NA","21","NA","engage","0","1","2","0","4,3,1,20","NA","FALSE","engage","FALSE","3","Duhe","- tried to intake while moving, often failed- missed auton cone
+",4,1,5,0,5,1,0,3,1,0,0,4,0,1,0,17,3,20,33.75
