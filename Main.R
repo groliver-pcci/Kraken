@@ -585,19 +585,19 @@ recalcValues <- function() {
     
     
     # aSt
-    vals$teamframe$aSt[team] <- mean(matches$scoredT)
+    vals$teamframe$aSt[team] <- round(mean(matches$scoredT), digits = 2)
     
     # aSa
-    vals$teamframe$aSa[team] <- mean(matches$scoredA)
+    vals$teamframe$aSa[team] <- round(mean(matches$scoredA), digits = 2)
     
     # aS
-    vals$teamframe$aS[team] <- vals$teamframe$aSa[team] + vals$teamframe$aSt[team]
+    vals$teamframe$aS[team] <- round(vals$teamframe$aSa[team] + vals$teamframe$aSt[team], digits = 2)
     
     # ECT
     vals$teamframe$ECT[team] <- round(mean(as.double(matches$ct)), digits = 1)
     
     # aPPG
-    vals$teamframe$aPPG[team] <- mean(matches$pointsTotal)
+    vals$teamframe$aPPG[team] <- round(mean(matches$pointsTotal), digits = 2)
     
     if(length(matchI) == 0) {
       vals$teamframe$aSt[team] <- integer(1)
@@ -2222,7 +2222,8 @@ server <- function(input, output, session) {
         output$plannertable <- renderDT({
           datatable(
             vals$plannerframe,
-            options = list(columnDefs = list(list(visible = FALSE, targets = c(13))))
+            options = list(columnDefs = list(list(visible = FALSE, targets = c(13)))),
+            selection = "single"
           ) %>% formatStyle(
             1, 13,
             color = styleEqual(c("r", "b"), c("red", "blue"))
