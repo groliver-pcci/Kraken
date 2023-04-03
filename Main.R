@@ -8,6 +8,9 @@ library(devtools)
 library(shinyFiles)
 library(zip)
 library(bslib)
+library(ggrepel)
+library(plotly)
+
 load_all("C:\\Users\\wcbri\\Documents\\tbaR_1.0.1\\tbaR\\tbaR.Rproj")
 
 #link to pull from statbotics
@@ -254,6 +257,36 @@ vals <- reactiveValues(
                                 matches = c(),
                                 alliances = c()
                                 ),
+  
+  aagframe = data.frame(teamNum = c(),
+                        aBalS = c(),
+                        aBalF = c(),
+                        mRate = c(),
+                        sHa = c(),
+                        sMa = c(),
+                        sLa = c(),
+                        
+                        aSt = c(),
+                        tMed = c(),
+                        tMax = c(),
+                        sDev = c(),
+                        pcNeut = c(),
+                        pcCom = c(),
+                        pcSing = c(),
+                        pcDoub = c(),
+                        
+                        tHigh = c(),
+                        tMid = c(),
+                        tLow = c(),
+                        tCones = c(),
+                        tCubes = c(),
+                        
+                        balE = c(),
+                        balD = c(),
+                        balF = c(),
+                        balP = c(),
+                        balN = c()
+                        ),
   
   teamframe = data.frame(teamNum = c(),
                          matchesPlayedi = c(),
@@ -567,6 +600,229 @@ calcValues <- function(df) {
   return(info)
 }
 
+calcAAGVals <- function() {
+  vals$aagframe = data.frame(teamNum = c(),
+                             aBalS = c(),
+                             aBalF = c(),
+                             mRate = c(),
+                             sHa = c(),
+                             sMa = c(),
+                             sLa = c(),
+                             
+                             aSt = c(),
+                             tMed = c(),
+                             tMax = c(),
+                             sDev = c(),
+                             pcNeut = c(),
+                             pcCom = c(),
+                             pcSing = c(),
+                             pcDoub = c(),
+                             
+                             tHigh = c(),
+                             tMid = c(),
+                             tLow = c(),
+                             tCones = c(),
+                             tCubes = c(),
+                             
+                             balE = c(),
+                             balD = c(),
+                             balF = c(),
+                             balP = c(),
+                             balN = c()
+                             )
+  
+  for(team in 1:nrow(vals$teamframe)) {
+    tMatch <- data.frame(teamNum = c(),
+                         matchNum = c(),
+                         alliance = c(),
+                         driveStation = c(),
+                         startLocation = c(),
+                         preload = c(),
+                         mobility = c(),
+                         autoPickups = c(),
+                         autoCones = c(),
+                         autoCubes = c(),
+                         autoBalance = c(),
+                         communityPickups = c(),
+                         neutralPickups = c(), 
+                         singlePickups = c(),
+                         doublePickups = c(),
+                         teleopCones = c(),
+                         teleopCubes = c(),
+                         shuttle = c(),
+                         teleopBalance = c(),
+                         buddyClimb = c(),
+                         driver = c(),
+                         scoutName = c(),
+                         comments = c(),
+                         
+                         scoredT = c(),
+                         scoredA = c(),
+                         scoredCones = c(),
+                         scoredCubes = c(),
+                         scoredTCones = c(),
+                         scoredTCubes =  c(),
+                         scoredACones = c(),
+                         scoredACubes = c(),
+                         totalPickups = c(),
+                         pointsT = c(),
+                         pointsA = c(),
+                         pointsTotal = c(),
+                         
+                         scoredLowT = c(),
+                         scoredMidT = c(),
+                         scoredHighT = c(),
+                         scoredLowA = c(),
+                         scoredMidA = c(),
+                         scoredHighA = c(),
+                         
+                         ct = c()
+                         )
+    
+    tNum <- vals$teamframe$teamNum[team]
+    
+    mfI <- which(vals$mainframe$teamNum == tNum)
+    
+    if(length(mfI) > 0) {
+      
+      for(i in 1:length(mfI)) {
+        tMatch <- rbind(tMatch, vals$mainframe[mfI, ])
+      }
+      
+      total <- nrow(tMatch)
+      absuccess <- 0
+      abfail <- 0
+      asH <- 0
+      asM <- 0
+      asL <- 0
+      mob <- 0
+      
+      tPieces <- 0
+      tHigh <- 0
+      tLow <- 0
+      tMid <- 0
+      tCone <- 0
+      tCube <- 0
+      
+      neut <- 0
+      com <- 0
+      single <- 0
+      double <- 0
+      
+      parks <- 0
+      docks <- 0
+      engages <- 0
+      fails <- 0
+      nas <- 0
+      
+      if(nrow(tMatch) > 0) {
+        
+        for(r in 1:nrow(tMatch)) {
+          row <- tMatch[r, ]
+          
+          if(row$autoBalance[1] == "fail" || row$autoBalance[1] == "dock") {
+            abfail <- abfail + 1
+          } else if(row$autoBalance == "engage") {
+            absuccess <- absuccess + 1
+          }
+          asH <- asH + row$scoredHighA
+          asM <- asM + row$scoredMidA
+          asL <- asL + row$scoredLowA
+          
+          if(row$mobility == TRUE) {
+            mob <- mob + 1
+          }
+          tPieces <- tPieces + row$scoredT
+          tHigh <- tHigh + row$scoredHighT
+          tMid <- tMid + row$scoredMidT
+          tLow <- tLow + row$scoredLowT
+          
+          tCone <- tCone + row$scoredCones
+          tCube <- tCube + row$scoredCubes
+          
+          neut <- neut + row$neutralPickups[r]
+          com <- com + row$communityPickups[r]
+          single <- single + row$singlePickups[r]
+          double <- double + row$doublePickups[r]
+          
+          if(row$teleopBalance[1] == "engage") {
+            engages <- engages + 1
+          } else if(row$teleopBalance[1] == "dock") {
+            docks <- docks + 1
+          } else if(row$teleopBalance[1] == "park") {
+            parks <- parks + 1
+          } else if(row$teleopBalance[1] == "fail") {
+            fails <- fails + 1
+          } else {
+            nas <- nas + 1
+          }
+        }
+      }
+      
+      mobPC <- round(mob / total, digits = 2) * 100
+      aP <- mean(tMatch$scoredT)
+      mP <- median(tMatch$scoredT)
+      maxP <- max(tMatch$scoredT)
+      dP <- sd(tMatch$scoredT)
+      
+      pcHigh <- round(tHigh / tPieces, digits = 2) * 100
+      pcMid <- round(tMid / tPieces, digits = 2) * 100
+      pcLow <- round(tLow / tPieces, digits = 2) * 100
+      
+      pcCones <- round(tCone / tPieces, digits = 2) * 100
+      pcCubes <- round(tCube / tPieces, digits = 2) * 100
+      
+      intakes <- neut + com + single + double
+      
+      pcNeut <- round(neut / intakes, digits = 2) * 100
+      pcCom <- round(com / intakes, digits = 2) * 100
+      pcSingle <- round(single / intakes, digits = 2) * 100
+      pcDouble <- round(double / intakes, digits = 2) * 100
+      
+      
+      
+      r <- data.frame(
+        teamNum = c(tNum),
+        aBalS = c(absuccess),
+        aBalF = c(abfail),
+        mRate = c(mobPC),
+        sHa = c(asH),
+        sMa = c(asM),
+        sLa = c(asL),
+        
+        aSt = c(aP),
+        tMed = c(mP),
+        tMax = c(maxP),
+        sDev = c(dP),
+        pcNeut = c(pcNeut),
+        pcCom = c(pcCom),
+        pcSing = c(pcSingle),
+        pcDoub = c(pcDouble),
+        
+        tHigh = c(pcHigh),
+        tMid = c(pcMid),
+        tLow = c(pcLow),
+        tCones = c(pcCones),
+        tCubes = c(pcCubes),
+        
+        balE = c(engages),
+        balD = c(docks),
+        balF = c(fails),
+        balP = c(parks),
+        balN = c(nas)
+      )
+      
+      vals$aagframe <- rbind(vals$aagframe, r)
+      
+      print(tNum)
+      
+    }
+    
+  }
+  
+  print(nrow(vals$aagframe))
+  
+}
 
 recalcValues <- function() {
   for(team in 1:nrow(vals$teamframe)) {
@@ -1529,7 +1785,18 @@ ui <- navbarPage(
            DTOutput("ssframeOutput")),
   
   tabPanel("Graph",
-           plotOutput("graphOut")),
+           # add additional fluidRows with plotOut or plotlyOutput to this tab
+           fluidRow(
+             splitLayout(cellWidths = c("50%", "50%"), plotOutput("plot1"), plotOutput("plot2"))
+           ),
+           fluidRow(
+             splitLayout(cellWidths = c("50%", "50%"), plotOutput("plot3"), plotOutput("plot4"))
+           ),
+           fluidRow(
+             plotlyOutput(outputId = "plot5")
+           )
+           
+  ),
   
   tabPanel("Match Planner",
            fluidPage(
@@ -1556,7 +1823,72 @@ ui <- navbarPage(
                width = 3
              ),
              column(
+               fluidRow(
                DTOutput("plannertable"),
+               width = 9
+               ),
+               fluidRow(
+                 column(
+                   sidebarPanel(
+                     titlePanel("Auton"),
+                     textOutput("PautoBSuccesses"),
+                     textOutput("PautoBFails"),
+                     textOutput("PmobilitySuccessRate"),
+                     textOutput("PautoScoreHigh"),
+                     textOutput("PautoScoreMid"),
+                     textOutput("PautoScoreLow"),
+                     width = 12
+                   ),
+                   width = 3
+                 ),
+                 column(
+                   sidebarPanel(
+                     fluidRow(
+                       titlePanel("Teleop")
+                     ),
+                     fluidRow(
+                       column(
+                         textOutput("PteleopMean"),
+                         textOutput("PteleopMedian"),
+                         textOutput("PteleopMax"),
+                         textOutput("PteleopDeviation"),
+                         br(),
+                         textOutput("PscoringLocs"),
+                         textOutput("PpcNeut"),
+                         textOutput("PpcCom"),
+                         textOutput("PpcSingle"),
+                         textOutput("PpcDouble"),
+                         width = 6
+                       ),
+                       column(
+                         textOutput("Pheight"),
+                         textOutput("Phigh"),
+                         textOutput("Pmid"),
+                         textOutput("Plow"),
+                         br(),
+                         textOutput("Ptype"),
+                         textOutput("Pcone"),
+                         textOutput("Pcube"),
+                         width = 6
+                       )
+                     ),
+                     width = 12
+                   ),
+                   width = 6
+                 ),
+                 column(
+                   sidebarPanel(
+                     titlePanel("Endgame"),
+                     textOutput("Pengages"),
+                     textOutput("Pdocks"),
+                     textOutput("Pfails"),
+                     textOutput("Pparks"),
+                     textOutput("Pnas"),
+                     width = 12
+                   ),
+                   width = 3
+                 )
+               ),
                width = 9
              )
            )),
@@ -1578,6 +1910,7 @@ ui <- navbarPage(
              actionButton("recalcVals", "Recalculate Calculated Values"),
              actionButton("findTeamMatches", "Find Team Matches"),
              actionButton("resetEPAs", "Reset EPAs to defaults"),
+             actionButton("calcAAG", "Calculate AAG Values")
            ),
            fluidRow(
              h4("File Editing"),
@@ -1732,6 +2065,10 @@ server <- function(input, output, session) {
       if(file.exists(paste0(path, "teammatches.csv"))) {
         vals$teammatchesframe <- read.csv(paste0(path, "teammatches.csv"))
       }
+      
+      calcAAGVals()
+      
+      
       
       vals$startupDone <- TRUE
     }
@@ -1968,6 +2305,7 @@ server <- function(input, output, session) {
     output$aS <- renderText(paste0("aS: ", teamaS))
     output$aPPG <- renderText(paste0("aPPG: ", teamaPPG))
     
+    
   })
   
   observe({
@@ -2170,10 +2508,65 @@ server <- function(input, output, session) {
   # X = points in teleop
   # color = ABT
   
-  output$graphOut <- renderPlot({
-    ggplot(vals$teamframe, aes(x = aSt, y = aSa, label = teamNum)) + geom_text() + scale_size(trans = "reverse",
-                                                                                                          range = c(5, 10))
-  })
+  output$plot1 <- 
+    renderPlot({
+      ggplot(vals$teamframe, aes(x = aSt, y = aSa, label = teamNum)) +
+        ggrepel::geom_label_repel()+
+        labs(x='Average Score Teleop',y='Average Score Auton.')+
+        ggtitle("Score plot")+
+        scale_size(trans = "reverse",
+                   range = c(5, 10))
+    })
+  
+  output$plot2 <- 
+    renderPlot({
+      vals$mainframe %>%
+        group_by(teamNum)%>%
+        summarise(avg_Cone=mean(scoredTCones+scoredACones,na.rm=T),
+                  avg_Cube=mean(scoredTCubes+scoredACubes,na.rm=T))%>%
+        ggplot(aes(x=avg_Cone,y=avg_Cube,label=teamNum) ) +
+        ggrepel::geom_label_repel(position = 'jitter')+
+        ggtitle("cone vs cube")
+    })
+  
+  output$plot3 <- 
+    renderPlot({
+      vals$mainframe %>%
+        group_by(teamNum)%>%
+        summarise(avg_pickups=mean(totalPickups+as.numeric(!is.na(preload)),na.rm=T),
+                  avg_placed=mean( (scoredTCones+
+                                      scoredACones+
+                                      scoredTCubes+
+                                      scoredACubes),na.rm=T),
+                  batting_avg=avg_placed/avg_pickups) %>%
+        ggplot(aes(x=avg_placed,y=avg_pickups,label=teamNum,fill=batting_avg) ) +
+        ggrepel::geom_label_repel(position = 'jitter')+
+        labs(y='Pickups + preload')+
+        scale_color_gradient2(low = 'red',high = 'blue',midpoint = 0.6,aesthetics = "fill")+
+        geom_abline(slope=1,intercept = 0)+
+        labs(caption = 'formula total placed/(total pickups + preload)')
+    })
+  
+  output$plot4 <- 
+    renderPlot({
+      vals$mainframe  %>%
+        group_by(teamNum)%>%
+        summarise(avg_Driv=mean(driver,na.rm=T),
+                  avg_pickups=mean(totalPickups+as.numeric(!is.na(preload)),na.rm=T)
+        ) %>% 
+        ggplot(aes(label =reorder(factor(teamNum),avg_Driv),x= avg_Driv,y=avg_pickups)) +
+        geom_label()+
+        coord_flip()  ##+
+      ##               ggtitle("Driver skill vs pickups")  
+    })
+  
+  output$plot5 <- 
+    renderPlotly({
+      plot_ly(vals$teamframe, x = ~aSt, y = ~aSa, type = 'scatter',
+              mode = 'text',
+              name = 'Scouted Average Score Teleop vs Average Score Auton',
+              text=~teamNum)
+    })
   
   
   # Match Planner Page
@@ -2229,6 +2622,49 @@ server <- function(input, output, session) {
             color = styleEqual(c("r", "b"), c("red", "blue"))
           )
         })
+      })
+      
+      observeEvent(input$plannertable_rows_selected, {
+        teamNum <- vals$plannerframe$teamNum[input$plannertable_rows_selected]
+        
+        aagrow <- which(vals$aagframe$teamNum == teamNum)
+        
+        if(length(aagrow) > 0) {
+          
+          output$PautoBSuccesses <- renderText(paste0("Balance Successes: ", vals$aagframe$aBalS[aagrow]))
+          output$PautoBFails <- renderText(paste0("Balance Fails: ", vals$aagframe$aBalF[aagrow]))
+          output$PmobilitySuccessRate <- renderText(paste0("Mobility Rate: ", vals$aagframe$mRate[aagrow]))
+          
+          output$PautoScoreHigh <- renderText(paste0("Scored High: ", vals$aagframe$sHa[aagrow]))
+          output$PautoScoreMid <- renderText(paste0("Scored Mid: ", vals$aagframe$sMa[aagrow]))
+          output$PautoScoreLow <- renderText(paste0("Scored Low: ", vals$aagframe$sLa[aagrow]))
+          
+          output$PteleopMean <- renderText(paste0("Average Scored: ", vals$aagframe$aSt[aagrow]))
+          output$PteleopMedian <- renderText(paste0("Score Median: ", vals$aagframe$tMed[aagrow]))
+          output$PteleopMax <- renderText(paste0("Max Scored: ", vals$aagframe$tMax[aagrow]))
+          output$PteleopDeviation <- renderText(paste0("Score Deviation: ", vals$aagframe$sDev[aagrow]))
+          
+          output$PscoringLocs <- renderText("Intake Percentages:")
+          output$PpcNeut <- renderText(paste0("Neutral Zone: ", vals$aagframe$pcNeut[aagrow], "%"))
+          output$PpcCom <- renderText(paste0("Community: ", vals$aagframe$pcCom[aagrow], "%"))
+          output$PpcSingle <- renderText(paste0("Single Substation: ", vals$aagframe$pcSing[aagrow], "%"))
+          output$PpcDouble <- renderText(paste0("Double Substation: ", vals$aagframe$pcDoub[aagrow], "%"))
+          
+          output$Pheight <- renderText("Scoring Row:")
+          output$Phigh <- renderText(paste0("High: ", vals$aagframe$tHigh[aagrow], "%"))
+          output$Pmid <- renderText(paste0("Mid: ", vals$aagframe$tMid[aagrow], "%"))
+          output$Plow <- renderText(paste0("Low: ", vals$aagframe$tLow[aagrow], "%"))
+          output$Ptype <- renderText("Scored Types:")
+          output$Pcone <- renderText(paste0("Cones: ", vals$aagframe$Pcone[aagrow], "%"))
+          output$Pcube <- renderText(paste0("Cubes: ", vals$aagframe$Pcube[aagrow], "%"))
+          
+          output$Pengages <- renderText(paste0("Engages: ", vals$aagframe$balE[aagrow]))
+          output$Pdocks <- renderText(paste0("Docks: ", vals$aagframe$balD[aagrow]))
+          output$Pfails <- renderText(paste0("Fails: ", vals$aagframe$balF[aagrow]))
+          output$Pparks <- renderText(paste0("Parks: ", vals$aagframe$balP[aagrow]))
+          output$Pnas <- renderText(paste0("N/As: ", vals$aagframe$balN[aagrow]))
+          
+        }
       })
       
     }
@@ -2313,6 +2749,10 @@ server <- function(input, output, session) {
     }
   })
   
+  observeEvent(input$calcAAG, {
+    calcAAGVals()
+  })
+  
   observeEvent(input$recalcVals, {
     recalcValues()
     saveTeamframe()
@@ -2351,7 +2791,6 @@ server <- function(input, output, session) {
       )
     })
   })
-  
   
   # Picklisting Page
   
