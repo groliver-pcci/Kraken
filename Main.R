@@ -9,26 +9,40 @@ library(devtools)
 library(shinyFiles)
 library(zip)
 library(bslib)
+library(ggrepel)
+library(plotly)
+
 load_all("C:\\Users\\imren\\OneDrive\\Desktop\\Programming\\Robotics\\R\\tbaR")
+
+
 
 #link to pull from statbotics
 statbotics <- "https://api.statbotics.io/v2/"
 
-tbaKey <- "2023txfor"
 
-week <- 1
+
+# Values you may need to change
+
+tbaKey <- "2023txfor"
 
 path <- "C:\\Users\\imren\\OneDrive\\Documents\\krakendata\\"
 
 year <- "2023"
 
-numCols <- 28
+ourTeamNum <- 6672
 
-defaultEPA <- 30
 
 
 
 setwd(path)
+
+
+
+week <- 5
+
+numCols <- 28
+
+defaultEPA <- 30
 
 
 
@@ -184,54 +198,7 @@ vals <- reactiveValues(
                                 ct = c()
   ),
   
-  pickframe = data.frame(teamNum = c(),
-                         matchNum = c(),
-                         alliance = c(),
-                         driveStation = c(),
-                         startLocation = c(),
-                         preload = c(),
-                         mobility = c(),
-                         autoPickups = c(),
-                         autoCones = c(),
-                         autoCubes = c(),
-                         autoBalance = c(),
-                         communityPickups = c(),
-                         neutralPickups = c(), 
-                         singlePickups = c(),
-                         doublePickups = c(),
-                         teleopCones = c(),
-                         teleopCubes = c(),
-                         shuttle = c(),
-                         teleopBalance = c(),
-                         buddyClimb = c(),
-                         driver = c(),
-                         scoutName = c(),
-                         comments = c(),
-                         
-                         scoredT = c(),
-                         scoredA = c(),
-                         scoredCones = c(),
-                         scoredCubes = c(),
-                         scoredTCones = c(),
-                         scoredTCubes =  c(),
-                         scoredACones = c(),
-                         scoredACubes = c(),
-                         totalPickups = c(),
-                         pointsT = c(),
-                         pointsA = c(),
-                         pointsTotal = c(),
-                         
-                         scoredLowT = c(),
-                         scoredMidT = c(),
-                         scoredHighT = c(),
-                         scoredLowA = c(),
-                         scoredMidA = c(),
-                         scoredHighA = c(),
-                         
-                         ct = c()
-  ),
-  
-  pickcalcframe = data.frame(matchNum = c(),
+  searchcalcframe = data.frame(matchNum = c(),
                              autoBalance = c(),
                              scoredA = c(),
                              scoredLowA = c(),
@@ -256,6 +223,36 @@ vals <- reactiveValues(
                                 alliances = c()
                                 ),
   
+    aagframe = data.frame(teamNum = c(),
+                        aBalS = c(),
+                        aBalF = c(),
+                        mRate = c(),
+                        sHa = c(),
+                        sMa = c(),
+                        sLa = c(),
+                        
+                        aSt = c(),
+                        tMed = c(),
+                        tMax = c(),
+                        sDev = c(),
+                        pcNeut = c(),
+                        pcCom = c(),
+                        pcSing = c(),
+                        pcDoub = c(),
+                        
+                        tHigh = c(),
+                        tMid = c(),
+                        tLow = c(),
+                        tCones = c(),
+                        tCubes = c(),
+                        
+                        balE = c(),
+                        balD = c(),
+                        balF = c(),
+                        balP = c(),
+                        balN = c()
+                        ),
+
   #team number, 
   #internal # of matches played, 
   #internal EPA, 
@@ -267,9 +264,7 @@ vals <- reactiveValues(
   #aSt- average scored teleop
   #aSa - average scored auton
   #aS - average scored
-  #BC - balance consistency. still haven’t integrated that yet…
-  
-  
+  #BC - balance consistency
   
   teamframe = data.frame(teamNum = c(),
                          matchesPlayedi = c(),
@@ -304,7 +299,7 @@ vals <- reactiveValues(
                              m = c()
   ),
   
-  matches6672 = data.frame(matches = c(),
+  matchesourTeam = data.frame(matches = c(),
                            allliance = c(),
                            station = c()
                            ),
@@ -351,28 +346,6 @@ vals <- reactiveValues(
                              r7 = c("O", "O", "X"),
                              r8 = c("X", "X", "X"),
                              r9 = c("O", "O", "X")
-  ),
-  
-  pickteleopScoring = data.frame(r1 = c("O", "O", "X"),
-                                  r2 = c("X", "X", "X"),
-                                  r3 = c("O", "O", "X"),
-                                  r4 = c("O", "O", "X"),
-                                  r5 = c("X", "X", "X"),
-                                  r6 = c("O", "O", "X"),
-                                  r7 = c("O", "O", "X"),
-                                  r8 = c("X", "X", "X"),
-                                  r9 = c("O", "O", "X")
-  ),
-  
-  pickautonScoring = data.frame(r1 = c("O", "O", "X"),
-                                  r2 = c("X", "X", "X"),
-                                  r3 = c("O", "O", "X"),
-                                  r4 = c("O", "O", "X"),
-                                  r5 = c("X", "X", "X"),
-                                  r6 = c("O", "O", "X"),
-                                  r7 = c("O", "O", "X"),
-                                  r8 = c("X", "X", "X"),
-                                  r9 = c("O", "O", "X")
   ),
   
   winnersCalculated = FALSE,
@@ -583,6 +556,223 @@ calcValues <- function(df) {
   return(info)
 }
 
+calcAAGVals <- function() {
+  vals$aagframe = data.frame(teamNum = c(),
+                             aBalS = c(),
+                             aBalF = c(),
+                             mRate = c(),
+                             sHa = c(),
+                             sMa = c(),
+                             sLa = c(),
+                             
+                             aSt = c(),
+                             tMed = c(),
+                             tMax = c(),
+                             sDev = c(),
+                             pcNeut = c(),
+                             pcCom = c(),
+                             pcSing = c(),
+                             pcDoub = c(),
+                             
+                             tHigh = c(),
+                             tMid = c(),
+                             tLow = c(),
+                             tCones = c(),
+                             tCubes = c(),
+                             
+                             balE = c(),
+                             balD = c(),
+                             balF = c(),
+                             balP = c(),
+                             balN = c()
+                             )
+  
+  for(team in 1:nrow(vals$teamframe)) {
+    tMatch <- data.frame(teamNum = c(),
+                         matchNum = c(),
+                         alliance = c(),
+                         driveStation = c(),
+                         startLocation = c(),
+                         preload = c(),
+                         mobility = c(),
+                         autoPickups = c(),
+                         autoCones = c(),
+                         autoCubes = c(),
+                         autoBalance = c(),
+                         communityPickups = c(),
+                         neutralPickups = c(), 
+                         singlePickups = c(),
+                         doublePickups = c(),
+                         teleopCones = c(),
+                         teleopCubes = c(),
+                         shuttle = c(),
+                         teleopBalance = c(),
+                         buddyClimb = c(),
+                         driver = c(),
+                         scoutName = c(),
+                         comments = c(),
+                         
+                         scoredT = c(),
+                         scoredA = c(),
+                         scoredCones = c(),
+                         scoredCubes = c(),
+                         scoredTCones = c(),
+                         scoredTCubes =  c(),
+                         scoredACones = c(),
+                         scoredACubes = c(),
+                         totalPickups = c(),
+                         pointsT = c(),
+                         pointsA = c(),
+                         pointsTotal = c(),
+                         
+                         scoredLowT = c(),
+                         scoredMidT = c(),
+                         scoredHighT = c(),
+                         scoredLowA = c(),
+                         scoredMidA = c(),
+                         scoredHighA = c(),
+                         
+                         ct = c()
+                         )
+    
+    tNum <- vals$teamframe$teamNum[team]
+    
+    mfI <- which(vals$mainframe$teamNum == tNum)
+    
+    if(length(mfI) > 0) {
+      
+      for(i in 1:length(mfI)) {
+        tMatch <- rbind(tMatch, vals$mainframe[mfI[i], ])
+      }
+      
+      total <- nrow(tMatch)
+      absuccess <- 0
+      abfail <- 0
+      asH <- 0
+      asM <- 0
+      asL <- 0
+      mob <- 0
+      
+      tPieces <- 0
+      tHigh <- 0
+      tLow <- 0
+      tMid <- 0
+      tCone <- 0
+      tCube <- 0
+      
+      neut <- 0
+      com <- 0
+      single <- 0
+      double <- 0
+      
+      parks <- 0
+      docks <- 0
+      engages <- 0
+      fails <- 0
+      nas <- 0
+      
+      if(nrow(tMatch) > 0) {
+        
+        for(r in 1:nrow(tMatch)) {
+          if(tMatch$autoBalance[r] == "fail" || tMatch$autoBalance[r] == "dock") {
+            abfail <- abfail + 1
+          } else if(tMatch$autoBalance[r] == "engage") {
+            absuccess <- absuccess + 1
+          }
+          asH <- asH + tMatch$scoredHighA[r]
+          asM <- asM + tMatch$scoredMidA[r]
+          asL <- asL + tMatch$scoredLowA[r]
+          
+          if(tMatch$mobility[r] == TRUE) {
+            mob <- mob + 1
+          }
+          tPieces <- tPieces + tMatch$scoredT[r]
+          tHigh <- tHigh + tMatch$scoredHighT[r]
+          tMid <- tMid + tMatch$scoredMidT[r]
+          tLow <- tLow + tMatch$scoredLowT[r]
+          
+          tCone <- tCone + tMatch$scoredTCones[r]
+          tCube <- tCube + tMatch$scoredTCubes[r]
+          
+          neut <- neut + tMatch$neutralPickups[r]
+          com <- com + tMatch$communityPickups[r]
+          single <- single + tMatch$singlePickups[r]
+          double <- double + tMatch$doublePickups[r]
+          
+          if(tMatch$teleopBalance[r] == "engage") {
+            engages <- engages + 1
+          } else if(tMatch$teleopBalance[r] == "dock") {
+            docks <- docks + 1
+          } else if(tMatch$teleopBalance[r] == "park") {
+            parks <- parks + 1
+          } else if(tMatch$teleopBalance[r] == "fail") {
+            fails <- fails + 1
+          } else {
+            nas <- nas + 1
+          }
+        }
+      }
+      
+      mobPC <- round(mob / total, digits = 2) * 100
+      aP <- round(mean(tMatch$scoredT), digits = 2)
+      mP <- round(median(tMatch$scoredT), digits = 2)
+      maxP <- round(max(tMatch$scoredT), digits = 2)
+      dP <- round(sd(tMatch$scoredT), digits = 2)
+      
+      pcHigh <- round(tHigh / tPieces, digits = 2) * 100
+      pcMid <- round(tMid / tPieces, digits = 2) * 100
+      pcLow <- round(tLow / tPieces, digits = 2) * 100
+      
+      pcCones <- round(tCone / tPieces, digits = 2) * 100
+      pcCubes <- round(tCube / tPieces, digits = 2) * 100
+      
+      intakes <- neut + com + single + double
+      
+      pcNeut <- round(neut / intakes, digits = 2) * 100
+      pcCom <- round(com / intakes, digits = 2) * 100
+      pcSingle <- round(single / intakes, digits = 2) * 100
+      pcDouble <- round(double / intakes, digits = 2) * 100
+      
+      
+      
+      r <- data.frame(
+        teamNum = c(tNum),
+        aBalS = c(absuccess),
+        aBalF = c(abfail),
+        mRate = c(mobPC),
+        sHa = c(asH),
+        sMa = c(asM),
+        sLa = c(asL),
+        
+        aSt = c(aP),
+        tMed = c(mP),
+        tMax = c(maxP),
+        sDev = c(dP),
+        pcNeut = c(pcNeut),
+        pcCom = c(pcCom),
+        pcSing = c(pcSingle),
+        pcDoub = c(pcDouble),
+        
+        tHigh = c(pcHigh),
+        tMid = c(pcMid),
+        tLow = c(pcLow),
+        tCones = c(pcCones),
+        tCubes = c(pcCubes),
+        
+        balE = c(engages),
+        balD = c(docks),
+        balF = c(fails),
+        balP = c(parks),
+        balN = c(nas)
+      )
+      
+      vals$aagframe <- rbind(vals$aagframe, r)
+      
+    }
+    
+  }
+  
+}
 
 recalcValues <- function() {
   for(team in 1:nrow(vals$teamframe)) {
@@ -879,8 +1069,8 @@ saveTeamMatchFrame <- function() {
 }
 
 findOurMatchIndex <- function(match) {
-  for(row in 1:nrow(vals$matches6672)) {
-    if(vals$matches6672$matches[row] == as.integer(match)) {
+  for(row in 1:nrow(vals$matchesourTeam)) {
+    if(vals$matchesourTeam$matches[row] == as.integer(match)) {
       return(row)
     }
   }
@@ -1070,16 +1260,6 @@ clearTFrame <- function(type) {
                                      r7 = c("O", "O", "X"),
                                      r8 = c("X", "X", "X"),
                                      r9 = c("O", "O", "X"))
-  } else if(type == "pick") {
-    vals$pickteleopScoring <- data.frame(r1 = c("O", "O", "X"),
-                                        r2 = c("X", "X", "X"),
-                                        r3 = c("O", "O", "X"),
-                                        r4 = c("O", "O", "X"),
-                                        r5 = c("X", "X", "X"),
-                                        r6 = c("O", "O", "X"),
-                                        r7 = c("O", "O", "X"),
-                                        r8 = c("X", "X", "X"),
-                                        r9 = c("O", "O", "X"))
   }
 }
 
@@ -1104,16 +1284,6 @@ clearAFrame <- function(type) {
                                     r7 = c("O", "O", "X"),
                                     r8 = c("X", "X", "X"),
                                     r9 = c("O", "O", "X"))
-  } else if(type == "pick") {
-    vals$pickautonScoring <- data.frame(r1 = c("O", "O", "X"),
-                                         r2 = c("X", "X", "X"),
-                                         r3 = c("O", "O", "X"),
-                                         r4 = c("O", "O", "X"),
-                                         r5 = c("X", "X", "X"),
-                                         r6 = c("O", "O", "X"),
-                                         r7 = c("O", "O", "X"),
-                                         r8 = c("X", "X", "X"),
-                                         r9 = c("O", "O", "X"))
   }
 }
 
@@ -1212,20 +1382,6 @@ addScores <- function(data, time, type, datatype) {
           vals$matchteleopScoring[row, col] <- "🔺"
         } else if(type == "cube") {
           vals$matchteleopScoring[row, col] <- "🟦"
-        }
-      }
-    } else if(datatype == "pick") {
-      if(time == "a") {
-        if(type == "cone") {
-          vals$pickautonScoring[row, col] <- "🔺"
-        } else if(type == "cube") {
-          vals$pickautonScoring[row, col] <- "🟦"
-        }
-      } else if(time == "t") {
-        if(type == "cone") {
-          vals$pickteleopScoring[row, col] <- "🔺"
-        } else if(type == "cube") {
-          vals$pickteleopScoring[row, col] <- "🟦"
         }
       }
     }
@@ -1361,23 +1517,23 @@ updateOurMatches <- function() {
   for(match in 1:nrow(vals$scheduleframe)) {
     
     d <- NA
-    if(vals$scheduleframe$red1[match] == 6672) {
+    if(vals$scheduleframe$red1[match] == ourTeamNum) {
       d <- list(match, "r", 1)
-    } else if(vals$scheduleframe$red2[match] == 6672) {
+    } else if(vals$scheduleframe$red2[match] == ourTeamNum) {
       d <- list(match, "r", 2)
-    } else if(vals$scheduleframe$red3[match] == 6672) {
+    } else if(vals$scheduleframe$red3[match] == ourTeamNum) {
       d <- list(match, "r", 3)
-    } else if(vals$scheduleframe$blue1[match] == 6672) {
+    } else if(vals$scheduleframe$blue1[match] == ourTeamNum) {
       d <- list(match, "b", 1)
-    } else if(vals$scheduleframe$blue2[match] == 6672) {
+    } else if(vals$scheduleframe$blue2[match] == ourTeamNum) {
       d <- list(match, "b", 2)
-    } else if(vals$scheduleframe$blue3[match] == 6672) {
+    } else if(vals$scheduleframe$blue3[match] == ourTeamNum) {
       d <- list(match, "b", 3)
     }
     
     if(!(is.na(d[1]))) {
       names(d) <- list("matches", "alliance", "station")
-      vals$matches6672 <- rbind(vals$matches6672, d)
+      vals$matchesourTeam <- rbind(vals$matchesourTeam, d)
     }
   }
 }
@@ -1445,52 +1601,122 @@ ui <- navbarPage(
   ),
   
   tabPanel("Teams",
-           fluidPage(
-               column(fluidRow(
-                 sidebarPanel(
-                   textInput("search",
-                             "Search:",
-                             placeholder = "enter team number"),
-                   actionButton("enterSearch", "Enter"),
-                   
-                   width = 12
-                 )
+           column(
+             sidebarPanel(
+               fluidRow(
+                 selectInput("pickTeamNum",
+                             "Choose Team",
+                             choices = ""),
+                 actionButton("enterSearch",
+                              "Enter")
                ),
-               fluidRow(sidebarPanel(
-                 textOutput("matches"),
-                 textOutput("EPA"),
-                 textOutput("ECT"),
-                 textOutput("aS"),
-                 textOutput("aPPG"),
-                 textOutput("SEf"),
-                 width = 12
-               )),
-               width = 3),
-               column(fluidRow(DTOutput("searchDT")),
-                      fluidRow(
-                        actionButton("clearscoringDTs", "Clear Score Viewers")
-                      ),
-                      fluidRow(
-                        column(
-                          sidebarPanel(
-                            h5("Auton:"),
-                            tableOutput("autonScoring"),
-                            width = 12
-                          ),
-                          width = 6
+               br(),
+               fluidRow(
+                 plotOutput("teamPhoto"),
+               ),
+               width = 12
+             ),
+             width = 3
+           ),
+           column(
+             tabsetPanel(
+               tabPanel("Overview",
+                        fluidRow(
+                          DTOutput("searchCalcData")
                         ),
-                        column(
-                          sidebarPanel(
-                            h5("Teleop:"),
-                            tableOutput("teleopScoring"),
-                            width = 12
+                        fluidRow(
+                          column(
+                            sidebarPanel(
+                              titlePanel("Auton"),
+                              textOutput("autoBSuccesses"),
+                              textOutput("autoBFails"),
+                              textOutput("mobilitySuccessRate"),
+                              textOutput("autoScoreHigh"),
+                              textOutput("autoScoreMid"),
+                              textOutput("autoScoreLow"),
+                              width = 12
+                            ),
+                            width = 3
                           ),
-                          width = 6
+                          column(
+                            sidebarPanel(
+                              fluidRow(
+                                titlePanel("Teleop")
+                              ),
+                              fluidRow(
+                                column(
+                                  textOutput("teleopMean"),
+                                  textOutput("teleopMedian"),
+                                  textOutput("teleopMax"),
+                                  textOutput("teleopDeviation"),
+                                  br(),
+                                  textOutput("scoringLocs"),
+                                  textOutput("pcNeut"),
+                                  textOutput("pcCom"),
+                                  textOutput("pcSingle"),
+                                  textOutput("pcDouble"),
+                                  width = 6
+                                ),
+                                column(
+                                  textOutput("height"),
+                                  textOutput("high"),
+                                  textOutput("mid"),
+                                  textOutput("low"),
+                                  br(),
+                                  textOutput("type"),
+                                  textOutput("cone"),
+                                  textOutput("cube"),
+                                  width = 6
+                                )
+                              ),
+                              width = 12
+                            ),
+                            width = 6
+                          ),
+                          column(
+                            sidebarPanel(
+                              titlePanel("Endgame"),
+                              textOutput("engages"),
+                              textOutput("docks"),
+                              textOutput("fails"),
+                              textOutput("parks"),
+                              textOutput("nas"),
+                              width = 12
+                            ),
+                            width = 3
+                          )
+                        ),
+               ),
+               tabPanel("Raw Data",
+                        fluidRow(
+                          DTOutput("searchframeout")  
+                        ),
+                        fluidRow(
+                          actionButton("clearteamscoringDTs", "Clear Score Viewers")
+                        ),
+                        fluidRow(
+                          column(
+                            sidebarPanel(
+                              h5("Auton:"),
+                              tableOutput("teamautonscoring"),
+                              width = 12
+                            ),
+                            width = 6
+                          ),
+                          column(
+                            sidebarPanel(
+                              h5("Teleop:"),
+                              tableOutput("teamteleopscoring"),
+                              width = 12
+                            ),
+                            width = 6
+                          )
                         )
-                      ),
-                      width = 9),
-             
-           )), 
+               )
+             ),
+             width = 9
+           )
+  ), 
   
   tabPanel("Matches",
            fluidPage(
@@ -1547,7 +1773,18 @@ ui <- navbarPage(
            DTOutput("ssframeOutput")),
   
   tabPanel("Graph",
-           plotOutput("graphOut")),
+           # add additional fluidRows with plotOut or plotlyOutput to this tab
+           fluidRow(
+             splitLayout(cellWidths = c("50%", "50%"), plotOutput("plot1"), plotOutput("plot2"))
+           ),
+           fluidRow(
+             splitLayout(cellWidths = c("50%", "50%"), plotOutput("plot3"), plotOutput("plot4"))
+           ),
+           fluidRow(
+             plotlyOutput(outputId = "plot5")
+           )
+           
+  ),
   
   tabPanel("Match Planner",
            fluidPage(
@@ -1564,7 +1801,7 @@ ui <- navbarPage(
                ),
                fluidRow(
                  sidebarPanel(
-                  textOutput("winChance6672"),
+                  textOutput("winChanceourTeam"),
                   textOutput("predictedScore"),
                   textOutput("driverStation"),
                   textOutput("alliance"),
@@ -1574,7 +1811,72 @@ ui <- navbarPage(
                width = 3
              ),
              column(
+               fluidRow(
                DTOutput("plannertable"),
+               width = 9
+               ),
+               fluidRow(
+                 column(
+                   sidebarPanel(
+                     titlePanel("Auton"),
+                     textOutput("PautoBSuccesses"),
+                     textOutput("PautoBFails"),
+                     textOutput("PmobilitySuccessRate"),
+                     textOutput("PautoScoreHigh"),
+                     textOutput("PautoScoreMid"),
+                     textOutput("PautoScoreLow"),
+                     width = 12
+                   ),
+                   width = 3
+                 ),
+                 column(
+                   sidebarPanel(
+                     fluidRow(
+                       titlePanel("Teleop")
+                     ),
+                     fluidRow(
+                       column(
+                         textOutput("PteleopMean"),
+                         textOutput("PteleopMedian"),
+                         textOutput("PteleopMax"),
+                         textOutput("PteleopDeviation"),
+                         br(),
+                         textOutput("PscoringLocs"),
+                         textOutput("PpcNeut"),
+                         textOutput("PpcCom"),
+                         textOutput("PpcSingle"),
+                         textOutput("PpcDouble"),
+                         width = 6
+                       ),
+                       column(
+                         textOutput("Pheight"),
+                         textOutput("Phigh"),
+                         textOutput("Pmid"),
+                         textOutput("Plow"),
+                         br(),
+                         textOutput("Ptype"),
+                         textOutput("Pcone"),
+                         textOutput("Pcube"),
+                         width = 6
+                       )
+                     ),
+                     width = 12
+                   ),
+                   width = 6
+                 ),
+                 column(
+                   sidebarPanel(
+                     titlePanel("Endgame"),
+                     textOutput("Pengages"),
+                     textOutput("Pdocks"),
+                     textOutput("Pfails"),
+                     textOutput("Pparks"),
+                     textOutput("Pnas"),
+                     width = 12
+                   ),
+                   width = 3
+                 )
+               ),
                width = 9
              )
            )),
@@ -1595,6 +1897,7 @@ ui <- navbarPage(
              actionButton("recalcVals", "Recalculate Calculated Values"),
              actionButton("findTeamMatches", "Find Team Matches"),
              actionButton("resetEPAs", "Reset EPAs to defaults"),
+             actionButton("calcAAG", "Calculate AAG Values")
            ),
            fluidRow(
              h4("File Editing"),
@@ -1605,106 +1908,6 @@ ui <- navbarPage(
              h4("Online Functions"),
              actionButton("pullStatboticsEPAs", "Update EPAs from Statbotics"),
              actionButton("testConnection", "Test Internet Connection")
-           )
-           ),
-  
-  tabPanel("Picklisting",
-           column(
-             sidebarPanel(
-               fluidRow(
-                 selectInput("pickTeamNum",
-                             "Choose Team",
-                             choices = ""),
-                 actionButton("picklistEnter",
-                              "Enter")
-               ),
-               br(),
-               fluidRow(
-                 plotOutput("teamPhoto"),
-               ),
-               width = 12
-             ),
-             width = 3
-           ),
-           column(
-             tabsetPanel(
-               tabPanel("Overview",
-                        fluidRow(
-                          DTOutput("pickCalcData")
-                        ),
-                        fluidRow(
-                          column(
-                            sidebarPanel(
-                              titlePanel("Auton"),
-                              textOutput("autoBSuccesses"),
-                              textOutput("autoBFails"),
-                              textOutput("mobilitySuccessRate"),
-                              textOutput("autoScoreHigh"),
-                              textOutput("autoScoreMid"),
-                              textOutput("autoScoreLow"),
-                              width = 12
-                            ),
-                            width = 4
-                          ),
-                          column(
-                            sidebarPanel(
-                              titlePanel("Teleop"),
-                              textOutput("teleopMean"),
-                              textOutput("teleopMedian"),
-                              textOutput("teleopMax"),
-                              textOutput("teleopDeviation"),
-                              br(),
-                              textOutput("scoringLocs"),
-                              textOutput("pcNeut"),
-                              textOutput("pcCom"),
-                              textOutput("pcSingle"),
-                              textOutput("pcDouble"),
-                              width = 12
-                            ),
-                            width = 4
-                          ),
-                          column(
-                            sidebarPanel(
-                              titlePanel("Endgame"),
-                              textOutput("engages"),
-                              textOutput("docks"),
-                              textOutput("fails"),
-                              textOutput("parks"),
-                              textOutput("nas"),
-                              width = 12
-                            ),
-                            width = 4
-                          )
-                        )
-               ),
-               tabPanel("Raw Data",
-                        fluidRow(
-                          DTOutput("pickframeout")  
-                        ),
-                        fluidRow(
-                          actionButton("clearpickscoringDTs", "Clear Score Viewers")
-                        ),
-                        fluidRow(
-                          column(
-                            sidebarPanel(
-                              h5("Auton:"),
-                              tableOutput("pickautonscoring"),
-                              width = 12
-                            ),
-                            width = 6
-                          ),
-                          column(
-                            sidebarPanel(
-                              h5("Teleop:"),
-                              tableOutput("pickteleopscoring"),
-                              width = 12
-                            ),
-                            width = 6
-                          )
-                        )
-                        )
-             ),
-             width = 9
            )
            ),
   
@@ -1749,6 +1952,10 @@ server <- function(input, output, session) {
       if(file.exists(paste0(path, "teammatches.csv"))) {
         vals$teammatchesframe <- read.csv(paste0(path, "teammatches.csv"))
       }
+      
+      calcAAGVals()
+      
+      
       
       vals$startupDone <- TRUE
     }
@@ -1902,107 +2109,114 @@ server <- function(input, output, session) {
   # Teams Page
   
   observeEvent(input$enterSearch, {
-    vals$searchframe <- data.frame(teamNum = c(),
-                                   matchNum = c(),
-                                   alliance = c(),
-                                   driveStation = c(),
-                                   startLocation = c(),
-                                   preload = c(),
-                                   mobility = c(),
-                                   autoPickups = c(),
-                                   autoCones = c(),
-                                   autoCubes = c(),
-                                   autoBalance = c(),
-                                   communityPickups = c(),
-                                   neutralPickups = c(), 
-                                   singlePickups = c(),
-                                   doublePickups = c(),
-                                   teleopCones = c(),
-                                   teleopCubes = c(),
-                                   shuttle = c(),
-                                   teleopBalance = c(),
-                                   buddyClimb = c(),
-                                   driver = c(),
-                                   scoutName = c(),
-                                   comments = c(),
-                                   
-                                   scoredT = c(),
-                                   scoredA = c(),
-                                   scoredCones = c(),
-                                   scoredCubes = c(),
-                                   scoredTCones = c(),
-                                   scoredTCubes =  c(),
-                                   scoredACones = c(),
-                                   scoredACubes = c(),
-                                   totalPickups = c(),
-                                   pointsT = c(),
-                                   pointsA = c(),
-                                   pointsTotal = c(),
-                                   
-                                   scoredLowT = c(),
-                                   scoredMidT = c(),
-                                   scoredHighT = c(),
-                                   scoredLowA = c(),
-                                   scoredMidA = c(),
-                                   scoredHighA = c(),
-                                   
-                                   ct = c()
-                                   )
+    teamNum <- input$pickTeamNum
     
-    s <- as.integer(input$search)
+    picPath <- paste0(path, "Pictures\\", teamNum, ".png")
+    picAlt <- paste0(path, "Pictures\\", teamNum, ".JPG")
+    nopePath <- paste0(path, "Pictures\\nope.png")
     
-    if(is.null(s) || is.null(vals$mainframe)) {
-      return(NULL)
+    if(file.exists(picPath)) {
+      output$teamPhoto <- renderImage(list(src = picPath, width = 280), deleteFile = FALSE)
+    } else if(file.exists(picAlt)) {
+      output$teamPhoto <- renderImage(list(src = picAlt, width = 280), deleteFile = FALSE)
+    } else {
+      output$teamPhoto <- renderImage(list(src = nopePath, width = 280), deleteFile = FALSE)
     }
     
-    for(newrow in 1:nrow(vals$mainframe)) {
-      if(vals$mainframe$teamNum[newrow] == s) {
-        vals$searchframe <- rbind(vals$searchframe, vals$mainframe[newrow, ])
+    
+    vals$searchframe <- data.frame(teamNum = c(),
+                                 matchNum = c(),
+                                 alliance = c(),
+                                 driveStation = c(),
+                                 startLocation = c(),
+                                 preload = c(),
+                                 mobility = c(),
+                                 autoPickups = c(),
+                                 autoCones = c(),
+                                 autoCubes = c(),
+                                 autoBalance = c(),
+                                 communityPickups = c(),
+                                 neutralPickups = c(), 
+                                 singlePickups = c(),
+                                 doublePickups = c(),
+                                 teleopCones = c(),
+                                 teleopCubes = c(),
+                                 shuttle = c(),
+                                 teleopBalance = c(),
+                                 buddyClimb = c(),
+                                 driver = c(),
+                                 scoutName = c(),
+                                 comments = c(),
+                                 
+                                 scoredT = c(),
+                                 scoredA = c(),
+                                 scoredCones = c(),
+                                 scoredCubes = c(),
+                                 scoredTCones = c(),
+                                 scoredTCubes =  c(),
+                                 scoredACones = c(),
+                                 scoredACubes = c(),
+                                 totalPickups = c(),
+                                 pointsT = c(),
+                                 pointsA = c(),
+                                 pointsTotal = c(),
+                                 
+                                 scoredLowT = c(),
+                                 scoredMidT = c(),
+                                 scoredHighT = c(),
+                                 scoredLowA = c(),
+                                 scoredMidA = c(),
+                                 scoredHighA = c(),
+                                 
+                                 ct = c()
+    )
+    
+    vals$searchcalcframe = data.frame(matchNum = c(),
+                                    autoBalance = c(),
+                                    scoredA = c(),
+                                    scoredLowA = c(),
+                                    scoredMidA = c(),
+                                    scoredHighA = c(),
+                                    mobility = c(),
+                                    scoredT = c(),
+                                    scoredLowT = c(),
+                                    scoredMidT = c(), 
+                                    scoredHighT = c(),
+                                    teleopBalance = c(),
+                                    comments = c()
+    )
+    
+    indexes <- which(vals$mainframe$teamNum == teamNum)
+    
+    
+    if(length(indexes > 0)) {
+      for(i in 1:length(indexes)) {
+        idx <- indexes[i]
+        
+        vals$searchframe <- rbind(vals$searchframe, vals$mainframe[idx, ])
       }
     }
     
-    searchVal <- as.integer(input$search)
     
-    tIndex <- which(vals$teamframe$teamNum == searchVal)
+    output$searchframeout <- renderDT(datatable(vals$searchframe, extensions = "FixedColumns", selection = "single",
+                                              options = list(scrollX = TRUE, paging = FALSE, scrollY = "240px",
+                                                             fixedColumns = list(leftColumns = 3))))
     
-    teamMatches <- vals$teammatchesframe$matches[tIndex]
-    teamEPA <- vals$teamframe$EPA[tIndex]
-    teamECT <- vals$teamframe$ECT[tIndex]
-    teamaS <- vals$teamframe$aS[tIndex]
-    teamaPPG <- vals$teamframe$aPPG[tIndex]
+    output$teamautonscoring <- renderTable(vals$autonScoring)
+    output$teamteleopscoring <- renderTable(vals$teleopScoring)
     
-    output$matches <- renderText(paste0("Matches: ", teamMatches))
-    output$EPA <- renderText(paste0("EPA: ", teamEPA))
-    output$ECT <- renderText(paste0("ECT: ", teamECT))
-    output$aS <- renderText(paste0("aS: ", teamaS))
-    output$aPPG <- renderText(paste0("aPPG: ", teamaPPG))
-    
-  })
-  
-  observe({
-    searchDT <- datatable(vals$searchframe, options = list(scrollX = TRUE, scrollY = "260px", paging = FALSE),
-                          selection = "single")
-    
-    output$searchDT <- renderDT(searchDT)
-    
-    observeEvent(input$clearscoringDTs, {
-      clearAFrame("team")
-      clearTFrame("team")
-    })
-    
-    observeEvent(input$searchDT_rows_selected, {
+    observeEvent(input$searchframeout_rows_selected, {
       clearAFrame("team")
       clearTFrame("team")
       
       
-      row <- vals$searchframe[input$searchDT_rows_selected, ]
+      row <- vals$searchframe[input$searchframeout_rows_selected, ]
       
       aCones <- unlist(strsplit(toString(row$autoCones), ","))
       aCubes <- unlist(strsplit(toString(row$autoCubes), ","))
       
       tCones <- unlist(strsplit(toString(row$teleopCones), ","))
       tCubes <- unlist(strsplit(toString(row$teleopCubes), ","))
-      
       
       if(aCones[1] != "NA") {
         addScores(aCones, "a", "cone", "team")
@@ -2020,11 +2234,90 @@ server <- function(input, output, session) {
         addScores(tCubes, "t", "cube", "team")
       }
     })
+    
+    observeEvent(input$clearteamscoringDTs, {
+      clearAFrame("team")
+      clearTFrame("team")
+    })
+    
+    output$searchCalcData <- renderDT(datatable(vals$searchcalcframe, options = list(scrollX = TRUE, scrollY = "220px",
+                                                                                 paging = FALSE)))
+    
+    
+    if(nrow(vals$searchframe) > 0) {
+      for(row in 1:nrow(vals$searchframe)) {
+        df <- data.frame(matchNum = numeric(1),
+                         scoredA = numeric(1),
+                         scoredLowA = numeric(1),
+                         scoredMidA = numeric(1),
+                         scoredHighA = numeric(1),
+                         mobility = logical(1),
+                         autoBalance = character(1),
+                         scoredT = numeric(1),
+                         scoredLowT = numeric(1),
+                         scoredMidT = numeric(1), 
+                         scoredHighT = numeric(1),
+                         teleopBalance = character(1),
+                         comments = character(1)
+        )
+        
+        
+        df$matchNum[1] <- vals$searchframe$matchNum[row]
+        df$scoredA[1] <- vals$searchframe$scoredA[row]
+        df$scoredLowA[1] <- vals$searchframe$scoredLowA[row]
+        df$scoredMidA[1] <- vals$searchframe$scoredMidA[row]
+        df$scoredHighA[1] <- vals$searchframe$scoredHighA[row]
+        df$mobility[1] <- vals$searchframe$mobility[row]
+        df$autoBalance[1] <- vals$searchframe$autoBalance[row]
+        df$scoredT[1] <- vals$searchframe$scoredT[row]
+        df$scoredLowT[1] <- vals$searchframe$scoredLowT[row]
+        df$scoredMidT[1] <- vals$searchframe$scoredMidT[row]
+        df$scoredHighT[1] <- vals$searchframe$scoredHighT[row] 
+        df$teleopBalance[1] <- vals$searchframe$teleopBalance[row]
+        df$comments[1] <- vals$searchframe$comments[row]
+        
+        vals$searchcalcframe <- rbind(vals$searchcalcframe, df)
+        
+      }
+    }
+    
+
+    aagrow <- which(vals$aagframe$teamNum == teamNum)
+    
+        
+    output$autoBSuccesses <- renderText(paste0("Balance Successes: ", vals$aagframe$aBalS[aagrow]))
+    output$autoBFails <- renderText(paste0("Balance Fails: ", vals$aagframe$aBalF[aagrow]))
+    output$mobilitySuccessRate <- renderText(paste0("Mobility Rate: ", vals$aagframe$mRate[aagrow], "%"))
+    
+    output$autoScoreHigh <- renderText(paste0("Scored High: ", vals$aagframe$sHa[aagrow]))
+    output$autoScoreMid <- renderText(paste0("Scored Mid: ", vals$aagframe$sMa[aagrow]))
+    output$autoScoreLow <- renderText(paste0("Scored Low: ", vals$aagframe$sLa[aagrow]))
+    
+    output$teleopMean <- renderText(paste0("Average Scored: ", vals$aagframe$aSt[aagrow]))
+    output$teleopMedian <- renderText(paste0("Score Median: ", vals$aagframe$tMed[aagrow]))
+    output$teleopMax <- renderText(paste0("Max Scored: ", vals$aagframe$tMax[aagrow]))
+    output$teleopDeviation <- renderText(paste0("Score Deviation: ", vals$aagframe$sDev[aagrow]))
+    
+    output$scoringLocs <- renderText("Intake Percentages:")
+    output$pcNeut <- renderText(paste0("Neutral Zone: ", vals$aagframe$pcNeut[aagrow], "%"))
+    output$pcCom <- renderText(paste0("Community: ", vals$aagframe$pcCom[aagrow], "%"))
+    output$pcSingle <- renderText(paste0("Single Substation: ", vals$aagframe$pcSing[aagrow], "%"))
+    output$pcDouble <- renderText(paste0("Double Substation: ", vals$aagframe$pcDoub[aagrow], "%"))
+    
+    output$height <- renderText("Scoring Row:")
+    output$high <- renderText(paste0("High: ", vals$aagframe$tHigh[aagrow], "%"))
+    output$mid <- renderText(paste0("Mid: ", vals$aagframe$tMid[aagrow], "%"))
+    output$low <- renderText(paste0("Low: ", vals$aagframe$tLow[aagrow], "%"))
+    output$type <- renderText("Scored Types:")
+    output$cone <- renderText(paste0("Cones: ", vals$aagframe$tCones[aagrow], "%"))
+    output$cube <- renderText(paste0("Cubes: ", vals$aagframe$tCubes[aagrow], "%"))
+    
+    output$engages <- renderText(paste0("Engages: ", vals$aagframe$balE[aagrow]))
+    output$docks <- renderText(paste0("Docks: ", vals$aagframe$balD[aagrow]))
+    output$fails <- renderText(paste0("Fails: ", vals$aagframe$balF[aagrow]))
+    output$parks <- renderText(paste0("Parks: ", vals$aagframe$balP[aagrow]))
+    output$nas <- renderText(paste0("N/As: ", vals$aagframe$balN[aagrow]))
   })
-  
-  
-  output$autonScoring <- renderTable(vals$autonScoring)
-  output$teleopScoring <- renderTable(vals$teleopScoring)
   
   
   
@@ -2179,17 +2472,72 @@ server <- function(input, output, session) {
   # X = points in teleop
   # color = ABT
   
-  output$graphOut <- renderPlot({
-    ggplot(vals$teamframe, aes(x = aSt, y = aSa, label = teamNum)) + geom_text() + scale_size(trans = "reverse",
-                                                                                                          range = c(5, 10))
-  })
+  output$plot1 <- 
+    renderPlot({
+      ggplot(vals$teamframe, aes(x = aSt, y = aSa, label = teamNum)) +
+        ggrepel::geom_label_repel()+
+        labs(x='Average Score Teleop',y='Average Score Auton.')+
+        ggtitle("Score plot")+
+        scale_size(trans = "reverse",
+                   range = c(5, 10))
+    })
+  
+  output$plot2 <- 
+    renderPlot({
+      vals$mainframe %>%
+        group_by(teamNum)%>%
+        summarise(avg_Cone=mean(scoredTCones+scoredACones,na.rm=T),
+                  avg_Cube=mean(scoredTCubes+scoredACubes,na.rm=T))%>%
+        ggplot(aes(x=avg_Cone,y=avg_Cube,label=teamNum) ) +
+        ggrepel::geom_label_repel(position = 'jitter')+
+        ggtitle("cone vs cube")
+    })
+  
+  output$plot3 <- 
+    renderPlot({
+      vals$mainframe %>%
+        group_by(teamNum)%>%
+        summarise(avg_pickups=mean(totalPickups+as.numeric(!is.na(preload)),na.rm=T),
+                  avg_placed=mean( (scoredTCones+
+                                      scoredACones+
+                                      scoredTCubes+
+                                      scoredACubes),na.rm=T),
+                  batting_avg=avg_placed/avg_pickups) %>%
+        ggplot(aes(x=avg_placed,y=avg_pickups,label=teamNum,fill=batting_avg) ) +
+        ggrepel::geom_label_repel(position = 'jitter')+
+        labs(y='Pickups + preload')+
+        scale_color_gradient2(low = 'red',high = 'blue',midpoint = 0.6,aesthetics = "fill")+
+        geom_abline(slope=1,intercept = 0)+
+        labs(caption = 'formula total placed/(total pickups + preload)')
+    })
+  
+  output$plot4 <- 
+    renderPlot({
+      vals$mainframe  %>%
+        group_by(teamNum)%>%
+        summarise(avg_Driv=mean(driver,na.rm=T),
+                  avg_pickups=mean(totalPickups+as.numeric(!is.na(preload)),na.rm=T)
+        ) %>% 
+        ggplot(aes(label =reorder(factor(teamNum),avg_Driv),x= avg_Driv,y=avg_pickups)) +
+        geom_label()+
+        coord_flip()  ##+
+      ##               ggtitle("Driver skill vs pickups")  
+    })
+  
+  output$plot5 <- 
+    renderPlotly({
+      plot_ly(vals$teamframe, x = ~aSt, y = ~aSa, type = 'scatter',
+              mode = 'text',
+              name = 'Scouted Average Score Teleop vs Average Score Auton',
+              text=~teamNum)
+    })
   
   
   # Match Planner Page
   
   observe({
     updateSelectInput(session, "selectedMatch",
-                      choices = vals$matches6672$matches)
+                      choices = vals$matchesourTeam$matches)
     updateSelectInput(session, "pickTeamNum",
                       choices = vals$teamframe$teamNum)
   })
@@ -2202,8 +2550,8 @@ server <- function(input, output, session) {
       winTeam <- vals$scheduleframe$predictedWinner[as.integer(input$selectedMatch)]
       
       index <- findOurMatchIndex(input$selectedMatch)
-      alliance <- vals$matches6672$alliance[index]
-      station <- vals$matches6672$station[index]
+      alliance <- vals$matchesourTeam$alliance[index]
+      station <- vals$matchesourTeam$station[index]
       
       scores <- calculatePredScore(input$selectedMatch)
       
@@ -2222,7 +2570,7 @@ server <- function(input, output, session) {
       
       # col 13 should be hidden
       
-      output$winChance6672 <- renderText(paste("Win Chance: ", winPC, "%", sep = ""))
+      output$winChanceourTeam <- renderText(paste("Win Chance: ", winPC, "%", sep = ""))
       output$driverStation <- renderText(paste("Driver Station: ", station))
       output$predictedScore <- renderText(paste("Predicted Score: ", redScore, " - ", blueScore, sep = ""))
       output$alliance <- renderText(paste("Alliance:", alliance))
@@ -2238,6 +2586,49 @@ server <- function(input, output, session) {
             color = styleEqual(c("r", "b"), c("red", "blue"))
           )
         })
+      })
+      
+      observeEvent(input$plannertable_rows_selected, {
+        teamNum <- vals$plannerframe$teamNum[input$plannertable_rows_selected]
+        
+        aagrow <- which(vals$aagframe$teamNum == teamNum)
+        
+        if(length(aagrow) > 0) {
+          
+          output$PautoBSuccesses <- renderText(paste0("Balance Successes: ", vals$aagframe$aBalS[aagrow]))
+          output$PautoBFails <- renderText(paste0("Balance Fails: ", vals$aagframe$aBalF[aagrow]))
+          output$PmobilitySuccessRate <- renderText(paste0("Mobility Rate: ", vals$aagframe$mRate[aagrow], "%"))
+          
+          output$PautoScoreHigh <- renderText(paste0("Scored High: ", vals$aagframe$sHa[aagrow]))
+          output$PautoScoreMid <- renderText(paste0("Scored Mid: ", vals$aagframe$sMa[aagrow]))
+          output$PautoScoreLow <- renderText(paste0("Scored Low: ", vals$aagframe$sLa[aagrow]))
+          
+          output$PteleopMean <- renderText(paste0("Average Scored: ", vals$aagframe$aSt[aagrow]))
+          output$PteleopMedian <- renderText(paste0("Score Median: ", vals$aagframe$tMed[aagrow]))
+          output$PteleopMax <- renderText(paste0("Max Scored: ", vals$aagframe$tMax[aagrow]))
+          output$PteleopDeviation <- renderText(paste0("Score Deviation: ", vals$aagframe$sDev[aagrow]))
+          
+          output$PscoringLocs <- renderText("Intake Percentages:")
+          output$PpcNeut <- renderText(paste0("Neutral Zone: ", vals$aagframe$pcNeut[aagrow], "%"))
+          output$PpcCom <- renderText(paste0("Community: ", vals$aagframe$pcCom[aagrow], "%"))
+          output$PpcSingle <- renderText(paste0("Single Substation: ", vals$aagframe$pcSing[aagrow], "%"))
+          output$PpcDouble <- renderText(paste0("Double Substation: ", vals$aagframe$pcDoub[aagrow], "%"))
+          
+          output$Pheight <- renderText("Scoring Row:")
+          output$Phigh <- renderText(paste0("High: ", vals$aagframe$tHigh[aagrow], "%"))
+          output$Pmid <- renderText(paste0("Mid: ", vals$aagframe$tMid[aagrow], "%"))
+          output$Plow <- renderText(paste0("Low: ", vals$aagframe$tLow[aagrow], "%"))
+          output$Ptype <- renderText("Scored Types:")
+          output$Pcone <- renderText(paste0("Cones: ", vals$aagframe$tCones[aagrow], "%"))
+          output$Pcube <- renderText(paste0("Cubes: ", vals$aagframe$tCubes[aagrow], "%"))
+          
+          output$Pengages <- renderText(paste0("Engages: ", vals$aagframe$balE[aagrow]))
+          output$Pdocks <- renderText(paste0("Docks: ", vals$aagframe$balD[aagrow]))
+          output$Pfails <- renderText(paste0("Fails: ", vals$aagframe$balF[aagrow]))
+          output$Pparks <- renderText(paste0("Parks: ", vals$aagframe$balP[aagrow]))
+          output$Pnas <- renderText(paste0("N/As: ", vals$aagframe$balN[aagrow]))
+          
+        }
       })
       
     }
@@ -2322,6 +2713,10 @@ server <- function(input, output, session) {
     }
   })
   
+  observeEvent(input$calcAAG, {
+    calcAAGVals()
+  })
+  
   observeEvent(input$recalcVals, {
     recalcValues()
     saveTeamframe()
@@ -2372,292 +2767,9 @@ server <- function(input, output, session) {
     })
   })
   
-  
   # Picklisting Page
   
-  observeEvent(input$picklistEnter, {
-    teamNum <- input$pickTeamNum
-    
-    picPath <- paste0(path, "Pictures\\", teamNum, ".png")
-    picAlt <- paste0(path, "Pictures\\", teamNum, ".JPG")
-    nopePath <- paste0(path, "Pictures\\nope.png")
-    
-    if(file.exists(picPath)) {
-      output$teamPhoto <- renderImage(list(src = picPath, width = 280), deleteFile = FALSE)
-    } else if(file.exists(picAlt)) {
-      output$teamPhoto <- renderImage(list(src = picAlt, width = 280), deleteFile = FALSE)
-    } else {
-      output$teamPhoto <- renderImage(list(src = nopePath, width = 280), deleteFile = FALSE)
-    }
-    
-    
-    vals$pickframe <- data.frame(teamNum = c(),
-                                 matchNum = c(),
-                                 alliance = c(),
-                                 driveStation = c(),
-                                 startLocation = c(),
-                                 preload = c(),
-                                 mobility = c(),
-                                 autoPickups = c(),
-                                 autoCones = c(),
-                                 autoCubes = c(),
-                                 autoBalance = c(),
-                                 communityPickups = c(),
-                                 neutralPickups = c(), 
-                                 singlePickups = c(),
-                                 doublePickups = c(),
-                                 teleopCones = c(),
-                                 teleopCubes = c(),
-                                 shuttle = c(),
-                                 teleopBalance = c(),
-                                 buddyClimb = c(),
-                                 driver = c(),
-                                 scoutName = c(),
-                                 comments = c(),
-                                 
-                                 scoredT = c(),
-                                 scoredA = c(),
-                                 scoredCones = c(),
-                                 scoredCubes = c(),
-                                 scoredTCones = c(),
-                                 scoredTCubes =  c(),
-                                 scoredACones = c(),
-                                 scoredACubes = c(),
-                                 totalPickups = c(),
-                                 pointsT = c(),
-                                 pointsA = c(),
-                                 pointsTotal = c(),
-                                 
-                                 scoredLowT = c(),
-                                 scoredMidT = c(),
-                                 scoredHighT = c(),
-                                 scoredLowA = c(),
-                                 scoredMidA = c(),
-                                 scoredHighA = c(),
-                                 
-                                 ct = c()
-                                 )
-    
-    vals$pickcalcframe = data.frame(matchNum = c(),
-                                    autoBalance = c(),
-                                    scoredA = c(),
-                                    scoredLowA = c(),
-                                    scoredMidA = c(),
-                                    scoredHighA = c(),
-                                    mobility = c(),
-                                    scoredT = c(),
-                                    scoredLowT = c(),
-                                    scoredMidT = c(), 
-                                    scoredHighT = c(),
-                                    teleopBalance = c(),
-                                    comments = c()
-    )
-    
-    indexes <- which(vals$mainframe$teamNum == teamNum)
-    
-    
-    if(length(indexes > 0)) {
-      for(i in 1:length(indexes)) {
-        idx <- indexes[i]
-        
-        vals$pickframe <- rbind(vals$pickframe, vals$mainframe[idx, ])
-      }
-    }
-    
-    
-    output$pickframeout <- renderDT(datatable(vals$pickframe, extensions = "FixedColumns", selection = "single",
-                                              options = list(scrollX = TRUE, paging = FALSE, scrollY = "240px",
-                                                             fixedColumns = list(leftColumns = 3))))
-    
-    output$pickautonscoring <- renderTable(vals$pickautonScoring)
-    output$pickteleopscoring <- renderTable(vals$pickteleopScoring)
-    
-    observeEvent(input$pickframeout_rows_selected, {
-      clearAFrame("pick")
-      clearTFrame("pick")
-      
-      
-      row <- vals$pickframe[input$pickframeout_rows_selected, ]
-      
-      aCones <- unlist(strsplit(toString(row$autoCones), ","))
-      aCubes <- unlist(strsplit(toString(row$autoCubes), ","))
-      
-      tCones <- unlist(strsplit(toString(row$teleopCones), ","))
-      tCubes <- unlist(strsplit(toString(row$teleopCubes), ","))
-      
-      if(aCones[1] != "NA") {
-        addScores(aCones, "a", "cone", "pick")
-      }
-      
-      if(aCubes[1] != "NA") {
-        addScores(aCubes, "a", "cube", "pick")
-      }
-      
-      if(tCones[1] != "NA") {
-        addScores(tCones, "t", "cone", "pick")
-      }
-      
-      if(tCubes[1] != "NA") {
-        addScores(tCubes, "t", "cube", "pick")
-      }
-    })
-    
-    observeEvent(input$clearpickscoringDTs, {
-      clearAFrame("pick")
-      clearTFrame("pick")
-    })
-    
-    output$pickCalcData <- renderDT(datatable(vals$pickcalcframe, options = list(scrollX = TRUE, scrollY = "220px",
-                                                                          paging = FALSE)))
-    
-    
-    if(nrow(vals$pickframe) > 0) {
-      for(row in 1:nrow(vals$pickframe)) {
-        df <- data.frame(matchNum = numeric(1),
-                         scoredA = numeric(1),
-                         scoredLowA = numeric(1),
-                         scoredMidA = numeric(1),
-                         scoredHighA = numeric(1),
-                         mobility = logical(1),
-                         autoBalance = character(1),
-                         scoredT = numeric(1),
-                         scoredLowT = numeric(1),
-                         scoredMidT = numeric(1), 
-                         scoredHighT = numeric(1),
-                         teleopBalance = character(1),
-                         comments = character(1)
-        )
-        
-        
-        df$matchNum[1] <- vals$pickframe$matchNum[row]
-        df$scoredA[1] <- vals$pickframe$scoredA[row]
-        df$scoredLowA[1] <- vals$pickframe$scoredLowA[row]
-        df$scoredMidA[1] <- vals$pickframe$scoredMidA[row]
-        df$scoredHighA[1] <- vals$pickframe$scoredHighA[row]
-        df$mobility[1] <- vals$pickframe$mobility[row]
-        df$autoBalance[1] <- vals$pickframe$autoBalance[row]
-        df$scoredT[1] <- vals$pickframe$scoredT[row]
-        df$scoredLowT[1] <- vals$pickframe$scoredLowT[row]
-        df$scoredMidT[1] <- vals$pickframe$scoredMidT[row]
-        df$scoredHighT[1] <- vals$pickframe$scoredHighT[row] 
-        df$teleopBalance[1] <- vals$pickframe$teleopBalance[row]
-        df$comments[1] <- vals$pickframe$comments[row]
-        
-        vals$pickcalcframe <- rbind(vals$pickcalcframe, df)
-        
-      }
-    }
-    
-    total <- nrow(vals$pickcalcframe)
-    absuccess <- 0
-    abfail <- 0
-    asH <- 0
-    asM <- 0
-    asL <- 0
-    mob <- 0
-    
-    tPieces <- 0
-    tHigh <- 0
-    tLow <- 0
-    tMid <- 0
-    
-    neut <- 0
-    com <- 0
-    single <- 0
-    double <- 0
-    
-    parks <- 0
-    docks <- 0
-    engages <- 0
-    fails <- 0
-    nas <- 0
-    
-    if(nrow(vals$pickcalcframe > 0)) {
-      for(r in 1:nrow(vals$pickcalcframe)) {
-        row <- vals$pickcalcframe[r, ]
-        
-        if(row$autoBalance[1] == "fail" || row$autoBalance[1] == "dock") {
-          abfail <- abfail + 1
-        } else if(row$autoBalance == "engage") {
-          absuccess <- absuccess + 1
-        }
-        
-        asH <- asH + row$scoredHighA
-        asM <- asM + row$scoredMidA
-        asL <- asL + row$scoredLowA
-        
-        if(row$mobility == TRUE) {
-          mob <- mob + 1
-        }
-        
-        tPieces <- tPieces + row$scoredT
-        tHigh <- tHigh + row$scoredHighT
-        tMid <- tMid + row$scoredMidT
-        tLow <- tLow + row$scoredLowT
-        
-        neut <- neut + vals$pickframe$neutralPickups[r]
-        com <- com + vals$pickframe$communityPickups[r]
-        single <- single + vals$pickframe$singlePickups[r]
-        double <- double + vals$pickframe$doublePickups[r]
-        
-        if(row$teleopBalance[1] == "engage") {
-          engages <- engages + 1
-        } else if(row$teleopBalance[1] == "dock") {
-          docks <- docks + 1
-        } else if(row$teleopBalance[1] == "park") {
-          parks <- parks + 1
-        } else if(row$teleopBalance[1] == "fail") {
-          fails <- fails + 1
-        } else {
-          nas <- nas + 1
-        }
-      }
-    }
-    
-    mobPC <- round(mob / total, digits = 2) * 100
-    aP <- mean(vals$pickframe$scoredT)
-    mP <- median(vals$pickframe$scoredT)
-    maxP <- max(vals$pickframe$scoredT)
-    dP <- sd(vals$pickframe$scoredT)
-    
-    pcHigh <- round(tHigh / tPieces, digits = 2) * 100
-    pcMid <- round(tMid / tPieces, digits = 2) * 100
-    pcLow <- round(tLow / tPieces, digits = 2) * 100
-    
-    intakes <- neut + com + single + double
-    
-    pcNeut <- round(neut / intakes, digits = 2) * 100
-    pcCom <- round(com / intakes, digits = 2) * 100
-    pcSingle <- round(single / intakes, digits = 2) * 100
-    pcDouble <- round(double / intakes, digits = 2) * 100
-    
-    
-    
-    output$autoBSuccesses <- renderText(paste0("Balance Successes: ", absuccess))
-    output$autoBFails <- renderText(paste0("Balance Fails: ", abfail))
-    output$mobilitySuccessRate <- renderText(paste0("Mobility Rate: ", mobPC))
-    
-    output$autoScoreHigh <- renderText(paste0("Scored High: ", asH))
-    output$autoScoreMid <- renderText(paste0("Scored Mid: ", asM))
-    output$autoScoreLow <- renderText(paste0("Scored Low: ", asL))
-    
-    output$teleopMean <- renderText(paste0("Average Scored: ", aP))
-    output$teleopMedian <- renderText(paste0("Score Median: ", mP))
-    output$teleopMax <- renderText(paste0("Max Scored: ", maxP))
-    output$teleopDeviation <- renderText(paste0("Score Deviation: ", dP))
-    
-    output$scoringLocs <- renderText("Intake Percentages:")
-    output$pcNeut <- renderText(paste0("Neutral Zone: ", pcNeut, "%"))
-    output$pcCom <- renderText(paste0("Community: ", pcCom, "%"))
-    output$pcSingle <- renderText(paste0("Single Substation: ", pcSingle, "%"))
-    output$pcDouble <- renderText(paste0("Double Substation: ", pcDouble, "%"))
-    
-    output$engages <- renderText(paste0("Engages: ", engages))
-    output$docks <- renderText(paste0("Docks: ", docks))
-    output$fails <- renderText(paste0("Fails: ", fails))
-    output$parks <- renderText(paste0("Parks: ", parks))
-    output$nas <- renderText(paste0("N/As: ", nas))
-  })
+  
   
   
   
