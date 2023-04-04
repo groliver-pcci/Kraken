@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyWidgets)
 library(DT)
 library(tidyverse)
 library(scales)
@@ -11,7 +12,9 @@ library(bslib)
 library(ggrepel)
 library(plotly)
 
-load_all("C:\\Users\\wcbri\\Documents\\tbaR_1.0.1\\tbaR\\tbaR.Rproj")
+load_all("C:\\Users\\imren\\OneDrive\\Desktop\\Programming\\Robotics\\R\\tbaR")
+
+
 
 #link to pull from statbotics
 statbotics <- "https://api.statbotics.io/v2/"
@@ -22,7 +25,7 @@ statbotics <- "https://api.statbotics.io/v2/"
 
 tbaKey <- "2023txfor"
 
-path <- "C:\\Users\\wcbri\\Documents\\krakendata\\"
+path <- "C:\\Users\\imren\\OneDrive\\Documents\\krakendata\\"
 
 year <- "2023"
 
@@ -223,7 +226,7 @@ vals <- reactiveValues(
                                 alliances = c()
                                 ),
   
-  aagframe = data.frame(teamNum = c(),
+    aagframe = data.frame(teamNum = c(),
                         aBalS = c(),
                         aBalF = c(),
                         mRate = c(),
@@ -252,6 +255,19 @@ vals <- reactiveValues(
                         balP = c(),
                         balN = c()
                         ),
+
+  #team number, 
+  #internal # of matches played, 
+  #internal EPA, 
+  ## of matches played, 
+  #EPA,
+  #ect- estimated cycle time. basically about how long it takes them to pick up and score a piece
+  #aPPG- average points per game,
+  #SEf - scoring efficiency. basicallly how good they are at scoring links to maximize points. 
+  #aSt- average scored teleop
+  #aSa - average scored auton
+  #aS - average scored
+  #BC - balance consistency
   
   teamframe = data.frame(teamNum = c(),
                          matchesPlayedi = c(),
@@ -1398,6 +1414,8 @@ pullTBAData <- function() {
   
   tbaMatchListTemp <- event_matches(tbaKey)
   
+  View(tbaMatchListTemp[order(tbaMatchListTemp$match_number)])
+  
   tbaMatchListTemp <- tbaMatchListTemp[order(tbaMatchListTemp$match_number), ]
   
   for(match in 1:nrow(tbaMatchListTemp)) {
@@ -1876,11 +1894,10 @@ ui <- navbarPage(
            )),
   
   tabPanel("Stats",
+           materialSwitch(inputId = "showstats", label = "Show All Stats"),
            DTOutput("statsData")),
-  
   tabPanel("Schedule",
            DTOutput("matchScheduleDT")),
-  
   tabPanel("Functions",
            fluidRow(
              textOutput("functionStatus")
@@ -2100,14 +2117,6 @@ server <- function(input, output, session) {
   output$ssPreview <- renderDT(datatable(vals$sspreviewframe, extensions = "FixedColumns", 
                                          options = list(scrollX = TRUE, paging = FALSE),
                                          selection = "single"))
-  
-  
-  
-  
-  
-  
-  
-  
   
   # Teams Page
   
@@ -2737,12 +2746,23 @@ server <- function(input, output, session) {
   })
   
   
-  
   # Stats Page
 
+  # possible stats to show:
+  # teamNum, matchesPlayedi, EPAi, matchesPlayed, EPA, ECT, aPPG, SEf, aSt, aSa, aS, BC
   
-  output$statsData <- renderDT(datatable(vals$teamframe, options = list(scrollX = TRUE, scrollY = "540px",
-                                                                             paging = FALSE)))
+  stats_to_show <- c("teamNum", "ECT", "aPPG", "aSa", "aSt", "aS", "BC")
+  
+  observe({
+  if(input$showstats) {
+    output$statsData <- renderDT(datatable(vals$teamframe, 
+           options = list(scrollX = TRUE, scrollY = "540px", paging = FALSE)))
+  } else{
+    output$statsData <- renderDT(datatable(vals$teamframe[,stats_to_show], 
+           options = list(scrollX = TRUE, scrollY = "540px", paging = FALSE))) 
+    }})
+  
+  
   
   
   
