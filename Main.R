@@ -53,6 +53,7 @@ vals <- reactiveValues(
                          preload = c(),
                          mobility = c(),
                          autoPickups = c(),
+                         autoFailedPickups = c(),
                          autoCones = c(),
                          autoCubes = c(),
                          autoBalance = c(),
@@ -109,6 +110,7 @@ vals <- reactiveValues(
                            preload = c(),
                            mobility = c(),
                            autoPickups = c(),
+                           autoFailedPickups = c(),
                            autoCones = c(),
                            autoCubes = c(),
                            autoBalance = c(),
@@ -156,6 +158,7 @@ vals <- reactiveValues(
                                 preload = c(),
                                 mobility = c(),
                                 autoPickups = c(),
+                                autoFailedPickups = c(),
                                 autoCones = c(),
                                 autoCubes = c(),
                                 autoBalance = c(),
@@ -351,6 +354,7 @@ calcValues <- function(df) {
     preload = c(),
     mobility = c(),
     autoPickups = c(),
+    autoFailedPickups = c(),
     autoCones = c(),
     autoCubes = c(),
     autoBalance = c(),
@@ -580,6 +584,7 @@ calcAAGVals <- function() {
                          preload = c(),
                          mobility = c(),
                          autoPickups = c(),
+                         autoFailedPickups = c(),
                          autoCones = c(),
                          autoCubes = c(),
                          autoBalance = c(),
@@ -1113,6 +1118,13 @@ parseRData <- function(string) {
   } else {
     parsedData$autoPickups[1] <- str_replace_all(parsedData$autoPickups[1], "\\[|\\]", "")
     parsedData$autoPickups[1] <- str_replace_all(parsedData$autoPickups[1], " ", "")
+  }
+  
+  if(parsedData$autoFailedPickups[1] == "[]") {
+    parsedData$autoFailedPickups[1] <- "NA"
+  } else {
+    parsedData$autoFailedPickups[1] <- str_replace_all(parsedData$autoFailedPickups[1], "\\[|\\]", "")
+    parsedData$autoFailedPickups[1] <- str_replace_all(parsedData$autoFailedPickups[1], " ", "")
   }
   
   if(parsedData$autoCones[1] == "[]") {
@@ -2123,6 +2135,7 @@ server <- function(input, output, session) {
                                  preload = c(),
                                  mobility = c(),
                                  autoPickups = c(),
+                                 autoFailedPickups = c(),
                                  autoCones = c(),
                                  autoCubes = c(),
                                  autoBalance = c(),
@@ -2327,6 +2340,7 @@ server <- function(input, output, session) {
                                         preload = c(),
                                         mobility = c(),
                                         autoPickups = c(),
+                                        autoFailedPickups = c(),
                                         autoCones = c(),
                                         autoCubes = c(),
                                         autoBalance = c(),
