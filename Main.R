@@ -12,7 +12,7 @@ library(bslib)
 library(ggrepel)
 library(plotly)
 
-load_all("C:\\Users\\imren\\OneDrive\\Desktop\\Programming\\Robotics\\R\\tbaR")
+load_all("C:\\Users\\wcbri\\Documents\\tbaR_1.0.1\\tbaR\\tbaR.Rproj")
 
 
 
@@ -25,7 +25,7 @@ statbotics <- "https://api.statbotics.io/v2/"
 
 tbaKey <- "2023txfor"
 
-path <- "C:\\Users\\imren\\OneDrive\\Documents\\krakendata\\"
+path <- "C:\\Users\\wcbri\\Documents\\krakendata\\"
 
 year <- "2023"
 
@@ -434,8 +434,6 @@ calcValues <- function(df) {
   
   
   
-  
-  
   parsevals <- function(string) {
     if(string == "NA") {
       values <- character(0)
@@ -466,6 +464,7 @@ calcValues <- function(df) {
     return(points)
   }
   
+  
   # Interior vals
   
   info$scoredTCones[1] <- findLength(info$teleopCones[1])
@@ -480,6 +479,7 @@ calcValues <- function(df) {
   info$scoredCubes[1] <- unlist(info$scoredTCubes[1]) + unlist(info$scoredACubes[1])
   
   info$totalPickups[1] <- unlist(info$scoredCones[1]) + unlist(info$scoredCubes[1])
+  
   
   if(info$teleopCones[1] == "NA") {
     tConePoints <- c(0, 0, 0)
@@ -558,6 +558,122 @@ calcValues <- function(df) {
 
   
   return(info)
+}
+
+recalcMatchValues <- function() {
+  
+  for(m in 1:nrow(vals$mainframe)) {
+    
+    row <- vals$mainframe[m, ]
+    
+    
+    tryCatch({
+      row$teamNum[1] <- as.integer(row$teamNum[1])
+      row$matchNum[1] <- as.integer(row$matchNum[1])
+      row$startLocation[1] <- as.integer(row$startLocation[1])
+      row$communityPickups[1] <- as.integer(row$communityPickups[1])
+      row$neutralPickups[1] <- as.integer(row$neutralPickups[1])
+      row$singlePickups[1] <- as.integer(row$singlePickups[1])
+      row$doublePickups[1] <- as.integer(row$doublePickups[1])
+      row$driver[1] <- as.integer(row$driver[1])
+      
+      row$alliance[1] <- tolower(row$alliance[1])
+      row$autoBalance[1] <- tolower(row$autoBalance[1])
+      row$teleopBalance[1] <- tolower(row$teleopBalance[1])
+      
+      
+      row$mobility[1] <- as.logical(row$mobility[1])
+      row$shuttle[1] <- as.logical(row$shuttle[1])
+      row$buddyClimb[1] <- as.logical(row$buddyClimb[1])
+      
+      if(is.na(row$autoPickups[1])) {
+        row$autoPickups[1] <- "NA"
+      } else {
+        row$autoPickups[1] <- as.character(row$autoPickups[1])
+      }
+      
+      if(is.na(row$autoFailedPickups[1])) {
+        row$autoFailedPickups[1] <- "NA"
+      } else {
+        row$autoFailedPickups[1] <- as.character(row$autoFailedPickups[1])
+      }
+      
+      if(is.na(row$autoCones[1])) {
+        row$autoCones[1] <- "NA"
+      } else {
+        row$autoCones[1] <- as.character(row$autoCones[1])
+      }
+      
+      if(is.na(row$autoCubes[1])) {
+        row$autoCubes[1] <- "NA"
+      } else {
+        row$autoCubes[1] <- as.character(row$autoCubes[1])
+      }
+      
+      if(is.na(row$teleopCones[1])) {
+        row$teleopCones[1] <- "NA"
+      } else {
+        row$teleopCones[1] <- as.character(row$teleopCones[1])
+      }
+      
+      if(is.na(row$teleopCubes[1])) {
+        row$teleopCubes[1] <- "NA"
+      } else {
+        row$teleopCubes[1] <- as.character(row$teleopCubes[1])
+      }
+      
+      if(row$teleopCones[1] != "NA") {
+        teleop <- unlist(strsplit(row$teleopCones[1], ","))
+        auto <- unlist(strsplit(row$autoCones[1], ","))
+        
+        bads <- numeric(0)
+        
+        for(e in 1:length(auto)) {
+          bads <- append(bads, which(teleop == auto[e]))
+        }
+        
+        if(length(bads) > 0) {
+          ntele <- teleop[-(bads)]
+          
+          row$teleopCones[1] <- paste(ntele, collapse = ",")
+        }
+      }
+      
+      
+      
+      if(row$teleopCubes[1] != "NA") {
+        teleop <- unlist(strsplit(row$teleopCubes[1], ","))
+        auto <- unlist(strsplit(row$autoCubes[1], ","))
+        
+        bads <- numeric(0)
+        
+        for(e in 1:length(auto)) {
+          bads <- append(bads, which(teleop == auto[e]))
+        }
+        
+        if(length(bads) > 0) {
+          ntele <- teleop[-(bads)]
+          
+          row$teleopCubes[1] <- paste(ntele, collapse = ",")
+        }
+      }
+      
+      row <- calcValues(row)
+    },
+    
+    error = function(e) {
+      
+      
+      print("Error with data in:")
+      print(paste0("Team: ", row$teamNum[1], " Match: ", row$matchNum[1]))
+      
+      showNotification("Error in data. Check console for more info.", type = "error")
+    }
+    )
+    
+    vals$mainframe[m, ] <- row
+  }
+  
 }
 
 calcAAGVals <- function() {
@@ -1909,7 +2025,8 @@ ui <- navbarPage(
              actionButton("recalcVals", "Recalculate Calculated Values"),
              actionButton("findTeamMatches", "Find Team Matches"),
              actionButton("resetEPAs", "Reset EPAs to defaults"),
-             actionButton("calcAAG", "Calculate AAG Values")
+             actionButton("calcAAG", "Calculate AAG Values"),
+             actionButton("recalcMatchVals", "Recalculate Match Values")
            ),
            fluidRow(
              h4("File Editing"),
@@ -2033,7 +2150,6 @@ server <- function(input, output, session) {
           
         }
       } else if(nrow(vals$previewframe) > 1) {
-        print("error")
         return(NULL)
       } else {
         return(NULL)
@@ -2743,6 +2859,11 @@ server <- function(input, output, session) {
   
   observeEvent(input$testConnection, {
     
+  })
+  
+  observeEvent(input$recalcMatchVals, {
+    recalcMatchValues()
+    saveMainframe()
   })
   
   
