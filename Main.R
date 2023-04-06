@@ -22,6 +22,7 @@ statbotics <- "https://api.statbotics.io/v2/"
 
 
 # Values you may need to change
+# Make sure to update these each time you update Kraken
 
 tbaKey <- "2023txfor"
 
@@ -238,6 +239,9 @@ vals <- reactiveValues(
                         tMed = c(),
                         tMax = c(),
                         sDev = c(),
+                        tMin = c(),
+                        tMinG0 = c(),
+                        
                         pcNeut = c(),
                         pcCom = c(),
                         pcSing = c(),
@@ -549,11 +553,33 @@ calcValues <- function(df) {
   
   vals$teamframe$ECT[teamIdx] <- round(mean(as.double(matches$ct[goodmatches])), digits = 1)
   
-  # BC
-  # Can't be done until SS data is integrated
-  
   # aPPG
   vals$teamframe$aPPG[teamIdx] <- round(mean(matches$pointsTotal), digits = 2)
+  
+  
+  
+  # BC
+  balances <- matches$teleopBalance
+  
+  engages <- 0
+  attempts <- 0
+  
+  for(b in 1:length(balances)) {
+    if(!(is.na(balances[b]))) {
+      if(balances[b] == "engage") {
+        engages <- engages + 1
+        attempts <- attempts + 1
+      } else if(balances[b] == "fail" || balances[b] == "dock") {
+        attempts <- attempts + 1
+      }
+    }
+  }
+  
+  if(engages > 0 & attempts > 0) {
+    vals$teamframe$BC[teamIdx] <- round((engages / attempts) * 100, digits = 0)
+  } else {
+    vals$teamframe$BC[teamIdx] <- 0
+  }
   
 
   
@@ -689,6 +715,9 @@ calcAAGVals <- function() {
                              tMed = c(),
                              tMax = c(),
                              sDev = c(),
+                             tMin = c(),
+                             tMinG0 = c(),
+                             
                              pcNeut = c(),
                              pcCom = c(),
                              pcSing = c(),
@@ -840,6 +869,13 @@ calcAAGVals <- function() {
       maxP <- round(max(tMatch$scoredT), digits = 2)
       dP <- round(sd(tMatch$scoredT), digits = 2)
       
+      minP <- round(min(tMatch$scoredT), digits = 2)
+      if(length(which(tMatch$scoredT > 0)) > 0) {
+        minG0P <- round(min(tMatch$scoredT[which(tMatch$scoredT > 0)]), digits = 2)
+      } else {
+        minG0P <- 0
+      }
+      
       pcHigh <- round(tHigh / tPieces, digits = 2) * 100
       pcMid <- round(tMid / tPieces, digits = 2) * 100
       pcLow <- round(tLow / tPieces, digits = 2) * 100
@@ -869,6 +905,9 @@ calcAAGVals <- function() {
         tMed = c(mP),
         tMax = c(maxP),
         sDev = c(dP),
+        tMin = c(minP),
+        tMinG0 = c(minG0P),
+      
         pcNeut = c(pcNeut),
         pcCom = c(pcCom),
         pcSing = c(pcSingle),
@@ -926,12 +965,37 @@ recalcValues <- function() {
     # aPPG
     vals$teamframe$aPPG[team] <- round(mean(matches$pointsTotal), digits = 2)
     
+    
+    balances <- matches$teleopBalance
+    
+    engages <- 0
+    attempts <- 0
+    
+    for(b in 1:length(balances)) {
+      if(!(is.na(balances[b]))) {
+        if(balances[b] == "engage") {
+          engages <- engages + 1
+          attempts <- attempts + 1
+        } else if(balances[b] == "fail" || balances[b] == "dock") {
+          attempts <- attempts + 1
+        }
+      }
+    }
+    
+    if(engages > 0 & attempts > 0) {
+      vals$teamframe$BC[team] <- round((engages / attempts) * 100, digits = 0)
+    } else {
+      vals$teamframe$BC[team] <- 0
+    }
+    
+    
     if(length(matchI) == 0) {
       vals$teamframe$aSt[team] <- integer(1)
       vals$teamframe$aSa[team] <- integer(1)
       vals$teamframe$aS[team] <- integer(1)
       vals$teamframe$ECT[team] <- integer(1)
       vals$teamframe$aPPG[team] <- integer(1)
+      vals$teamframe$BC[team] <- integer(1)
     }
     
   }
@@ -1777,23 +1841,27 @@ ui <- navbarPage(
                                   textOutput("teleopMedian"),
                                   textOutput("teleopMax"),
                                   textOutput("teleopDeviation"),
+                                  textOutput("teleopMin"),
+                                  textOutput("teleopMinG0"),
                                   br(),
+                                  textOutput("type"),
+                                  textOutput("cone"),
+                                  textOutput("cube"),
+                                  
+                                  width = 6
+                                ),
+                                column(
                                   textOutput("scoringLocs"),
                                   textOutput("pcNeut"),
                                   textOutput("pcCom"),
                                   textOutput("pcSingle"),
                                   textOutput("pcDouble"),
-                                  width = 6
-                                ),
-                                column(
+                                  br(),
                                   textOutput("height"),
                                   textOutput("high"),
                                   textOutput("mid"),
                                   textOutput("low"),
-                                  br(),
-                                  textOutput("type"),
-                                  textOutput("cone"),
-                                  textOutput("cube"),
+                                  
                                   width = 6
                                 )
                               ),
@@ -1804,6 +1872,8 @@ ui <- navbarPage(
                           column(
                             sidebarPanel(
                               titlePanel("Endgame"),
+                              textOutput("BC"),
+                              br(),
                               textOutput("engages"),
                               textOutput("docks"),
                               textOutput("fails"),
@@ -1968,23 +2038,27 @@ ui <- navbarPage(
                          textOutput("PteleopMedian"),
                          textOutput("PteleopMax"),
                          textOutput("PteleopDeviation"),
+                         textOutput("PteleopMin"),
+                         textOutput("PteleopMinG0"),
                          br(),
+                         textOutput("Ptype"),
+                         textOutput("Pcone"),
+                         textOutput("Pcube"),
+                         
+                         width = 6
+                       ),
+                       column(
                          textOutput("PscoringLocs"),
                          textOutput("PpcNeut"),
                          textOutput("PpcCom"),
                          textOutput("PpcSingle"),
                          textOutput("PpcDouble"),
-                         width = 6
-                       ),
-                       column(
+                         br(),
                          textOutput("Pheight"),
                          textOutput("Phigh"),
                          textOutput("Pmid"),
                          textOutput("Plow"),
-                         br(),
-                         textOutput("Ptype"),
-                         textOutput("Pcone"),
-                         textOutput("Pcube"),
+                         
                          width = 6
                        )
                      ),
@@ -1995,6 +2069,8 @@ ui <- navbarPage(
                  column(
                    sidebarPanel(
                      titlePanel("Endgame"),
+                     textOutput("PBC"),
+                     br(),
                      textOutput("Pengages"),
                      textOutput("Pdocks"),
                      textOutput("Pfails"),
@@ -2083,8 +2159,6 @@ server <- function(input, output, session) {
       }
       
       calcAAGVals()
-      
-      
       
       vals$startupDone <- TRUE
     }
@@ -2412,6 +2486,7 @@ server <- function(input, output, session) {
     
 
     aagrow <- which(vals$aagframe$teamNum == teamNum)
+    teamrow <- which(vals$teamframe$teamNum == teamNum)
     
         
     output$autoBSuccesses <- renderText(paste0("Balance Successes: ", vals$aagframe$aBalS[aagrow]))
@@ -2433,6 +2508,9 @@ server <- function(input, output, session) {
     output$pcSingle <- renderText(paste0("Single Substation: ", vals$aagframe$pcSing[aagrow], "%"))
     output$pcDouble <- renderText(paste0("Double Substation: ", vals$aagframe$pcDoub[aagrow], "%"))
     
+    output$teleopMin <- renderText(paste0("Min: ", vals$aagframe$tMin[aagrow]))
+    output$teleopMinG0 <- renderText(paste0("Min (no 0): ", vals$aagframe$tMinG0[aagrow]))
+    
     output$height <- renderText("Scoring Row:")
     output$high <- renderText(paste0("High: ", vals$aagframe$tHigh[aagrow], "%"))
     output$mid <- renderText(paste0("Mid: ", vals$aagframe$tMid[aagrow], "%"))
@@ -2446,6 +2524,8 @@ server <- function(input, output, session) {
     output$fails <- renderText(paste0("Fails: ", vals$aagframe$balF[aagrow]))
     output$parks <- renderText(paste0("Parks: ", vals$aagframe$balP[aagrow]))
     output$nas <- renderText(paste0("N/As: ", vals$aagframe$balN[aagrow]))
+    
+    output$BC <- renderText(paste0("BC: ", vals$teamframe$BC[teamrow], "%"))
   })
   
   
@@ -2722,6 +2802,7 @@ server <- function(input, output, session) {
         teamNum <- vals$plannerframe$teamNum[input$plannertable_rows_selected]
         
         aagrow <- which(vals$aagframe$teamNum == teamNum)
+        teamrow <- which(vals$teamframe$teamNum == teamNum)
         
         if(length(aagrow) > 0) {
           
@@ -2737,6 +2818,9 @@ server <- function(input, output, session) {
           output$PteleopMedian <- renderText(paste0("Score Median: ", vals$aagframe$tMed[aagrow]))
           output$PteleopMax <- renderText(paste0("Max Scored: ", vals$aagframe$tMax[aagrow]))
           output$PteleopDeviation <- renderText(paste0("Score Deviation: ", vals$aagframe$sDev[aagrow]))
+          
+          output$PteleopMin <- renderText(paste0("Min: ", vals$aagframe$tMin[aagrow]))
+          output$PteleopMinG0 <- renderText(paste0("Min (no 0): ", vals$aagframe$tMinG0[aagrow]))
           
           output$PscoringLocs <- renderText("Intake Percentages:")
           output$PpcNeut <- renderText(paste0("Neutral Zone: ", vals$aagframe$pcNeut[aagrow], "%"))
@@ -2757,6 +2841,8 @@ server <- function(input, output, session) {
           output$Pfails <- renderText(paste0("Fails: ", vals$aagframe$balF[aagrow]))
           output$Pparks <- renderText(paste0("Parks: ", vals$aagframe$balP[aagrow]))
           output$Pnas <- renderText(paste0("N/As: ", vals$aagframe$balN[aagrow]))
+          
+          output$PBC <- renderText(paste0("BC: ", vals$teamframe$BC[teamrow], "%"))
           
         }
       })
