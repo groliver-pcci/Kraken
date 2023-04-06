@@ -24,7 +24,7 @@ statbotics <- "https://api.statbotics.io/v2/"
 # Values you may need to change
 # Make sure to update these each time you update Kraken
 
-tbaKey <- "2023txfor"
+tbaKey <- "2023txcmp1"
 
 path <- "C:\\Users\\wcbri\\Documents\\krakendata\\"
 
@@ -584,6 +584,68 @@ calcValues <- function(df) {
 
   
   return(info)
+}
+
+getSchedule <- function() {
+  
+  matches <- read_event_matches(tbaKey)
+  
+  schedule <- data.frame(round = c(),
+                         match_number = c(),
+                         red1 = c(),
+                         red2 = c(),
+                         red3 = c(),
+                         blue1 = c(),
+                         blue2 = c(),
+                         blue3 = c()
+                         )
+  
+  for(m in 1:length(matches)) {
+    curmatch <- matches[[m]]
+    
+    df <- data.frame(round = c(),
+                     match_number = c(),
+                     red1 = c(),
+                     red2 = c(),
+                     red3 = c(),
+                     blue1 = c(),
+                     blue2 = c(),
+                     blue3 = c()
+    )
+    
+    r1 <- curmatch$alliances$red$team_keys[[1]]
+    r2 <- curmatch$alliances$red$team_keys[[2]]
+    r3 <- curmatch$alliances$red$team_keys[[3]]
+    
+    b1 <- curmatch$alliances$blue$team_keys[[1]]
+    b2 <- curmatch$alliances$blue$team_keys[[2]]
+    b3 <- curmatch$alliances$blue$team_keys[[3]]
+    
+    r1 <- as.integer(substr(r1, 4, 7))
+    r2 <- as.integer(substr(r2, 4, 7))
+    r3 <- as.integer(substr(r3, 4, 7))
+    
+    b1 <- as.integer(substr(b1, 4, 7))
+    b2 <- as.integer(substr(b2, 4, 7))
+    b3 <- as.integer(substr(b3, 4, 7))
+    
+    mNum <- as.integer(curmatch$match_number)
+    
+    df <- data.frame(round = c("qf"),
+                     match_number = c(mNum),
+                     red1 = c(r1),
+                     red2 = c(r2),
+                     red3 = c(r3),
+                     blue1 = c(b1),
+                     blue2 = c(b2),
+                     blue3 = c(b3)
+    )
+    
+    schedule <- rbind(schedule, df)
+  }
+  
+  vals$scheduleframe <- schedule[order(schedule$match_number), ]
+  
 }
 
 recalcMatchValues <- function() {
@@ -1365,7 +1427,11 @@ parseRData <- function(string) {
     if(length(bads) > 0) {
       ntele <- teleop[-(bads)]
       
-      parsedData$teleopCones[1] <- paste(ntele, collapse = ",")
+      if(length(ntele) > 0) {
+        parsedData$teleopCones[1] <- paste(ntele, collapse = ",")
+      } else {
+        parsedData$teleopCones[1] <- "NA"
+      }
     }
   }
   
@@ -1382,7 +1448,11 @@ parseRData <- function(string) {
     if(length(bads) > 0) {
       ntele <- teleop[-(bads)]
       
-      parsedData$teleopCubes[1] <- paste(ntele, collapse = ",")
+      if(length(ntele) > 0) {
+        parsedData$teleopCubes[1] <- paste(ntele, collapse = ",")
+      } else {
+        parsedData$teleopCubes[1] <- "NA"
+      }
     }
   }
   
@@ -2131,7 +2201,7 @@ server <- function(input, output, session) {
     if(!vals$startupDone) {
       
       if(!(file.exists(paste0(path, "schedule.csv")))) {
-        pullTBAData()
+        getSchedule()
         
         write.csv(vals$scheduleframe, paste0(path, "schedule.csv"), row.names = FALSE)
       } else {
@@ -2413,6 +2483,7 @@ server <- function(input, output, session) {
       clearTFrame("team")
       
       
+      
       row <- vals$searchframe[input$searchframeout_rows_selected, ]
       
       aCones <- unlist(strsplit(toString(row$autoCones), ","))
@@ -2421,19 +2492,20 @@ server <- function(input, output, session) {
       tCones <- unlist(strsplit(toString(row$teleopCones), ","))
       tCubes <- unlist(strsplit(toString(row$teleopCubes), ","))
       
-      if(aCones[1] != "NA") {
+      
+      if(aCones[1] != "NA" && aCones[1] != "" && !(is.na(aCones[1]))) {
         addScores(aCones, "a", "cone", "team")
       }
       
-      if(aCubes[1] != "NA") {
+      if(aCubes[1] != "NA" && aCubes[1] != "" && !(is.na(aCubes[1]))) {
         addScores(aCubes, "a", "cube", "team")
       }
       
-      if(tCones[1] != "NA") {
+      if(tCones[1] != "NA" && tCones[1] != "" && !(is.na(tCones[1]))) {
         addScores(tCones, "t", "cone", "team")
       }
       
-      if(tCubes[1] != "NA") {
+      if(tCubes[1] != "NA" && tCubes[1] != "" && !(is.na(tCubes[1]))) {
         addScores(tCubes, "t", "cube", "team")
       }
     })
@@ -2887,6 +2959,7 @@ server <- function(input, output, session) {
   observeEvent(input$resetEPAs, {
     vals$teamframe$EPAi <- defaultEPA
     saveTeamframe()
+    showNotification("EPA's retrieved")
   })
   
   observeEvent(input$pullStatboticsEPAs, {
