@@ -999,6 +999,7 @@ calcAAGVals <- function() {
 recalcValues <- function() {
   for(team in 1:nrow(vals$teamframe)) {
     
+    
     teamNum <- vals$teamframe$teamNum[team]
     matchI <- which(vals$mainframe$teamNum == teamNum)
     
@@ -1370,7 +1371,6 @@ parseRData <- function(string) {
     parsedData$driveStation[1] <- paste0("b", substr(parsedData$driveStation[1], end, end))
   }
   
-  
   if(parsedData$autoPickups[1] == "[]") {
     parsedData$autoPickups[1] <- "NA"
   } else {
@@ -1384,6 +1384,8 @@ parseRData <- function(string) {
     parsedData$autoFailedPickups[1] <- str_replace_all(parsedData$autoFailedPickups[1], "\\[|\\]", "")
     parsedData$autoFailedPickups[1] <- str_replace_all(parsedData$autoFailedPickups[1], " ", "")
   }
+  
+  "2"
   
   if(parsedData$autoCones[1] == "[]") {
     parsedData$autoCones[1] <- "NA"
@@ -1399,6 +1401,8 @@ parseRData <- function(string) {
     parsedData$autoCubes[1] <- str_replace_all(parsedData$autoCubes[1], " ", "")
   }
   
+  "3"
+  
   if(parsedData$teleopCones[1] == "[]") {
     parsedData$teleopCones[1] <- "NA"
   } else {
@@ -1412,7 +1416,6 @@ parseRData <- function(string) {
     parsedData$teleopCubes[1] <- str_replace_all(parsedData$teleopCubes[1], "\\[|\\]", "")
     parsedData$teleopCubes[1] <- str_replace_all(parsedData$teleopCubes[1], " ", "")
   }
-  
   
   if(parsedData$teleopCones != "NA") {
     teleop <- unlist(strsplit(parsedData$teleopCones, ","))
