@@ -11,6 +11,8 @@ library(zip)
 library(bslib)
 library(ggrepel)
 library(plotly)
+library(rmarkdown)
+library(tinytex)
 
 load_all("C:\\Users\\wcbri\\Documents\\tbaR_1.0.1\\tbaR\\tbaR.Rproj")
 
@@ -25,6 +27,7 @@ statbotics <- "https://api.statbotics.io/v2/"
 # Make sure to update these each time you update Kraken
 
 tbaKey <- "2023txcmp1"
+
 
 path <- "C:\\Users\\wcbri\\Documents\\krakendata\\"
 
@@ -85,6 +88,7 @@ vals <- reactiveValues(
                          totalPickups = c(),
                          pointsT = c(),
                          pointsA = c(),
+                         pointsE = c(),
                          pointsTotal = c(),
                          
                          scoredLowT = c(),
@@ -142,6 +146,7 @@ vals <- reactiveValues(
                            totalPickups = c(),
                            pointsT = c(),
                            pointsA = c(),
+                           pointsE = c(),
                            pointsTotal = c(),
                            
                            scoredLowT = c(),
@@ -190,6 +195,7 @@ vals <- reactiveValues(
                                 totalPickups = c(),
                                 pointsT = c(),
                                 pointsA = c(),
+                                pointsE = c(),
                                 pointsTotal = c(),
                                 
                                 scoredLowT = c(),
@@ -280,6 +286,9 @@ vals <- reactiveValues(
                          EPA = c(),
                          ECT = c(),
                          aPPG = c(),
+                         aPPGa = c(),
+                         aPPGt = c(),
+                         aPPGe = c(),
                          SEf = c(),
                          aSt = c(),
                          aSa = c(),
@@ -402,6 +411,7 @@ calcValues <- function(df) {
     totalPickups = c(),
     pointsT = c(),
     pointsA = c(),
+    pointsE = c(),
     pointsTotal = c(),
     
     scoredLowT = c(),
@@ -519,13 +529,43 @@ calcValues <- function(df) {
   
   info$pointsT[1] <- info$scoredLowT[1] * 2 + info$scoredMidT[1] * 3 + info$scoredHighT[1] * 5
   info$pointsA[1] <- info$scoredLowA[1] * 3 + info$scoredMidA[1] * 4 + info$scoredHighA[1] * 6
-  info$pointsTotal[1] <- info$pointsT[1] + info$pointsA[1]
+  
+  
+  if(info$autoBalance[1] == "engage") {
+    info$pointsA[1] <- info$pointsA[1] + 12
+  } else if(info$autoBalance[1] == "dock") {
+    info$pointsA[1] <- info$pointsA[1] + 10
+  }
+  
+  if(info$teleopBalance[1] == "engage") {
+    info$pointsE[1] <- 10
+  } else if(info$teleopBalance[1] == "dock") {
+    info$pointsE[1] <- 8
+  } else {
+    info$pointsE[1] <- 0
+  }
   
   if(info$scoredT[1] > 0) {
     info$ct[1] <- round(135 / unlist(info$scoredT[1]), digits = 3)
   } else {
     info$ct[1] <- 0
   }
+  
+  links <- 0
+  
+  ssindex <- which(vals$ssframe$mmatchNum == info$matchNum[1])
+  if(length(ssindex) > 0) {
+    if(info$alliance == "r") {
+      links <- vals$ssframe$redLinks[ssindex]
+    } else {
+      links <- vals$ssframe$blueLinks[ssindex]
+    }
+  }
+  
+  info$pointsT[1] <- info$pointsT[1] + (links * 5/3)
+  
+  info$pointsTotal[1] <- info$pointsT[1] + info$pointsA[1] + info$pointsE[1]
+  
   
   teamNum <- info$teamNum[1]
   teamIdx <- as.integer(which(vals$teamframe$teamNum == teamNum))
@@ -555,6 +595,12 @@ calcValues <- function(df) {
   
   # aPPG
   vals$teamframe$aPPG[teamIdx] <- round(mean(matches$pointsTotal), digits = 2)
+  
+  vals$teamframe$aPPGt[teamIdx] <- round(mean(matches$pointsT), digits = 2)
+  
+  vals$teamframe$aPPGa[teamIdx] <- round(mean(matches$pointsA), digits = 2)
+  
+  vals$teamframe$aPPGe[teamIdx] <- round(mean(matches$pointsE), digits = 2)
   
   
   
@@ -674,6 +720,8 @@ recalcMatchValues <- function() {
       row$shuttle[1] <- as.logical(row$shuttle[1])
       row$buddyClimb[1] <- as.logical(row$buddyClimb[1])
       
+      
+      
       if(is.na(row$autoPickups[1])) {
         row$autoPickups[1] <- "NA"
       } else {
@@ -754,6 +802,7 @@ recalcMatchValues <- function() {
       
       print("Error with data in:")
       print(paste0("Team: ", row$teamNum[1], " Match: ", row$matchNum[1]))
+      print(e)
       
       showNotification("Error in data. Check console for more info.", type = "error")
     }
@@ -835,6 +884,7 @@ calcAAGVals <- function() {
                          totalPickups = c(),
                          pointsT = c(),
                          pointsA = c(),
+                         pointsE = c(),
                          pointsTotal = c(),
                          
                          scoredLowT = c(),
@@ -1028,6 +1078,12 @@ recalcValues <- function() {
     # aPPG
     vals$teamframe$aPPG[team] <- round(mean(matches$pointsTotal), digits = 2)
     
+    vals$teamframe$aPPGa[team] <- round(mean(matches$pointsA), digits = 2)
+    
+    vals$teamframe$aPPGt[team] <- round(mean(matches$pointsT), digits = 2)
+    
+    vals$teamframe$aPPGe[team] <- round(mean(matches$pointsE), digits = 2)
+    
     
     balances <- matches$teleopBalance
     
@@ -1058,6 +1114,9 @@ recalcValues <- function() {
       vals$teamframe$aS[team] <- integer(1)
       vals$teamframe$ECT[team] <- integer(1)
       vals$teamframe$aPPG[team] <- integer(1)
+      vals$teamframe$aPPGa[team] <- integer(1)
+      vals$teamframe$aPPGt[team] <- integer(1)
+      vals$teamframe$aPPGe[team] <- integer(1)
       vals$teamframe$BC[team] <- integer(1)
     }
     
@@ -1733,6 +1792,9 @@ pullStatboticsData <- function() {
   
   vals$teamframe$ECT <- numeric(1)
   vals$teamframe$aPPG <- numeric(1)
+  vals$teamframe$aPPGa <- numeric(1)
+  vals$teamframe$aPPGt <- numeric(1)
+  vals$teamframe$aPPGe <- numeric(1)
   vals$teamframe$SEf <- numeric(1)
   vals$teamframe$aSt <- numeric(1)
   vals$teamframe$aSa <- numeric(1)
@@ -2186,6 +2248,10 @@ ui <- navbarPage(
              h4("Online Functions"),
              actionButton("pullStatboticsEPAs", "Update EPAs from Statbotics"),
              actionButton("testConnection", "Test Internet Connection")
+           ),
+           fluidRow(
+            h4("Report Generating"),
+            actionButton("generateReports", "Generate Reports")
            )
            ),
   
@@ -2435,6 +2501,7 @@ server <- function(input, output, session) {
                                  totalPickups = c(),
                                  pointsT = c(),
                                  pointsA = c(),
+                                 pointsE = c(),
                                  pointsTotal = c(),
                                  
                                  scoredLowT = c(),
@@ -2648,6 +2715,7 @@ server <- function(input, output, session) {
                                         totalPickups = c(),
                                         pointsT = c(),
                                         pointsA = c(),
+                                        pointsE = c(),
                                         pointsTotal = c(),
                                         
                                         scoredLowT = c(),
@@ -2804,7 +2872,7 @@ server <- function(input, output, session) {
                   avg_pickups=mean(totalPickups+as.numeric(!is.na(preload)),na.rm=T)
         ) %>% 
         ggplot(aes(label =reorder(factor(teamNum),avg_Driv),x= avg_Driv,y=avg_pickups)) +
-        geom_label()+
+        ggrepel::geom_label_repel(force=1,max.overlaps=20)+
         coord_flip()  ##+
       ##               ggtitle("Driver skill vs pickups")  
     })
@@ -3028,6 +3096,25 @@ server <- function(input, output, session) {
     saveMainframe()
   })
   
+  observeEvent(input$generateReports, {
+    
+    withProgress(
+      message = "Generating Reports",
+      value = 0,
+      {
+        for(t in 1:nrow(vals$teamframe)) {
+          tNum <- vals$teamframe$teamNum[t]
+          
+          incProgress(amount = 1/nrow(vals$teamframe), detail = paste0("Generating report for ", tNum))
+          
+          render("teamReport.Rmd", output_file = paste0(path, "Reports\\", tNum, "report.pdf"))
+          
+        }
+      }
+    )
+    
+  })
+  
   
   # Stats Page
 
@@ -3063,9 +3150,6 @@ server <- function(input, output, session) {
       )
     })
   })
-  
-  # Picklisting Page
-  
   
   
   
