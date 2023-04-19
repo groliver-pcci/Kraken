@@ -541,6 +541,10 @@ calcValues <- function(df) {
     info$pointsA[1] <- info$pointsA[1] + 10
   }
   
+  if(info$mobility[1]) {
+    info$pointsA[1] <- info$pointsA[1] + 3
+  }
+  
   if(info$teleopBalance[1] == "engage") {
     info$pointsE[1] <- 10
   } else if(info$teleopBalance[1] == "dock") {
@@ -566,7 +570,7 @@ calcValues <- function(df) {
     }
   }
   
-  info$pointsT[1] <- info$pointsT[1] + (links * 5/3)
+  info$pointsT[1] <- info$pointsT[1] + (links * 5/3) + (info$supercharged[1] * 3)
   
   info$pointsTotal[1] <- info$pointsT[1] + info$pointsA[1] + info$pointsE[1]
   
@@ -1410,7 +1414,6 @@ parseRData <- function(string) {
   
   pData <- data.frame(as.list(values))
   
-  
   parsedData <- data.frame(
     teamNum = c(as.integer(pData$teamNum[1])),
     matchNum = c(as.integer(pData$matchNum[1])),
@@ -1436,9 +1439,8 @@ parseRData <- function(string) {
     buddyClimb = c(as.logical(pData$buddyClimb[1])),
     driver = c(as.integer(pData$driver[1])),
     scoutName = c(pData$scoutName[1]),
-    comments = c(pData$comments[1]),
+    comments = c(pData$comments[1])
   )
-  
   
   if(substr(parsedData$driveStation[1], 1, 1) == "R") {
     end <- nchar(parsedData$driveStation[1])
