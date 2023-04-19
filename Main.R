@@ -251,6 +251,8 @@ vals <- reactiveValues(
                         tMin = c(),
                         tMinG0 = c(),
                         
+                        aShut = c(),
+                        
                         pcNeut = c(),
                         pcCom = c(),
                         pcSing = c(),
@@ -838,6 +840,8 @@ calcAAGVals <- function() {
                              tMin = c(),
                              tMinG0 = c(),
                              
+                             aShut = c(),
+                             
                              pcNeut = c(),
                              pcCom = c(),
                              pcSing = c(),
@@ -932,6 +936,8 @@ calcAAGVals <- function() {
       tCone <- 0
       tCube <- 0
       
+      shuttles <- 0
+      
       neut <- 0
       com <- 0
       single <- 0
@@ -1005,6 +1011,8 @@ calcAAGVals <- function() {
       pcCones <- round(tCone / tPieces, digits = 2) * 100
       pcCubes <- round(tCube / tPieces, digits = 2) * 100
       
+      shuttles <- round(mean(tMatch$shuttle), digits = 2)
+      
       intakes <- neut + com + single + double
       
       pcNeut <- round(neut / intakes, digits = 2) * 100
@@ -1029,6 +1037,8 @@ calcAAGVals <- function() {
         sDev = c(dP),
         tMin = c(minP),
         tMinG0 = c(minG0P),
+        
+        aShut = c(shuttles),
       
         pcNeut = c(pcNeut),
         pcCom = c(pcCom),
@@ -1999,7 +2009,8 @@ ui <- navbarPage(
                                   textOutput("teleopMinG0"),
                                   textOutput("teleopDeviation"),
                                   br(),
-                                  textOutput("type"),
+                                  textOutput("shuttles"),
+                                  br(),
                                   textOutput("cone"),
                                   textOutput("cube"),
                                   
@@ -2196,7 +2207,8 @@ ui <- navbarPage(
                          textOutput("PteleopMinG0"),
                          textOutput("PteleopDeviation"),
                          br(),
-                         textOutput("Ptype"),
+                         textOutput("Pshuttles"),
+                         br(),
                          textOutput("Pcone"),
                          textOutput("Pcube"),
                          
@@ -2665,6 +2677,8 @@ server <- function(input, output, session) {
     output$teleopMax <- renderText(paste0("Max Scored: ", vals$aagframe$tMax[aagrow]))
     output$teleopDeviation <- renderText(paste0("Score Deviation: ", vals$aagframe$sDev[aagrow]))
     
+    output$shuttles <- renderText(paste0("Average Shuttles: ", vals$aagframe$aShut[aagrow]))
+    
     output$scoringLocs <- renderText("Intake Percentages:")
     output$pcNeut <- renderText(paste0("Neutral Zone: ", vals$aagframe$pcNeut[aagrow], "%"))
     output$pcCom <- renderText(paste0("Community: ", vals$aagframe$pcCom[aagrow], "%"))
@@ -2678,7 +2692,7 @@ server <- function(input, output, session) {
     output$high <- renderText(paste0("High: ", vals$aagframe$tHigh[aagrow], "%"))
     output$mid <- renderText(paste0("Mid: ", vals$aagframe$tMid[aagrow], "%"))
     output$low <- renderText(paste0("Low: ", vals$aagframe$tLow[aagrow], "%"))
-    output$type <- renderText("Scored Types:")
+    
     output$cone <- renderText(paste0("Cones: ", vals$aagframe$tCones[aagrow], "%"))
     output$cube <- renderText(paste0("Cubes: ", vals$aagframe$tCubes[aagrow], "%"))
     
@@ -2984,6 +2998,8 @@ server <- function(input, output, session) {
           output$PteleopMax <- renderText(paste0("Max Scored: ", vals$aagframe$tMax[aagrow]))
           output$PteleopDeviation <- renderText(paste0("Score Deviation: ", vals$aagframe$sDev[aagrow]))
           
+          output$Pshuttles <- renderText(paste0("Average Shuttles: ", vals$aagframe$aShut[aagrow]))
+          
           output$PteleopMin <- renderText(paste0("Min: ", vals$aagframe$tMin[aagrow]))
           output$PteleopMinG0 <- renderText(paste0("Min (no 0): ", vals$aagframe$tMinG0[aagrow]))
           
@@ -2997,7 +3013,6 @@ server <- function(input, output, session) {
           output$Phigh <- renderText(paste0("High: ", vals$aagframe$tHigh[aagrow], "%"))
           output$Pmid <- renderText(paste0("Mid: ", vals$aagframe$tMid[aagrow], "%"))
           output$Plow <- renderText(paste0("Low: ", vals$aagframe$tLow[aagrow], "%"))
-          output$Ptype <- renderText("Scored Types:")
           output$Pcone <- renderText(paste0("Cones: ", vals$aagframe$tCones[aagrow], "%"))
           output$Pcube <- renderText(paste0("Cubes: ", vals$aagframe$tCubes[aagrow], "%"))
           
