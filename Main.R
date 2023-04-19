@@ -68,6 +68,7 @@ vals <- reactiveValues(
                          neutralPickups = c(), 
                          singlePickups = c(),
                          doublePickups = c(),
+                         supercharged = C(),
                          teleopCones = c(),
                          teleopCubes = c(),
                          shuttle = c(),
@@ -126,6 +127,7 @@ vals <- reactiveValues(
                            neutralPickups = c(), 
                            singlePickups = c(),
                            doublePickups = c(),
+                           supercharged = c(),
                            teleopCones = c(),
                            teleopCubes = c(),
                            shuttle = c(),
@@ -175,6 +177,7 @@ vals <- reactiveValues(
                                 neutralPickups = c(), 
                                 singlePickups = c(),
                                 doublePickups = c(),
+                                supercharged = C(),
                                 teleopCones = c(),
                                 teleopCubes = c(),
                                 shuttle = c(),
@@ -391,6 +394,7 @@ calcValues <- function(df) {
     neutralPickups = c(), 
     singlePickups = c(),
     doublePickups = c(),
+    supercharged = C(),
     teleopCones = c(),
     teleopCubes = c(),
     shuttle = c(),
@@ -710,6 +714,8 @@ recalcMatchValues <- function() {
       row$singlePickups[1] <- as.integer(row$singlePickups[1])
       row$doublePickups[1] <- as.integer(row$doublePickups[1])
       row$driver[1] <- as.integer(row$driver[1])
+      row$supercharged[1] <- as.integer(row$supercharged[1])
+      row$shuttle[1] <- as.integer(row$shuttle[1])
       
       row$alliance[1] <- tolower(row$alliance[1])
       row$autoBalance[1] <- tolower(row$autoBalance[1])
@@ -717,7 +723,6 @@ recalcMatchValues <- function() {
       
       
       row$mobility[1] <- as.logical(row$mobility[1])
-      row$shuttle[1] <- as.logical(row$shuttle[1])
       row$buddyClimb[1] <- as.logical(row$buddyClimb[1])
       
       
@@ -864,6 +869,7 @@ calcAAGVals <- function() {
                          neutralPickups = c(), 
                          singlePickups = c(),
                          doublePickups = c(),
+                         supercharged = c(),
                          teleopCones = c(),
                          teleopCubes = c(),
                          shuttle = c(),
@@ -1412,6 +1418,8 @@ parseRData <- function(string) {
   parsedData$singlePickups[1] <- as.integer(parsedData$singlePickups[1])
   parsedData$doublePickups[1] <- as.integer(parsedData$doublePickups[1])
   parsedData$driver[1] <- as.integer(parsedData$driver[1])
+  parsedData$shuttle[1] <- as.integer(parsedData$ferryPieces[1])
+  parsedData$supercharged[1] <- as.integer(parsedData$superChargeScored[1])
   
   parsedData$alliance[1] <- tolower(parsedData$alliance[1])
   parsedData$autoBalance[1] <- tolower(parsedData$autoBalance[1])
@@ -1419,7 +1427,6 @@ parseRData <- function(string) {
   
   
   parsedData$mobility[1] <- as.logical(parsedData$mobility[1])
-  parsedData$shuttle[1] <- as.logical(parsedData$shuttle[1])
   parsedData$buddyClimb[1] <- as.logical(parsedData$buddyClimb[1])
   
   if(substr(parsedData$driveStation[1], 1, 1) == "R") {
@@ -1975,9 +1982,9 @@ ui <- navbarPage(
                                   textOutput("teleopMean"),
                                   textOutput("teleopMedian"),
                                   textOutput("teleopMax"),
-                                  textOutput("teleopDeviation"),
                                   textOutput("teleopMin"),
                                   textOutput("teleopMinG0"),
+                                  textOutput("teleopDeviation"),
                                   br(),
                                   textOutput("type"),
                                   textOutput("cone"),
@@ -2172,9 +2179,9 @@ ui <- navbarPage(
                          textOutput("PteleopMean"),
                          textOutput("PteleopMedian"),
                          textOutput("PteleopMax"),
-                         textOutput("PteleopDeviation"),
                          textOutput("PteleopMin"),
                          textOutput("PteleopMinG0"),
+                         textOutput("PteleopDeviation"),
                          br(),
                          textOutput("Ptype"),
                          textOutput("Pcone"),
@@ -2481,6 +2488,7 @@ server <- function(input, output, session) {
                                  neutralPickups = c(), 
                                  singlePickups = c(),
                                  doublePickups = c(),
+                                 supercharged = c(),
                                  teleopCones = c(),
                                  teleopCubes = c(),
                                  shuttle = c(),
@@ -2695,6 +2703,7 @@ server <- function(input, output, session) {
                                         neutralPickups = c(), 
                                         singlePickups = c(),
                                         doublePickups = c(),
+                                        supercharged = c(),
                                         teleopCones = c(),
                                         teleopCubes = c(),
                                         shuttle = c(),
@@ -3098,20 +3107,20 @@ server <- function(input, output, session) {
   
   observeEvent(input$generateReports, {
     
-    withProgress(
-      message = "Generating Reports",
-      value = 0,
-      {
-        for(t in 1:nrow(vals$teamframe)) {
-          tNum <- vals$teamframe$teamNum[t]
-          
-          incProgress(amount = 1/nrow(vals$teamframe), detail = paste0("Generating report for ", tNum))
-          
-          render("teamReport.Rmd", output_file = paste0(path, "Reports\\", tNum, "report.pdf"))
-          
-        }
-      }
-    )
+    # withProgress(
+    #   message = "Generating Reports",
+    #   value = 0,
+    #   {
+    #     for(t in 1:nrow(vals$teamframe)) {
+    #       tNum <- vals$teamframe$teamNum[t]
+    #       
+    #       incProgress(amount = 1/nrow(vals$teamframe), detail = paste0("Generating report for ", tNum))
+    #       
+    #       render("teamReport.Rmd", output_file = paste0(path, "Reports\\", tNum, "report.pdf"))
+    #       
+    #     }
+    #   }
+    # )
     
   })
   
