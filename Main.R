@@ -68,6 +68,7 @@ vals <- reactiveValues(
                          neutralPickups = c(), 
                          singlePickups = c(),
                          doublePickups = c(),
+                         supercharged = c(),
                          teleopCones = c(),
                          teleopCubes = c(),
                          shuttle = c(),
@@ -126,6 +127,7 @@ vals <- reactiveValues(
                            neutralPickups = c(), 
                            singlePickups = c(),
                            doublePickups = c(),
+                           supercharged = c(),
                            teleopCones = c(),
                            teleopCubes = c(),
                            shuttle = c(),
@@ -175,6 +177,7 @@ vals <- reactiveValues(
                                 neutralPickups = c(), 
                                 singlePickups = c(),
                                 doublePickups = c(),
+                                supercharged = c(),
                                 teleopCones = c(),
                                 teleopCubes = c(),
                                 shuttle = c(),
@@ -391,6 +394,7 @@ calcValues <- function(df) {
     neutralPickups = c(), 
     singlePickups = c(),
     doublePickups = c(),
+    supercharged = c(),
     teleopCones = c(),
     teleopCubes = c(),
     shuttle = c(),
@@ -710,6 +714,8 @@ recalcMatchValues <- function() {
       row$singlePickups[1] <- as.integer(row$singlePickups[1])
       row$doublePickups[1] <- as.integer(row$doublePickups[1])
       row$driver[1] <- as.integer(row$driver[1])
+      row$shuttle[1] <- as.integer(row$shuttle[1])
+      row$supercharged <- as.integer(row$supercharged[1])
       
       row$alliance[1] <- tolower(row$alliance[1])
       row$autoBalance[1] <- tolower(row$autoBalance[1])
@@ -717,7 +723,6 @@ recalcMatchValues <- function() {
       
       
       row$mobility[1] <- as.logical(row$mobility[1])
-      row$shuttle[1] <- as.logical(row$shuttle[1])
       row$buddyClimb[1] <- as.logical(row$buddyClimb[1])
       
       
@@ -864,6 +869,7 @@ calcAAGVals <- function() {
                          neutralPickups = c(), 
                          singlePickups = c(),
                          doublePickups = c(),
+                         supercharged = c(),
                          teleopCones = c(),
                          teleopCubes = c(),
                          shuttle = c(),
@@ -1402,25 +1408,37 @@ parseRData <- function(string) {
   
   names(values) <- names
   
-  parsedData <- data.frame(as.list(values))
-  
-  parsedData$teamNum[1] <- as.integer(parsedData$teamNum[1])
-  parsedData$matchNum[1] <- as.integer(parsedData$matchNum[1])
-  parsedData$startLocation[1] <- as.integer(parsedData$startLocation[1])
-  parsedData$communityPickups[1] <- as.integer(parsedData$communityPickups[1])
-  parsedData$neutralPickups[1] <- as.integer(parsedData$neutralPickups[1])
-  parsedData$singlePickups[1] <- as.integer(parsedData$singlePickups[1])
-  parsedData$doublePickups[1] <- as.integer(parsedData$doublePickups[1])
-  parsedData$driver[1] <- as.integer(parsedData$driver[1])
-  
-  parsedData$alliance[1] <- tolower(parsedData$alliance[1])
-  parsedData$autoBalance[1] <- tolower(parsedData$autoBalance[1])
-  parsedData$teleopBalance[1] <- tolower(parsedData$teleopBalance[1])
+  pData <- data.frame(as.list(values))
   
   
-  parsedData$mobility[1] <- as.logical(parsedData$mobility[1])
-  parsedData$shuttle[1] <- as.logical(parsedData$shuttle[1])
-  parsedData$buddyClimb[1] <- as.logical(parsedData$buddyClimb[1])
+  parsedData <- data.frame(
+    teamNum = c(as.integer(pData$teamNum[1])),
+    matchNum = c(as.integer(pData$matchNum[1])),
+    alliance = c(tolower(pData$alliance[1])),
+    driveStation = c(pData$driveStation[1]),
+    startLocation = c(as.integer(pData$startLocation[1])),
+    preload = c(pData$preload[1]),
+    mobility = c(as.logical(pData$mobility[1])),
+    autoPickups = c(pData$autoPickups[1]),
+    autoFailedPickups = c(pData$autoPickups[1]),
+    autoCones = c(pData$autoCones[1]),
+    autoCubes = c(pData$autoCubes[1]),
+    autoBalance = c(tolower(pData$autoBalance[1])),
+    communityPickups = c(as.integer(pData$communityPickups[1])),
+    neutralPickups = c(as.integer(pData$neutralPickups[1])), 
+    singlePickups = c(as.integer(pData$singlePickups[1])),
+    doublePickups = c(as.integer(pData$doublePickups[1])),
+    supercharged = c(as.integer(pData$superChargeScored[1])),
+    teleopCones = c(pData$teleopCones[1]),
+    teleopCubes = c(pData$teleopCubes[1]),
+    shuttle = c(as.integer(pData$ferryPieces[1])),
+    teleopBalance = c(tolower(pData$teleopBalance[1])),
+    buddyClimb = c(as.logical(pData$buddyClimb[1])),
+    driver = c(as.integer(pData$driver[1])),
+    scoutName = c(pData$scoutName[1]),
+    comments = c(pData$comments[1]),
+  )
+  
   
   if(substr(parsedData$driveStation[1], 1, 1) == "R") {
     end <- nchar(parsedData$driveStation[1])
@@ -1975,9 +1993,9 @@ ui <- navbarPage(
                                   textOutput("teleopMean"),
                                   textOutput("teleopMedian"),
                                   textOutput("teleopMax"),
-                                  textOutput("teleopDeviation"),
                                   textOutput("teleopMin"),
                                   textOutput("teleopMinG0"),
+                                  textOutput("teleopDeviation"),
                                   br(),
                                   textOutput("type"),
                                   textOutput("cone"),
@@ -2172,9 +2190,9 @@ ui <- navbarPage(
                          textOutput("PteleopMean"),
                          textOutput("PteleopMedian"),
                          textOutput("PteleopMax"),
-                         textOutput("PteleopDeviation"),
                          textOutput("PteleopMin"),
                          textOutput("PteleopMinG0"),
+                         textOutput("PteleopDeviation"),
                          br(),
                          textOutput("Ptype"),
                          textOutput("Pcone"),
@@ -2481,6 +2499,7 @@ server <- function(input, output, session) {
                                  neutralPickups = c(), 
                                  singlePickups = c(),
                                  doublePickups = c(),
+                                 supercharged = c(),
                                  teleopCones = c(),
                                  teleopCubes = c(),
                                  shuttle = c(),
@@ -2695,6 +2714,7 @@ server <- function(input, output, session) {
                                         neutralPickups = c(), 
                                         singlePickups = c(),
                                         doublePickups = c(),
+                                        supercharged = c(),
                                         teleopCones = c(),
                                         teleopCubes = c(),
                                         shuttle = c(),
